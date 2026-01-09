@@ -77,10 +77,12 @@
                 </div>
 
                 <div class="card-footer">
-                    <a href="{{ route('procesos.edit', $proceso->id) }}" class="action-btn" title="Editar">
-                        Editar Proceso
-                        <i class="fas fa-edit"></i>
+                    <a class="action-btn action-view" onclick="toggleHistorial({{ $proceso->id }})"
+                        title="Historial del proceso">
+                        Historial del proceso
+                        <i class="fa-solid fa-clock-rotate-left"></i>
                     </a>
+
 
                     <a href="{{ route('abogado.crear-concepto', $proceso->id) }}" class="action-btn">
                         <i class="fas fa-edit"></i>
@@ -103,6 +105,45 @@
                         <p class="text-muted small mb-0">No hay conceptos jurídicos aún</p>
                     @endif
                 </div>
+
+                <div id="historial-{{ $proceso->id }}" class="historial-box" style="display:none;">
+                    <h4 class="historial-title">
+                        <i class="fa-solid fa-timeline"></i>
+                        Historial del proceso
+                    </h4>
+
+                    <table class="historial-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Observación</th>
+                                <th>Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($proceso->historial as $item)
+                                <tr>
+                                    <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        <span class="status-badge">
+                                            {{ $item->estado }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $item->observacion ?? '—' }}</td>
+                                    <td>{{ $item->usuario->name ?? 'Sistema' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        No hay historial registrado
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
 
@@ -125,6 +166,56 @@
         font-weight: normal;
         /* Para diferenciar del título */
         margin-left: 6px;
+    }
+
+    .historial-box {
+        margin-top: 15px;
+        background: #f9fafb;
+        border-radius: 10px;
+        padding: 15px;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .historial-title {
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .historial-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .historial-table th {
+        background: #e5e7eb;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .historial-table td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .historial-table tr:hover {
+        background: #f1f5f9;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 
@@ -151,4 +242,9 @@
             }
         });
     });
+
+    function toggleHistorial(id) {
+        const box = document.getElementById('historial-' + id);
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
 </script>

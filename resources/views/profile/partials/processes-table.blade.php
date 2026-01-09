@@ -9,51 +9,69 @@
                         <div class="header-content-cell">
                             <span>Radicado</span>
                             <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
                             </svg>
                         </div>
                     </th>
                     @auth
-                    @if (Auth::user()->role_id == 3)
-                    <th>
-                        <div class="header-content-cell">
-                            <span>Abogado</span>
-                            <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
-                    </th>
-                    @endif
+                        @if (Auth::user()->role_id == 3)
+                            <th>
+                                <div class="header-content-cell">
+                                    <span>Abogado</span>
+                                    <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                            </th>
+                        @endif
                     @endauth
                     <th>
                         <div class="header-content-cell">
                             <span>Tipo</span>
                             <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                </path>
                             </svg>
                         </div>
                     </th>
                     <th>
                         <div class="header-content-cell">
                             <span>Demandante</span>
-                            <svg class="header-icon-small header-icon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            <svg class="header-icon-small header-icon-green" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
                         </div>
                     </th>
                     <th>
                         <div class="header-content-cell">
                             <span>Demandado</span>
-                            <svg class="header-icon-small header-icon-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            <svg class="header-icon-small header-icon-red" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
                         </div>
                     </th>
+
+                    <th>
+                        <div class="header-content-cell">
+                            <span>Estado</span>
+                        </div>
+                    </th>
+
                     <th class="actions-cell">
                         <div class="header-content-cell" style="justify-content: center;">
                             <span>Acciones</span>
                             <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                                </path>
                             </svg>
                         </div>
                     </th>
@@ -62,349 +80,423 @@
 
             <tbody class="table-body" id=tableBody>
                 @forelse($procesos as $proceso)
-                <tr>
-                    <td class="border border-gray-300 px-4 py-2">{{ $proceso->numero_radicado }}</td>
-                    @auth
-                    @if (Auth::user()->role_id == 3)
-                    <td class="border border-gray-300 px-4 py-2">
-                        {{ $proceso->lawyer->user->name ?? 'Sin abogado' }}
-                    </td>
-                    @endif
-                    @endauth
-                    <td class="border border-gray-300 px-4 py-2">{{ $proceso->tipo_proceso }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $proceso->demandante }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $proceso->demandado }}</td>
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">{{ $proceso->numero_radicado }}</td>
+                        @auth
+                            @if (Auth::user()->role_id == 3)
+                                <td class="border border-gray-300 px-4 py-2">
+                                    {{ $proceso->lawyer->user->name ?? 'Sin abogado' }}
+                                </td>
+                            @endif
+                        @endauth
+                        <td class="border border-gray-300 px-4 py-2">{{ $proceso->tipo_proceso }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $proceso->demandante }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $proceso->demandado }}</td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            <span class="estado-badge estado-{{ Str::slug($proceso->estado) }}">
+                                @switch($proceso->estado)
+                                    @case('Conciliado')
+                                        <i class="fas fa-handshake"></i>
+                                    @break
 
-                    <td class="actions-cell">
-                        <div class="actions-group">
-                            <!-- Modifica el botón "Ver detalles" para llamar a la función -->
-                            <a href="javascript:void(0);" onclick="openProcessModal({{ json_encode($proceso->id) }})" class="action-btn action-view" title="Ver detalles">
-                                <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                            </a>
+                                    @case('En proceso')
+                                        <i class="fas fa-hourglass-half"></i>
+                                    @break
 
-                            <a href="{{ route('procesos.edit', $proceso->id) }}" class="action-btn action-edit" title="Editar">
-                                <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                            </a>
+                                    @case('Archivado')
+                                        <i class="fas fa-archive"></i>
+                                    @break
 
-                            <form action="{{ route('procesos.destroy', $proceso->id) }}"
-                                method="POST"
-                                class="form-delete-proceso"
-                                data-nombre="{{ $proceso->demandante }}">
-                                @csrf
-                                @method('DELETE')
+                                    @case('Suspendido')
+                                        <i class="fas fa-pause-circle"></i>
+                                    @break
 
-                                <button type="submit" class="action-btn action-delete" title="Eliminar">
+                                    @case('Finalizado')
+                                        <i class="fas fa-check-circle"></i>
+                                    @break
+
+                                    @default
+                                        <i class="fas fa-info-circle"></i>
+                                @endswitch
+                                {{ $proceso->estado }}
+                            </span>
+                        </td>
+
+
+                        <td class="actions-cell">
+                            <div class="actions-group">
+                                <!-- Modifica el botón "Ver detalles" para llamar a la función -->
+                                <a href="javascript:void(0);"
+                                    onclick="openProcessModal({{ json_encode($proceso->id) }})"
+                                    class="action-btn action-view" title="Ver detalles">
                                     <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
                                     </svg>
-                                </button>
-                            </form>
+                                </a>
 
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="text-center p-4 text-gray-500">No hay procesos registrados</td>
-                </tr>
-                @endforelse
-            </tbody>
+                                <a href="{{ route('procesos.edit', $proceso->id) }}" class="action-btn action-edit"
+                                    title="Editar">
+                                    <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                        </path>
+                                    </svg>
+                                </a>
 
-            <div id="alertOverlay" class="alert-overlay hidden"></div>
+                                <form action="{{ route('procesos.destroy', $proceso->id) }}" method="POST"
+                                    class="form-delete-proceso" data-nombre="{{ $proceso->demandante }}">
+                                    @csrf
+                                    @method('DELETE')
 
-            <div id="customAlert" class="alert-modal hidden">
-                <div class="alert-icon">
-                    ⚠️
+                                    <button type="submit" class="action-btn action-delete" title="Eliminar">
+                                        <svg class="action-icon" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center p-4 text-gray-500">No hay procesos registrados</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+
+                <div id="alertOverlay" class="alert-overlay hidden"></div>
+
+                <div id="customAlert" class="alert-modal hidden">
+                    <div class="alert-icon">
+                        ⚠️
+                    </div>
+                    <h2 id="alertTitle">Confirmar Eliminación</h2>
+                    <p id="alertMessage">
+                        ¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer.
+                    </p>
+
+                    <div class="alert-buttons">
+                        <button id="alertCancel" class="btn-cancel">Cancelar</button>
+                        <button id="alertConfirm" class="btn-confirm">Eliminar</button>
+                    </div>
                 </div>
-                <h2 id="alertTitle">Confirmar Eliminación</h2>
-                <p id="alertMessage">
-                    ¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer.
-                </p>
 
-                <div class="alert-buttons">
-                    <button id="alertCancel" class="btn-cancel">Cancelar</button>
-                    <button id="alertConfirm" class="btn-confirm">Eliminar</button>
-                </div>
-            </div>
+                <script>
+                    // Función para abrir el modal de detalles del proceso
+                    function openProcessModal(procesId) {
+                        // Implementar lógica para abrir modal con detalles del proceso
+                        console.log('Abrir detalles del proceso:', procesId);
+                    }
 
-            <script>
-                // Función para abrir el modal de detalles del proceso
-                function openProcessModal(procesId) {
-                    // Implementar lógica para abrir modal con detalles del proceso
-                    console.log('Abrir detalles del proceso:', procesId);
-                }
+                    // Función para mostrar el modal
+                    function showDeleteConfirm(name, onConfirm) {
+                        const overlay = document.getElementById('alertOverlay');
+                        const modal = document.getElementById('customAlert');
+                        const title = document.getElementById('alertTitle');
+                        const message = document.getElementById('alertMessage');
+                        const cancelBtn = document.getElementById('alertCancel');
+                        const confirmBtn = document.getElementById('alertConfirm');
 
-                // Función para mostrar el modal
-                function showDeleteConfirm(name, onConfirm) {
-                    const overlay = document.getElementById('alertOverlay');
-                    const modal = document.getElementById('customAlert');
-                    const title = document.getElementById('alertTitle');
-                    const message = document.getElementById('alertMessage');
-                    const cancelBtn = document.getElementById('alertCancel');
-                    const confirmBtn = document.getElementById('alertConfirm');
+                        title.textContent = "Confirmar Eliminación";
+                        message.textContent = `¿Estás seguro de eliminar el proceso de ${name}? Esta acción no se puede deshacer.`;
 
-                    title.textContent = "Confirmar Eliminación";
-                    message.textContent = `¿Estás seguro de eliminar el proceso de ${name}? Esta acción no se puede deshacer.`;
+                        overlay.classList.remove('hidden');
+                        modal.classList.remove('hidden');
 
-                    overlay.classList.remove('hidden');
-                    modal.classList.remove('hidden');
+                        cancelBtn.onclick = () => {
+                            overlay.classList.add('hidden');
+                            modal.classList.add('hidden');
+                        };
 
-                    cancelBtn.onclick = () => {
-                        overlay.classList.add('hidden');
-                        modal.classList.add('hidden');
-                    };
+                        confirmBtn.onclick = () => {
+                            overlay.classList.add('hidden');
+                            modal.classList.add('hidden');
+                            onConfirm();
+                        };
+                    }
 
-                    confirmBtn.onclick = () => {
-                        overlay.classList.add('hidden');
-                        modal.classList.add('hidden');
-                        onConfirm();
-                    };
-                }
+                    // Interceptar formularios de eliminar
+                    document.querySelectorAll('.form-delete-proceso').forEach(form => {
+                        form.addEventListener('submit', function(e) {
+                            e.preventDefault(); // Detiene el envío inmediato
 
-                // Interceptar formularios de eliminar
-                document.querySelectorAll('.form-delete-proceso').forEach(form => {
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault(); // Detiene el envío inmediato
+                            let nombre = form.dataset.nombre || "este proceso";
 
-                        let nombre = form.dataset.nombre || "este proceso";
-
-                        showDeleteConfirm(nombre, () => {
-                            form.submit(); // Enviar después de confirmar
+                            showDeleteConfirm(nombre, () => {
+                                form.submit(); // Enviar después de confirmar
+                            });
                         });
                     });
-                });
-            </script>
+                </script>
 
 
-        </table>
-    </div>
+            </table>
+        </div>
 
-    <!-- Paginación -->
-    <div class="pagination-container">
-        <div class="pagination-content">
-            <!-- Paginación móvil -->
-            <div class="pagination-mobile">
-                @if ($procesos->onFirstPage())
-                <span class="pagination-btn disabled">Anterior</span>
-                @else
-                <a href="{{ $procesos->previousPageUrl() }}" class="pagination-btn">Anterior</a>
-                @endif
-
-                <!-- Números de página -->
-                @php
-                $currentPage = $procesos->currentPage();
-                $lastPage = $procesos->lastPage();
-                $start = max(1, $currentPage - 2);
-                $end = min($lastPage, $currentPage + 2);
-                @endphp
-
-                @if ($start > 1)
-                <a href="{{ $procesos->url(1) }}" class="pagination-btn">1</a>
-                @if ($start > 2)
-                <span class="pagination-btn disabled">...</span>
-                @endif
-                @endif
-
-                @for ($i = $start; $i <= $end; $i++)
-                    @if ($i==$currentPage)
-                    <span class="pagination-btn active">{{ $i }}</span>
-                    @else
-                    <a href="{{ $procesos->url($i) }}" class="pagination-btn">{{ $i }}</a>
-                    @endif
-                    @endfor
-
-                    @if ($end < $lastPage)
-                        @if ($end < $lastPage - 1)
-                        <span class="pagination-btn disabled">...</span>
-                        @endif
-                        <a href="{{ $procesos->url($lastPage) }}" class="pagination-btn">{{ $lastPage }}</a>
-                        @endif
-
-                        @if ($procesos->hasMorePages())
-                        <a href="{{ $procesos->nextPageUrl() }}" class="pagination-btn">Siguiente</a>
-                        @else
-                        <span class="pagination-btn disabled">Siguiente</span>
-                        @endif
-            </div>
-
-            <!-- Paginación desktop -->
-            <div class="pagination-desktop">
-
-                <div style="display: flex; gap: 0.5rem;">
-                    <!-- Botón Anterior -->
+        <!-- Paginación -->
+        <div class="pagination-container">
+            <div class="pagination-content">
+                <!-- Paginación móvil -->
+                <div class="pagination-mobile">
                     @if ($procesos->onFirstPage())
-                    <span class="pagination-btn disabled">Anterior</span>
+                        <span class="pagination-btn disabled">Anterior</span>
                     @else
-                    <a href="{{ $procesos->previousPageUrl() }}" class="pagination-btn">Anterior</a>
+                        <a href="{{ $procesos->previousPageUrl() }}" class="pagination-btn">Anterior</a>
                     @endif
 
                     <!-- Números de página -->
                     @php
-                    $currentPage = $procesos->currentPage();
-                    $lastPage = $procesos->lastPage();
-                    $start = max(1, $currentPage - 2);
-                    $end = min($lastPage, $currentPage + 2);
+                        $currentPage = $procesos->currentPage();
+                        $lastPage = $procesos->lastPage();
+                        $start = max(1, $currentPage - 2);
+                        $end = min($lastPage, $currentPage + 2);
                     @endphp
 
                     @if ($start > 1)
-                    <a href="{{ $procesos->url(1) }}" class="pagination-btn">1</a>
-                    @if ($start > 2)
-                    <span class="pagination-btn disabled">...</span>
-                    @endif
+                        <a href="{{ $procesos->url(1) }}" class="pagination-btn">1</a>
+                        @if ($start > 2)
+                            <span class="pagination-btn disabled">...</span>
+                        @endif
                     @endif
 
                     @for ($i = $start; $i <= $end; $i++)
-                        @if ($i==$currentPage)
-                        <span class="pagination-btn active">{{ $i }}</span>
+                        @if ($i == $currentPage)
+                            <span class="pagination-btn active">{{ $i }}</span>
                         @else
-                        <a href="{{ $procesos->url($i) }}" class="pagination-btn">{{ $i }}</a>
+                            <a href="{{ $procesos->url($i) }}" class="pagination-btn">{{ $i }}</a>
                         @endif
+                    @endfor
+
+                    @if ($end < $lastPage)
+                        @if ($end < $lastPage - 1)
+                            <span class="pagination-btn disabled">...</span>
+                        @endif
+                        <a href="{{ $procesos->url($lastPage) }}" class="pagination-btn">{{ $lastPage }}</a>
+                    @endif
+
+                    @if ($procesos->hasMorePages())
+                        <a href="{{ $procesos->nextPageUrl() }}" class="pagination-btn">Siguiente</a>
+                    @else
+                        <span class="pagination-btn disabled">Siguiente</span>
+                    @endif
+                </div>
+
+                <!-- Paginación desktop -->
+                <div class="pagination-desktop">
+
+                    <div style="display: flex; gap: 0.5rem;">
+                        <!-- Botón Anterior -->
+                        @if ($procesos->onFirstPage())
+                            <span class="pagination-btn disabled">Anterior</span>
+                        @else
+                            <a href="{{ $procesos->previousPageUrl() }}" class="pagination-btn">Anterior</a>
+                        @endif
+
+                        <!-- Números de página -->
+                        @php
+                            $currentPage = $procesos->currentPage();
+                            $lastPage = $procesos->lastPage();
+                            $start = max(1, $currentPage - 2);
+                            $end = min($lastPage, $currentPage + 2);
+                        @endphp
+
+                        @if ($start > 1)
+                            <a href="{{ $procesos->url(1) }}" class="pagination-btn">1</a>
+                            @if ($start > 2)
+                                <span class="pagination-btn disabled">...</span>
+                            @endif
+                        @endif
+
+                        @for ($i = $start; $i <= $end; $i++)
+                            @if ($i == $currentPage)
+                                <span class="pagination-btn active">{{ $i }}</span>
+                            @else
+                                <a href="{{ $procesos->url($i) }}" class="pagination-btn">{{ $i }}</a>
+                            @endif
                         @endfor
 
                         @if ($end < $lastPage)
                             @if ($end < $lastPage - 1)
-                            <span class="pagination-btn disabled">...</span>
+                                <span class="pagination-btn disabled">...</span>
                             @endif
                             <a href="{{ $procesos->url($lastPage) }}" class="pagination-btn">{{ $lastPage }}</a>
-                            @endif
+                        @endif
 
-                            <!-- Botón Siguiente -->
-                            @if ($procesos->hasMorePages())
+                        <!-- Botón Siguiente -->
+                        @if ($procesos->hasMorePages())
                             <a href="{{ $procesos->nextPageUrl() }}" class="pagination-btn">Siguiente</a>
-                            @else
+                        @else
                             <span class="pagination-btn disabled">Siguiente</span>
-                            @endif
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    /* Fondo desenfocado con animación suave */
-    .alert-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(0px);
-        z-index: 990;
-        opacity: 0;
-
-        animation: overlayFade 0.25s ease forwards;
-    }
-
-    /* Oculto */
-    .hidden {
-        display: none;
-    }
-
-    /* Modal con animación sutil */
-    .alert-modal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.95);
-        width: 420px;
-        background: #fff;
-        border-radius: 18px;
-        padding: 28px;
-        text-align: center;
-        z-index: 999;
-        box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.15);
-
-        opacity: 0;
-        animation: modalAppear 0.28s ease-out forwards;
-    }
-
-    /* Icono */
-    .alert-icon {
-        font-size: 48px;
-        margin-bottom: 10px;
-    }
-
-    /* Título */
-    .alert-modal h2 {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-
-    /* Mensaje */
-    .alert-modal p {
-        font-size: 15px;
-        color: #555;
-        margin-bottom: 26px;
-    }
-
-    /* Botones */
-    .alert-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 14px;
-    }
-
-    .btn-cancel,
-    .btn-confirm {
-        padding: 10px 22px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        font-weight: 600;
-        transition: background 0.2s ease, transform 0.12s ease;
-    }
-
-    .btn-cancel {
-        background: #eaeaea;
-    }
-
-    .btn-confirm {
-        background: #009EEB;
-        color: white;
-    }
-
-    /* Hover limpio y elegante */
-    .btn-cancel:hover {
-        background: #dcdcdc;
-    }
-
-    .btn-confirm:hover {
-        background: #008cd0;
-    }
-
-    .btn-cancel:active,
-    .btn-confirm:active {
-        transform: scale(0.97);
-    }
-
-    /* Animaciones */
-
-    @keyframes overlayFade {
-        from {
-            opacity: 0;
+    <style>
+        /* Fondo desenfocado con animación suave */
+        .alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(0px);
-        }
-
-        to {
-            opacity: 1;
-            backdrop-filter: blur(3px);
-        }
-    }
-
-    @keyframes modalAppear {
-        0% {
+            z-index: 990;
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.95);
+
+            animation: overlayFade 0.25s ease forwards;
         }
 
-        100% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+        /* Oculto */
+        .hidden {
+            display: none;
         }
-    }
-</style>
+
+        /* Modal con animación sutil */
+        .alert-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 420px;
+            background: #fff;
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center;
+            z-index: 999;
+            box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.15);
+
+            opacity: 0;
+            animation: modalAppear 0.28s ease-out forwards;
+        }
+
+        /* Icono */
+        .alert-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        /* Título */
+        .alert-modal h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Mensaje */
+        .alert-modal p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 26px;
+        }
+
+        /* Botones */
+        .alert-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .btn-cancel,
+        .btn-confirm {
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s ease, transform 0.12s ease;
+        }
+
+        .btn-cancel {
+            background: #eaeaea;
+        }
+
+        .btn-confirm {
+            background: #009EEB;
+            color: white;
+        }
+
+        /* Hover limpio y elegante */
+        .btn-cancel:hover {
+            background: #dcdcdc;
+        }
+
+        .btn-confirm:hover {
+            background: #008cd0;
+        }
+
+        .btn-cancel:active,
+        .btn-confirm:active {
+            transform: scale(0.97);
+        }
+
+        /* Animaciones */
+
+        @keyframes overlayFade {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+
+            to {
+                opacity: 1;
+                backdrop-filter: blur(3px);
+            }
+        }
+
+        @keyframes modalAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+
+        /* Estado badge */
+        .estado-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        /* Colores por estado */
+        .estado-conciliado {
+            background: #2563eb;
+            color: #fff;    
+        }
+
+        .estado-en-proceso {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .estado-archivado {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .estado-suspendido {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .estado-finalizado {
+            background: #e0f2fe;
+            color: #075985;
+        }
+    </style>

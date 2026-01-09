@@ -1,12 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>JurisConnect SENA - Restablecer Contraseña</title>
     <link rel="stylesheet" href="{{ asset('/css/register.css') }}">
-</head>
+    <style>
+        /* Estilos para las alertas */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
 
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Cuadro de requisitos de contraseña */
+        .password-requirements {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .password-requirements h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+            font-size: 13px;
+            color: #6c757d;
+            transition: color 0.3s ease;
+        }
+
+        .requirement-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            background-color: #e9ecef;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .requirement.valid {
+            color: #28a745;
+        }
+
+        .requirement.valid .requirement-icon {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .requirement.invalid {
+            color: #dc3545;
+        }
+    </style>
+</head>
 <body>
     <!-- Fondo -->
     <div class="background-image">
@@ -32,26 +123,27 @@
 
             <!-- Email -->
             <label for="email">Correo Electrónico</label>
-            <input id="email" type="email" name="email" value="{{ old('email', request('email')) }}" readonly
-                class="readonly-input">
+            <input id="email" type="email" name="email" value="{{ old('email', request('email')) }}" required autofocus>
+            
             <!-- Password -->
             <label for="password">Nueva Contraseña</label>
             <div class="password-wrapper">
                 <input id="password" type="password" name="password" required>
                 <span class="toggle-password" onclick="togglePassword('password')">
                     <!-- Ojo cerrado -->
-                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeClosed-password" viewBox="0 0 24 24" fill="none"
-                        stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeClosed-password"
+                        viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17.94 17.94A10.12 10.12 0 0 1 12 20c-7 0-11-8-11-8
                                 a19.44 19.44 0 0 1 4.24-5.94M9.9 4.24A9.77 9.77 0 0 1 12 4
-                                c7 0 11 8 11 8a19.44 19.44 0 0 1-4.24 5.94M1 1l22 22" />
+                                c7 0 11 8 11 8a19.44 19.44 0 0 1-4.24 5.94M1 1l22 22"/>
                     </svg>
                     <!-- Ojo abierto -->
-                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeOpen-password" viewBox="0 0 24 24" fill="none"
-                        stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        style="display:none;">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
+                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeOpen-password"
+                        viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
                     </svg>
                 </span>
             </div>
@@ -61,7 +153,7 @@
                 <h4>La contraseña debe contener:</h4>
                 <div class="requirement" id="req-length">
                     <span class="requirement-icon">○</span>
-                    <span>Mínimo 11 caracteres</span>
+                    <span>Mínimo 8 caracteres</span>
                 </div>
                 <div class="requirement" id="req-uppercase">
                     <span class="requirement-icon">○</span>
@@ -86,18 +178,19 @@
             <div class="password-wrapper">
                 <input id="password_confirmation" type="password" name="password_confirmation" required>
                 <span class="toggle-password" onclick="togglePassword('password_confirmation')">
-                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeClosed-password_confirmation" viewBox="0 0 24 24"
-                        fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeClosed-password_confirmation"
+                        viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17.94 17.94A10.12 10.12 0 0 1 12 20c-7 0-11-8-11-8
                                 a19.44 19.44 0 0 1 4.24-5.94M9.9 4.24A9.77 9.77 0 0 1 12 4
-                                c7 0 11 8 11 8a19.44 19.44 0 0 1-4.24 5.94M1 1l22 22" />
+                                c7 0 11 8 11 8a19.44 19.44 0 0 1-4.24 5.94M1 1l22 22"/>
                     </svg>
                     <!-- Ojo abierto -->
-                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeOpen-password_confirmation" viewBox="0 0 24 24"
-                        fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        style="display:none;">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
+                    <svg xmlns="http://www.w3.org/2000/svg" id="eyeOpen-password_confirmation"
+                        viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
                     </svg>
                 </span>
             </div>
@@ -124,21 +217,21 @@
         // ========== FUNCIÓN PARA MOSTRAR ALERTAS ==========
         function showAlert(message, type = 'error') {
             const alertContainer = document.getElementById('alert-container');
-
+            
             // Remover alertas anteriores
             alertContainer.innerHTML = '';
-
+            
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
-
+            
             const icon = type === 'error' ? '✕' : '⚠';
             alertDiv.innerHTML = `
                 <span class="alert-icon">${icon}</span>
                 <span>${message}</span>
             `;
-
+            
             alertContainer.appendChild(alertDiv);
-
+            
             // Auto-remover después de 5 segundos
             setTimeout(() => {
                 alertDiv.style.opacity = '0';
@@ -149,7 +242,7 @@
         // ========== VALIDAR REQUISITOS DE CONTRASEÑA ==========
         function validatePasswordRequirements(password) {
             const requirements = {
-                length: password.length >= 11,
+                length: password.length >= 8,
                 uppercase: /[A-Z]/.test(password),
                 lowercase: /[a-z]/.test(password),
                 number: /[0-9]/.test(password),
@@ -171,7 +264,7 @@
         function updateRequirement(elementId, isValid) {
             const element = document.getElementById(elementId);
             const icon = element.querySelector('.requirement-icon');
-
+            
             if (isValid) {
                 element.classList.add('valid');
                 element.classList.remove('invalid');
@@ -187,16 +280,16 @@
         function startTokenExpirationTimer() {
             tokenExpirationTimer = setTimeout(() => {
                 showAlert('El enlace de restablecimiento ha expirado. Por favor, solicita uno nuevo.', 'warning');
-
+                
                 // Deshabilitar el formulario
                 const form = document.getElementById('resetPasswordForm');
                 const inputs = form.querySelectorAll('input');
                 const submitBtn = form.querySelector('button[type="submit"]');
-
+                
                 inputs.forEach(input => input.disabled = true);
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Enlace Expirado';
-
+                
                 // Redirigir después de 3 segundos
                 setTimeout(() => {
                     window.location.href = '/forgot-password';
@@ -210,7 +303,7 @@
             const form = document.querySelector('form');
             const nextButton = document.querySelector('.btn-next');
             const backButton = document.querySelector('.btn-back');
-
+            
             // Configuración de placeholders dinámicos
             let placeholderIndex = 0;
             const placeholders = [
@@ -247,7 +340,7 @@
 
                 emailInput.addEventListener('input', function() {
                     this.classList.remove('is-invalid');
-
+                    
                     if (this.value && !isValidEmail(this.value)) {
                         this.style.borderColor = '#ffc107';
                     } else if (this.value && isValidEmail(this.value)) {
@@ -275,22 +368,22 @@
             function animateElements() {
                 const leftSection = document.querySelector('.left-section');
                 const formContainer = document.querySelector('.form-container');
-
+                
                 if (leftSection) {
                     leftSection.style.opacity = '0';
                     leftSection.style.transform = 'translateX(-50px)';
-
+                    
                     setTimeout(() => {
                         leftSection.style.transition = 'all 1s ease-out';
                         leftSection.style.opacity = '1';
                         leftSection.style.transform = 'translateX(0)';
                     }, 100);
                 }
-
+                
                 if (formContainer) {
                     formContainer.style.opacity = '0';
                     formContainer.style.transform = 'translateX(50px)';
-
+                    
                     setTimeout(() => {
                         formContainer.style.transition = 'all 1s ease-out';
                         formContainer.style.opacity = '1';
@@ -301,12 +394,12 @@
 
             function addButtonEffects() {
                 const buttons = document.querySelectorAll('.btn');
-
+                
                 buttons.forEach(btn => {
                     btn.addEventListener('mouseenter', function() {
                         this.style.transform = 'translateY(-2px)';
                     });
-
+                    
                     btn.addEventListener('mouseleave', function() {
                         if (!this.disabled) {
                             this.style.transform = 'translateY(0)';
@@ -350,9 +443,7 @@
                 // Validar que las contraseñas coincidan
                 if (password !== confirmPassword) {
                     e.preventDefault();
-                    showAlert(
-                        'Las contraseñas no coinciden. Por favor, verifica que ambas contraseñas sean iguales.',
-                        'error');
+                    showAlert('Las contraseñas no coinciden. Por favor, verifica que ambas contraseñas sean iguales.', 'error');
                     confirmPasswordInput.focus();
                     return;
                 }
@@ -397,5 +488,4 @@
         });
     </script>
 </body>
-
 </html>

@@ -8,6 +8,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\HistorialEstadoProceso;
+use App\Models\ProcesoDocumento;
+
+
 
 
 
@@ -26,7 +30,6 @@ class LegalProcessController extends Controller
             ->leftJoin('lawyers', 'procesos.lawyer_id', '=', 'lawyers.id')
             ->leftJoin('users', 'lawyers.user_id', '=', 'users.id')
             ->select('procesos.*');
-
 
         // --- Si el usuario es abogado (role_id = 2) ---
         if (Auth::user()->role_id == 2) {
@@ -70,7 +73,6 @@ class LegalProcessController extends Controller
             });
         }
 
-
         $procesos = $query->orderBy('id', 'asc')->paginate(10);
 
         // --- AJAX ---
@@ -85,7 +87,6 @@ class LegalProcessController extends Controller
 
         return view('legal_processes.index', compact('procesos'));
     }
-
 
     /**
      * Mostrar formulario para crear proceso judicial
@@ -128,11 +129,29 @@ class LegalProcessController extends Controller
             // ✔️ Guardar ID del abogado correcto
             $validated['lawyer_id'] = $lawyer->id;
 
-            // Manejar documento
-            $this->handleDocumentUpload($request, $validated);
-
             // Crear proceso
             $proceso = Proceso::create($validated);
+
+            if ($request->hasFile('documentos')) {
+                foreach ($request->file('documentos') as $file) {
+
+                    $path = $file->store('documentos', 'public');
+
+                    \App\Models\ProcesoDocumento::create([
+                        'proceso_id' => $proceso->id,
+                        'nombre' => $file->getClientOriginalName(),
+                        'ruta' => $path,
+                    ]);
+                }
+            }
+
+            // 👇 HISTORIAL INICIAL
+            HistorialEstadoProceso::create([
+                'proceso_id' => $proceso->id,
+                'estado' => 'Pendiente',
+                'observacion' => 'Creación del proceso',
+                'user_id' => Auth::id(),
+            ]);
 
             // Respuesta AJAX
             if ($request->expectsJson() || $request->ajax()) {
@@ -176,7 +195,8 @@ class LegalProcessController extends Controller
      */
     public function show($id)
     {
-        $proceso = Proceso::findOrFail($id);
+        $proceso = Proceso::with('documentos')->findOrFail($id);
+
         return response()->json($proceso);
     }
 
@@ -196,16 +216,39 @@ class LegalProcessController extends Controller
     {
         $proceso = Proceso::findOrFail($id);
 
+        $estadoAnterior = $proceso->estado;
+
         $validated = $this->validateProcesoDataForUpdate($request, $id);
-
-        $this->handleDocumentUpdateOperation($request, $proceso, $validated);
-
         $this->removeAuxiliaryFields($validated);
 
         $proceso->update($validated);
 
+        // ✅ GUARDAR DOCUMENTOS NUEVOS
+        if ($request->hasFile('documentos')) {
+            foreach ($request->file('documentos') as $file) {
+
+                $path = $file->store('documentos', 'public');
+
+                \App\Models\ProcesoDocumento::create([
+                    'proceso_id' => $proceso->id,
+                    'nombre' => $file->getClientOriginalName(),
+                    'ruta' => $path,
+                ]);
+            }
+        }
+
+        // ✅ HISTORIAL
+        if (isset($validated['estado']) && $validated['estado'] !== $estadoAnterior) {
+            HistorialEstadoProceso::create([
+                'proceso_id' => $proceso->id,
+                'estado' => $validated['estado'],
+                'observacion' => $request->observacion ?? 'Cambio de estado del proceso',
+                'user_id' => Auth::id(),
+            ]);
+        }
+
         return redirect()
-            ->route('procesos.index', $proceso->id)
+            ->route('procesos.index')
             ->with('success', 'Proceso actualizado correctamente.');
     }
 
@@ -215,16 +258,27 @@ class LegalProcessController extends Controller
     public function destroy($id)
     {
         $proceso = Proceso::findOrFail($id);
-
-        $this->deleteAssociatedDocument($proceso);
-
-        $proceso->delete();
+        $proceso->delete(); // cascade elimina documentos
 
         return redirect()
             ->route('mis.procesos')
             ->with('success', 'Proceso eliminado correctamente.');
     }
 
+    public function destroyDocumento($id)
+    {
+        $doc = ProcesoDocumento::findOrFail($id);
+
+        if (Storage::disk('public')->exists($doc->ruta)) {
+            Storage::disk('public')->delete($doc->ruta);
+        }
+
+        $doc->delete();
+
+        return response()->json([
+            'success' => true
+        ], 200);
+    }
     // ===============================
     // MÉTODOS PRIVADOS
     // ===============================
@@ -232,48 +286,40 @@ class LegalProcessController extends Controller
     private function validateProcesoData(Request $request)
     {
         return $request->validate([
-            'tipo_proceso'      => 'required|string|max:100',
-            'numero_radicado'   => 'required|string|max:50|unique:procesos,numero_radicado',
-            'demandante'        => 'required|string|max:255',
-            'demandado'         => 'required|string|max:255',
-            'descripcion'       => 'required|string',
-            'documento'         => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'estado'            => 'nullable|string',
+            'tipo_proceso'    => 'required|string|max:100',
+            'numero_radicado' => 'required|string|max:50|unique:procesos,numero_radicado',
+            'demandante'      => 'required|string|max:255',
+            'demandado'       => 'required|string|max:255',
+            'descripcion'     => 'required|string',
+            'estado'          => 'nullable|string',
+            'documentos.*'    => 'file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
 
     private function validateProcesoDataForUpdate(Request $request, $id)
     {
         return $request->validate([
-            'tipo_proceso'      => 'required|string|max:100',
-            'numero_radicado'   => 'required|string|max:50|unique:procesos,numero_radicado,' . $id,
-            'demandante'        => 'required|string|max:255',
-            'demandado'         => 'required|string|max:255',
-            'descripcion'       => 'required|string',
-            'documento'         => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'eliminar_documento' => 'nullable|boolean',
-            'estado'            => 'nullable|string',
+            'tipo_proceso'    => 'required|string|max:100',
+            'numero_radicado' => 'required|string|max:50|unique:procesos,numero_radicado,' . $id,
+            'demandante'      => 'required|string|max:255',
+            'demandado'       => 'required|string|max:255',
+            'descripcion'     => 'required|string',
+            'estado'          => 'nullable|string',
+            'documentos.*'    => 'file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
 
-    private function handleDocumentUpload(Request $request, array &$validated)
+    public function historial($id)
     {
-        if ($request->hasFile('documento')) {
-            $validated['documento'] = $request->file('documento')->store('documentos', 'public');
-        }
-    }
+        $historial = \App\Models\HistorialEstadoProceso::with('user')
+            ->where('proceso_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    private function handleDocumentUpdateOperation(Request $request, Proceso $proceso, array &$validated)
-    {
-        if ($request->hasFile('documento')) {
-            $this->deleteExistingDocument($proceso);
-            $validated['documento'] = $request->file('documento')->store('documentos', 'public');
-        } elseif ($request->has('eliminar_documento') && $request->eliminar_documento) {
-            $this->deleteExistingDocument($proceso);
-            $validated['documento'] = null;
-        } else {
-            unset($validated['documento']);
-        }
+        return response()->json([
+            'success' => true,
+            'data' => $historial
+        ]);
     }
 
     private function deleteExistingDocument(Proceso $proceso)

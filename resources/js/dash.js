@@ -242,81 +242,63 @@ async function alertDelete(message, title = "¿Eliminar?") {
 
 /* ========= MANEJO DE DUPLICADOS Y VALIDACIONES ========= */
 async function handleDuplicateError(error, status, context = "create") {
-    if (status === 422) {
-        const errorMessage = error.message || "";
-        const errors = error.errors || {};
+    if (status !== 422) return false;
 
-        if (
-            errorMessage.includes("documento") &&
-            errorMessage.includes("ya existe")
-        ) {
-            await showCustomAlert(
-                "error",
-                "Documento Duplicado",
-                "Ya existe un abogado registrado con este número de documento. Por favor, verifica el número o usa otro."
-            );
-            return true;
-        }
-        if (
-            errorMessage.includes("correo") &&
-            (errorMessage.includes("ya existe") ||
-                errorMessage.includes("unique"))
-        ) {
-            await showCustomAlert(
-                "error",
-                "Correo Duplicado",
-                "Ya existe un abogado registrado con este correo electrónico. Usa otra dirección."
-            );
-            return true;
-        }
-
-        if (
-            errors.numero_documento &&
-            errors.numero_documento.some((err) =>
-                err.toLowerCase().includes("ya existe")
-            )
-        ) {
-            await showCustomAlert(
-                "error",
-                "Número de Documento Ya Registrado",
-                "El número de documento ingresado ya está registrado."
-            );
-            return true;
-        }
-        if (
-            errors.correo &&
-            errors.correo.some((err) => err.toLowerCase().includes("ya existe"))
-        ) {
-            await showCustomAlert(
-                "error",
-                "Correo Electrónico Ya Registrado",
-                "El correo electrónico ingresado ya está registrado."
-            );
-            return true;
-        }
-
-        if (
-            errorMessage.includes("ya existe") ||
-            errorMessage.includes("duplicado") ||
-            errorMessage.includes("unique")
-        ) {
-            const actionText = context === "create" ? "crear" : "actualizar";
-            await showCustomAlert(
-                "error",
-                "Información Duplicada",
-                `No se puede ${actionText} porque existe otro registro con la misma información.`
-            );
-            return true;
-        }
-
+    // ✅ PRIORIDAD: duplicados enviados desde el backend (assistant, lawyers, etc.)
+    if (error.type === "duplicate" && Array.isArray(error.duplicates)) {
         await showCustomAlert(
             "warning",
-            "Error de Validación",
-            errorMessage || "Los datos ingresados no son válidos."
+            "Datos duplicados",
+            error.duplicates.join("\n")
         );
         return true;
     }
-    return false;
+
+    // ⬇️ RESPALDO: validaciones estándar de Laravel
+    const errorMessage = error.message || "";
+    const errors = error.errors || {};
+
+    if (errors.numero_documento) {
+        await showCustomAlert(
+            "error",
+            "Número de documento duplicado",
+            errors.numero_documento.join("\n")
+        );
+        return true;
+    }
+
+    if (errors.correo) {
+        await showCustomAlert(
+            "error",
+            "Correo electrónico duplicado",
+            errors.correo.join("\n")
+        );
+        return true;
+    }
+
+    // ⬇️ Último respaldo (muy genérico)
+    if (
+        errorMessage.toLowerCase().includes("unique") ||
+        errorMessage.toLowerCase().includes("duplicado") ||
+        errorMessage.toLowerCase().includes("ya existe")
+    ) {
+        const actionText = context === "create" ? "crear" : "actualizar";
+        await showCustomAlert(
+            "error",
+            "Información duplicada",
+            `No se pudo ${actionText} el registro porque existen datos repetidos.`
+        );
+        return true;
+    }
+
+    // ⬇️ Validación genérica
+    await showCustomAlert(
+        "warning",
+        "Error de validación",
+        errorMessage || "Los datos ingresados no son válidos."
+    );
+
+    return true;
 }
 
 async function checkForDuplicates(formData, currentId = null) {
@@ -343,9 +325,9 @@ async function checkForDuplicates(formData, currentId = null) {
             if (result.duplicates && result.duplicates.length > 0) {
                 const duplicateMessages = result.duplicates.map((duplicate) => {
                     if (duplicate.field === "numero_documento")
-                        return `• Número de documento ${duplicate.value} ya está registrado`;
+                        return `Número de documento ${duplicate.value} ya está registrado`;
                     if (duplicate.field === "correo")
-                        return `• Correo electrónico ${duplicate.value} ya está registrado`;
+                        return `Correo electrónico ${duplicate.value} ya está registrado`;
                     return `• ${duplicate.field}: ${duplicate.value} ya existe`;
                 });
                 await showCustomAlert(
@@ -536,6 +518,13 @@ function closeEditModal() {
     editLawyerForm.reset();
 }
 
+function saveCurrentSection() {
+    const activeSection = document.querySelector(".section-content.active");
+    if (activeSection) {
+        localStorage.setItem("activeSection", activeSection.id);
+    }
+}
+
 function updateRowInTable(id, updatedData) {
     const row = document.querySelector(`tr[data-id='${id}']`);
     if (!row) return;
@@ -548,191 +537,6 @@ function updateRowInTable(id, updatedData) {
     row.children[5].textContent = updatedData.telefono || "";
     row.children[6].textContent = updatedData.especialidad || "";
 }
-
-// ===== FUNCIONALIDAD DE SUBIDA DE IMAGEN DE PERFIL =====
-function setupImageUpload() {
-    const fileInput = document.getElementById("fileInput");
-    const profileImage = document.getElementById("profileImage");
-    const loadingIndicator = document.getElementById("loadingIndicator");
-
-    if (!fileInput || !profileImage) {
-        console.warn("Elementos para subida de imagen no encontrados.");
-        return;
-    }
-
-    profileImage.dataset.originalSrc = profileImage.src;
-
-    fileInput.addEventListener("change", async function (e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        // Validar tipo de archivo
-        const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-        if (!allowedTypes.includes(file.type)) {
-            await showCustomAlert(
-                "error",
-                "Archivo no válido",
-                "Solo se permiten archivos JPG, JPEG y PNG."
-            );
-            fileInput.value = "";
-            return;
-        }
-
-        // Validar tamaño (2MB máximo)
-        const maxSize = 2 * 1024 * 1024;
-        if (file.size > maxSize) {
-            await showCustomAlert(
-                "error",
-                "Archivo muy grande",
-                "El archivo debe ser menor a 2MB."
-            );
-            fileInput.value = "";
-            return;
-        }
-
-        // Mostrar preview inmediato
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            profileImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-
-        // Mostrar indicador de carga
-        if (loadingIndicator) {
-            loadingIndicator.style.display = "block";
-        }
-
-        // Obtener CSRF token
-        const csrfToken = getCsrfToken();
-        if (!csrfToken) {
-            await showCustomAlert(
-                "error",
-                "Error de seguridad",
-                "Token CSRF no encontrado."
-            );
-            profileImage.src = profileImage.dataset.originalSrc;
-            if (loadingIndicator) loadingIndicator.style.display = "none";
-            return;
-        }
-
-        // Crear FormData
-        const formData = new FormData();
-        formData.append("profile_photo", file);
-
-        try {
-            const response = await fetch("/perfil/foto", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken,
-                    Accept: "application/json",
-                    // NO pongas Content-Type aquí cuando usas FormData
-                },
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                profileImage.src = data.url + "?t=" + new Date().getTime();
-                profileImage.dataset.originalSrc = data.url;
-                await showCustomAlert(
-                    "success",
-                    "¡Perfecto!",
-                    "Imagen actualizada correctamente."
-                );
-            } else {
-                profileImage.src = profileImage.dataset.originalSrc;
-                await showCustomAlert(
-                    "error",
-                    "Error",
-                    data.message || "No se pudo actualizar la imagen."
-                );
-            }
-        } catch (error) {
-            profileImage.src = profileImage.dataset.originalSrc;
-            console.error("Error al subir imagen:", error);
-            await showCustomAlert(
-                "error",
-                "Error de conexión",
-                "No se pudo conectar con el servidor."
-            );
-        } finally {
-            if (loadingIndicator) {
-                loadingIndicator.style.display = "none";
-            }
-            fileInput.value = "";
-        }
-    });
-}
-
-/* ========= BÚSQUEDA AJAX -- BARRA DE BUSQUEDA ========= */
-let searchTimeout;
-function performSearch(searchTerm) {
-    const params = new URLSearchParams();
-    if (searchTerm) params.append("search", searchTerm);
-    params.append("ajax", "1");
-
-    fetch(`${window.location.pathname}?${params.toString()}`, {
-        method: "GET",
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            Accept: "application/json",
-        },
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success && data.html) {
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = data.html;
-
-                const newTableBody = tempDiv.querySelector("#tableBody");
-                const currentTableBody = document.querySelector("#tableBody");
-                if (newTableBody && currentTableBody)
-                    currentTableBody.innerHTML = newTableBody.innerHTML;
-
-                const newPagination = tempDiv.querySelector(".pagination");
-                const currentPaginationContainer =
-                    document.querySelector(".pagination")?.parentElement;
-                if (currentPaginationContainer) {
-                    if (newPagination)
-                        currentPaginationContainer.innerHTML =
-                            newPagination.parentElement.innerHTML;
-                    else currentPaginationContainer.innerHTML = "";
-                }
-
-                const newUrl = new URL(window.location);
-                if (searchTerm) newUrl.searchParams.set("search", searchTerm);
-                else newUrl.searchParams.delete("search");
-                newUrl.searchParams.delete("page");
-                window.history.replaceState({}, "", newUrl.toString());
-            }
-        })
-        .catch((error) => console.error("Error en búsqueda:", error));
-}
-
-function clearSearch() {
-    const input = document.getElementById("searchInput");
-    if (input) input.value = "";
-    performSearch("");
-}
-
-/* ========= FUNSION DE LETRAS EN MAYUSCULAS EN LOS NOMBRE Y APELLIDOS ========= */
-document.addEventListener("DOMContentLoaded", function () {
-    const campos = ["nombre", "apellido"];
-
-    campos.forEach((id) => {
-        const input = document.getElementById(id);
-
-        input.addEventListener("blur", () => {
-            if (input.value.trim() !== "") {
-                // Convierte solo la primera letra a mayúscula
-                input.value = input.value
-                    .toLowerCase()
-                    .replace(/^\p{L}/u, (c) => c.toUpperCase());
-            }
-        });
-    });
-});
 
 /* ========= PAGINACIÓN AJAX ========= */
 function handleAjaxPagination() {
@@ -820,8 +624,6 @@ function handleAjaxPagination() {
         });
     });
 }
-
-// ...existing code...
 
 /* ========= EVENTOS GLOBALES (inicialización única) ========= */
 document.addEventListener("DOMContentLoaded", function () {
@@ -983,6 +785,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     };
 
                     updateRowInTable(lawyerId, updatedLawyer);
+
+                    const row = document.querySelector(
+                        `tr[data-id="${lawyerId}"]`
+                    );
+                    if (row) {
+                        row.children[0].textContent = updatedLawyer.nombre;
+                        row.children[1].textContent = updatedLawyer.apellido;
+                        row.children[2].textContent =
+                            updatedLawyer.tipo_documento;
+                        row.children[3].textContent =
+                            updatedLawyer.numero_documento;
+                        row.children[4].textContent = updatedLawyer.correo;
+                        row.children[5].textContent = updatedLawyer.telefono;
+                        row.children[6].textContent =
+                            updatedLawyer.especialidad;
+                    }
+
                     await showCustomAlert(
                         "success",
                         "¡Perfecto!",
@@ -1058,7 +877,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
                     form.reset();
                     closeModalFunction();
-                    location.reload();
                 } else {
                     const error = await response.json();
                     const handled = await handleDuplicateError(
@@ -1085,21 +903,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Inicializar subida de imagen
-    setupImageUpload();
-
     // Inicializar validaciones en tiempo real (si existen inputs)
     const createNumeroDocumento = document.getElementById("numero_documento");
     const createCorreo = document.getElementById("correo");
     if (createNumeroDocumento)
         setupRealTimeValidation("numero_documento", createNumeroDocumento);
     if (createCorreo) setupRealTimeValidation("correo", createCorreo);
-
-    const editNumeroDocumento = document.getElementById("editNumeroDocumento");
-    const editCorreo = document.getElementById("editCorreo");
-    if (editNumeroDocumento)
-        setupRealTimeValidation("numero_documento", editNumeroDocumento);
-    if (editCorreo) setupRealTimeValidation("correo", editCorreo);
 
     // Búsqueda en tiempo real
     const searchInput = document.getElementById("searchInput");
@@ -1133,6 +942,125 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("Sistema de alertas y validaciones inicializado correctamente");
 });
+
+// ===== FUNCIONALIDAD DE SUBIDA DE IMAGEN DE PERFIL =====
+function setupImageUpload() {
+    const fileInput = document.getElementById("fileInput");
+    const profileImage = document.getElementById("profileImage");
+    const loadingIndicator = document.getElementById("loadingIndicator");
+
+    if (!fileInput || !profileImage) {
+        console.warn("Elementos para subida de imagen no encontrados.");
+        return;
+    }
+
+    profileImage.dataset.originalSrc = profileImage.src;
+
+    fileInput.addEventListener("change", async function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validar tipo de archivo
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+        if (!allowedTypes.includes(file.type)) {
+            await showCustomAlert(
+                "error",
+                "Archivo no válido",
+                "Solo se permiten archivos JPG, JPEG y PNG."
+            );
+            fileInput.value = "";
+            return;
+        }
+
+        // Validar tamaño (2MB máximo)
+        const maxSize = 2 * 1024 * 1024;
+        if (file.size > maxSize) {
+            await showCustomAlert(
+                "error",
+                "Archivo muy grande",
+                "El archivo debe ser menor a 2MB."
+            );
+            fileInput.value = "";
+            return;
+        }
+
+        // Mostrar preview inmediato
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            profileImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        // Mostrar indicador de carga
+        if (loadingIndicator) {
+            loadingIndicator.style.display = "block";
+        }
+
+        // Obtener CSRF token
+        const csrfToken = getCsrfToken();
+        if (!csrfToken) {
+            await showCustomAlert(
+                "error",
+                "Error de seguridad",
+                "Token CSRF no encontrado."
+            );
+            profileImage.src = profileImage.dataset.originalSrc;
+            if (loadingIndicator) loadingIndicator.style.display = "none";
+            return;
+        }
+
+        // Crear FormData
+        const formData = new FormData();
+        formData.append("profile_photo", file);
+
+        try {
+            const response = await fetch("/perfil/foto", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    Accept: "application/json",
+                    // NO pongas Content-Type aquí cuando usas FormData
+                },
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                profileImage.src = data.url + "?t=" + new Date().getTime();
+                profileImage.dataset.originalSrc = data.url;
+                await showCustomAlert(
+                    "success",
+                    "¡Perfecto!",
+                    "Imagen actualizada correctamente."
+                );
+            } else {
+                profileImage.src = profileImage.dataset.originalSrc;
+                await showCustomAlert(
+                    "error",
+                    "Error",
+                    data.message || "No se pudo actualizar la imagen."
+                );
+            }
+        } catch (error) {
+            profileImage.src = profileImage.dataset.originalSrc;
+            console.error("Error al subir imagen:", error);
+            await showCustomAlert(
+                "error",
+                "Error de conexión",
+                "No se pudo conectar con el servidor."
+            );
+        } finally {
+            if (loadingIndicator) {
+                loadingIndicator.style.display = "none";
+            }
+            fileInput.value = "";
+        }
+    });
+}
+
+// Inicializar subida de imagen
+setupImageUpload();
 
 document.addEventListener("DOMContentLoaded", function () {
     const lawyersCard = document.getElementById("lawyersStatCard");
@@ -1364,7 +1292,34 @@ if (editAssistantForm) {
             if (result.success) {
                 updateAssistantRowInTable(result.assistant);
 
-                await showCustomAlert("success", "¡Perfecto!", result.message);
+                // 🔥 ACTUALIZAR DATASETS DEL BOTÓN EDITAR
+                const editBtn = document.querySelector(
+                    `.btn-edit-assistant[data-id="${result.assistant.id}"]`
+                );
+
+                if (editBtn) {
+                    editBtn.dataset.nombre = result.assistant.nombre ?? "";
+                    editBtn.dataset.apellido = result.assistant.apellido ?? "";
+                    editBtn.dataset.tipo_documento =
+                        result.assistant.tipo_documento ?? "";
+                    editBtn.dataset.numero_documento =
+                        result.assistant.numero_documento ?? "";
+                    editBtn.dataset.correo = result.assistant.correo ?? "";
+                    editBtn.dataset.telefono = result.assistant.telefono ?? "";
+
+                    // abogados asignados (MUY IMPORTANTE)
+                    editBtn.dataset.lawyers = JSON.stringify(
+                        (result.assistant.lawyers || []).map((l) => l.id)
+                    );
+                }
+
+                const nombreCompleto = `${result.assistant.nombre} ${result.assistant.apellido}`;
+
+                await showCustomAlert(
+                    "success",
+                    "¡Perfecto!",
+                    `El asistente ${nombreCompleto} fue actualizado correctamente.`
+                );
 
                 editAssistantModal.style.display = "none";
             } else {
@@ -1406,7 +1361,9 @@ if (editAssistantForm) {
             const result = await response.json();
 
             if (result.has_duplicates) {
-                const messages = result.duplicates.map((d) => `• ${d.message}`);
+                const messages = result.duplicates.map(
+                    (d) => `• ${d.message.replace(":value", d.value)}`
+                );
 
                 await showCustomAlert(
                     "warning",
@@ -1639,7 +1596,6 @@ if (editAssistantForm) {
                         );
                         form.reset();
                         closeAssistantModal();
-                        location.reload();
                     } else {
                         const error = await response.json();
                         const handled = await handleDuplicateError(

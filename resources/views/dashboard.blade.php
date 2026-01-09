@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form action="{{ route('lawyers.store') }}" method="POST">
+                    <form action="{{ route('lawyers.store') }}" method="POST" onsubmit="saveCurrentSection()">
                         @csrf
                         <input type="hidden" name="tipodeusuario" value="lawyer">
 
@@ -392,13 +392,11 @@
                     </div>
                     <!--  TABLA OCULTA INICIALMENTE -->
                     <div id="lawyersTableWrapper" style="display: none; margin-top: 30px;">
-                        <h3>Listado de Abogados</h3>
                         @include('profile.partials.lawyers-table-simple', ['lawyers' => $lawyers])
                     </div>
 
                     <!-- 🔽🔽🔽 TABLA DE ASISTENTES OCULTA INICIALMENTE 🔽🔽🔽 -->
                     <div id="assistantsTableWrapper" style="display: none; margin-top: 30px;">
-                        <h3>Listado de Asistentes Jurídicos</h3>
                         @include('profile.partials.assistants-table-simple', ['assistants' => $assistants])
                     </div>
                 </div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\HistorialEstadoProceso;
 
 class Proceso extends Model
 {
@@ -67,18 +68,15 @@ class Proceso extends Model
     {
         return $query->where(function ($q) use ($term) {
             $q->where('numero_radicado', 'like', "%{$term}%")
-            ->orWhere('demandante', 'like', "%{$term}%")
-            ->orWhere('demandado', 'like', "%{$term}%")
-            ->orWhere('tipo_proceso', 'like', "%{$term}%");
+                ->orWhere('demandante', 'like', "%{$term}%")
+                ->orWhere('demandado', 'like', "%{$term}%")
+                ->orWhere('tipo_proceso', 'like', "%{$term}%");
         });
     }
 
-    /**
-     * Obtener la URL del documento
-     */
-    public function getDocumentoUrlAttribute()
+    public function documentos()
     {
-        return $this->documento ? asset('storage/' . $this->documento) : null;
+        return $this->hasMany(ProcesoDocumento::class);
     }
 
     /**
@@ -93,6 +91,18 @@ class Proceso extends Model
     {
         return $this->hasMany(ConceptoJuridico::class);
     }
-    
-    
+
+    public function historialEstados()
+    {
+        return $this->hasMany(HistorialEstadoProceso::class);
+    }
+
+
+    public function historial()
+    {
+        return $this->hasMany(
+            HistorialEstadoProceso::class,
+            'proceso_id'
+        )->orderBy('created_at', 'desc');
+    }
 }

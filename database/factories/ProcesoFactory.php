@@ -10,18 +10,30 @@ class ProcesoFactory extends Factory
 {
     public function definition(): array
     {
-        $estados = ['Radicado','Pendiente', 'Primera instancia', 'En curso', 'Finalizado','En audiencia',
-    'Pendiente fallo', 'Favorable primera', 'Desfavorable primera', 'En apelacion', 'Conciliacion pendiente', 'Conciliado',
-    'Sentencia ejecutoriada', 'En proceso pago', 'Terminado']; 
+        $estados = [
+            'Pendiente',
+            'Radicado',
+            'Admisión',
+            'Traslado',
+            'Audiencia',
+            'Pendiente de fallo',
+            'Fallo favorable',
+            'Fallo desfavorable',
+            'Apelación',
+            'Ejecutoria',
+            'Pago en trámite',
+            'Conciliado',
+            'Archivado'
+        ];
         $tipos = ['Civil', 'Laboral', 'Penal', 'Familia', 'Comercial'];
 
         return [
             'tipo_proceso'   => $this->faker->randomElement($tipos),
-            'numero_radicado'=> $this->faker->unique()->numerify('RAD-########'),
+            'numero_radicado' => $this->faker->unique()->numerify('RAD-########'),
             'demandante'     => $this->faker->name(),
             'demandado'      => $this->faker->name(),
             'descripcion'    => $this->faker->sentence(12),
-            'estado'         => $this->faker->randomElement($estados),         
+            'estado'         => $this->faker->randomElement($estados),
         ];
     }
 }

@@ -50,12 +50,18 @@ class AdminController extends Controller
                 $assistantQuery->where(function ($q) use ($searchTerms) {
                     foreach ($searchTerms as $term) {
                         $q->where(function ($q2) use ($term) {
+                            // Buscar en campos del asistente
                             $q2->where('nombre', 'ILIKE', "%$term%")
                                 ->orWhere('apellido', 'ILIKE', "%$term%")
                                 ->orWhere('tipo_documento', 'ILIKE', "%$term%")
                                 ->orWhere('numero_documento', 'ILIKE', "%$term%")
                                 ->orWhere('correo', 'ILIKE', "%$term%")
-                                ->orWhere('telefono', 'ILIKE', "%$term%");
+                                ->orWhere('telefono', 'ILIKE', "%$term%")
+                                // Buscar en abogados asignados
+                                ->orWhereHas('lawyers', function ($q3) use ($term) {
+                                    $q3->where('nombre', 'ILIKE', "%$term%")
+                                        ->orWhere('apellido', 'ILIKE', "%$term%");
+                                });
                         });
                     }
                 });

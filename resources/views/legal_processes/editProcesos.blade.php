@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<head> <!-- pagina para editar proceso juridico -->
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Proceso Judicial - CSS Puro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Enlace a CSS corregido -->
     <link rel="stylesheet" href="{{ asset('css/editPro.css') }}">
 </head>
 
 <body>
-    <!-- Navbar -->
+
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
@@ -24,7 +22,7 @@
 
     <div class="container">
         <div class="main-card fade-in-up">
-            <!-- Header -->
+
             <div class="card-header">
                 <h1>
                     <i class="fas fa-edit"></i>
@@ -36,191 +34,119 @@
                 </a>
             </div>
 
-            <!-- Contenido -->
             <div class="card-body">
-                <!-- Alerta de errores (ejemplo) -->
-                <div class="alert alert-danger" style="display: none;" id="error-alert">
-                    <ul>
-                        <li>El campo tipo de proceso es obligatorio.</li>
-                        <li>El número de radicado debe ser único.</li>
-                    </ul>
-                </div>
 
-                <!-- Formulario -->
-                <form class="form" method="POST" enctype="multipart/form-data" action="{{ route('procesos.update', $proceso->id) }}">
+                <form class="form" method="POST" enctype="multipart/form-data"
+                    action="{{ route('procesos.update', $proceso->id) }}">
                     @csrf
                     @method('PUT')
-                    <!-- Primera fila -->
 
+                    <!-- ESTADO -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="estado" class="form-label">
-                                Estado de proceso <span class="required">*</span>
-                            </label>
-                            <select class="form-select @error('estado') is-invalid @enderror" id="estado" name="estado" required>
-                                <option value="Pendiente" {{ old('estado', $proceso->estado) == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                                <option value="Primera instancia" {{ old('estado', $proceso->estado) == 'Primera instancia' ? 'selected' : '' }}>primera instancia</option>
-                                <option value="En curso" {{ old('estado', $proceso->estado) == 'En curso' ? 'selected' : '' }}>En curso</option>
-                                <option value="Finalizado" {{ old('estado', $proceso->estado) == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
-                                <option value="En audiencia" {{ old('estado', $proceso->estado) == 'En audiencia' ? 'selected' : '' }}>en audiencia</option>
-                                <option value="Pendiente fallo" {{ old('estado', $proceso->estado) == 'Pendiente fallo' ? 'selected' : '' }}>pendiente fallo</option>
-                                <option value="Favorable primera" {{ old('estado', $proceso->estado) == 'Favorable primera' ? 'selected' : '' }}>favorable primera</option>
-                                <option value="Desfavorable primera" {{ old('estado', $proceso->estado) == 'Desfavorable primera' ? 'selected' : '' }}>desfavorable primera</option>
-                                <option value="En apelacion" {{ old('estado', $proceso->estado) == 'En apelacion' ? 'selected' : '' }}>en apelacion</option>
-                                <option value="Conciliacion pendiente" {{ old('estado', $proceso->estado) == 'Conciliacion pendiente' ? 'selected' : '' }}>conciliacion pendiente</option>
-                                <option value="Conciliado" {{ old('estado', $proceso->estado) == 'Conciliado' ? 'selected' : '' }}>conciliado</option>
-                                <option value="Sentencia ejecutoriada" {{ old('estado', $proceso->estado) == 'Sentencia ejecutoriada' ? 'selected' : '' }}>sentencia ejecutoriada</option>
-                                <option value="En proceso pago" {{ old('estado', $proceso->estado) == 'En proceso pago' ? 'selected' : '' }}>en proceso pago</option>
-                                <option value="Terminado" {{ old('estado', $proceso->estado) == 'Terminado' ? 'selected' : '' }}>terminado</option>
+                            <label class="form-label">Estado de proceso *</label>
+                            <select class="form-select" name="estado" required>
+                                @foreach (['Pendiente', 'Primera instancia', 'En curso', 'Finalizado', 'En audiencia', 'Pendiente fallo', 'Favorable primera', 'Desfavorable primera', 'En apelacion', 'Conciliacion pendiente', 'Conciliado', 'Sentencia ejecutoriada', 'En proceso pago', 'Terminado'] as $estado)
+                                    <option value="{{ $estado }}"
+                                        {{ old('estado', $proceso->estado) == $estado ? 'selected' : '' }}>
+                                        {{ $estado }}
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('estado')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                     </div>
+
+                    <!-- TIPO / RADICADO -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="tipo_proceso" class="form-label">
-                                Tipo de Proceso <span class="required">*</span>
-                            </label>
-                            <select class="form-select @error('tipo_proceso') is-invalid @enderror" id="tipo_proceso" name="tipo_proceso" required>
-                                <option value="Civil" {{ old('tipo_proceso', $proceso->tipo_proceso) == 'Civil' ? 'selected' : '' }}>Civil</option>
-                                <option value="Penal" {{ old('tipo_proceso', $proceso->tipo_proceso) == 'Penal' ? 'selected' : '' }}>Penal</option>
-                                <option value="Laboral" {{ old('tipo_proceso', $proceso->tipo_proceso) == 'Laboral' ? 'selected' : '' }}>Laboral</option>
-                                <option value="Administrativo" {{ old('tipo_proceso', $proceso->tipo_proceso) == 'Administrativo' ? 'selected' : '' }}>Administrativo</option>
-                                <option value="Familia" {{ old('tipo_proceso', $proceso->tipo_proceso) == 'Familia' ? 'selected' : '' }}>Familia</option>
-                                <option value="Comercial" {{ old('tipo_proceso', $proceso->tipo_proceso) == 'Comercial' ? 'selected' : '' }}>Comercial</option>
+                            <label class="form-label">Tipo de Proceso *</label>
+                            <select class="form-select" name="tipo_proceso" required>
+                                @foreach (['Civil', 'Penal', 'Laboral', 'Administrativo', 'Familia', 'Comercial'] as $tipo)
+                                    <option value="{{ $tipo }}"
+                                        {{ old('tipo_proceso', $proceso->tipo_proceso) == $tipo ? 'selected' : '' }}>
+                                        {{ $tipo }}
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('tipo_proceso')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="numero_radicado" class="form-label">
-                                Número de Radicado <span class="required">*</span>
-                            </label>
-                            <input type="text"
-                                class="form-control @error('numero_radicado') is-invalid @enderror"
-                                id="numero_radicado"
-                                name="numero_radicado"
-                                value="{{ old('numero_radicado', $proceso->numero_radicado) }}"
-                                placeholder="Ej: 2024-001-JC"
-                                required>
-                            @error('numero_radicado')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="form-label">Número de Radicado *</label>
+                            <input type="text" class="form-control bg-light" value="{{ $proceso->numero_radicado }}"
+                                readonly>
+                            <input type="hidden" name="numero_radicado" value="{{ $proceso->numero_radicado }}">
                         </div>
                     </div>
 
-                    <!-- Segunda fila -->
+                    <!-- PARTES -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="demandante" class="form-label">
-                                Demandante <span class="required">*</span>
-                            </label>
-                            <input type="text"
-                                class="form-control @error('demandante') is-invalid @enderror"
-                                id="demandante"
-                                name="demandante"
-                                placeholder="Nombre completo del demandante"
-                                value="{{ old('demandante', $proceso->demandante) }}"
-                                required>
-                            @error('demandante')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="form-label">Demandante *</label>
+                            <input type="text" class="form-control" name="demandante"
+                                value="{{ old('demandante', $proceso->demandante) }}" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="demandado" class="form-label">
-                                Demandado <span class="required">*</span>
-                            </label>
-                            <input type="text"
-                                class="form-control @error('demandado') is-invalid @enderror"
-                                id="demandado"
-                                name="demandado"
-                                placeholder="Nombre completo del demandado"
-                                value="{{ old('demandado', $proceso->demandado) }}"
-                                required>
-                            @error('demandado')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="form-label">Demandado *</label>
+                            <input type="text" class="form-control" name="demandado"
+                                value="{{ old('demandado', $proceso->demandado) }}" required>
                         </div>
                     </div>
 
-                    <!--  -->
+                    <!-- DESCRIPCIÓN -->
                     <div class="form-group full-width">
-                        <label for="descripcion" class="form-label">
-                             <span class="required">*</span> 
-                        </label>
-                        <textarea class="form-textarea @error('descripcion') is-invalid @enderror"
-                            id="descripcion"
-                            name="descripcion"
-                            rows="4"
-                            placeholder="Describa los detalles del proceso judicial..."
-                            required>{{ old('descripcion', $proceso->descripcion) }}</textarea>
-                        @error('descripcion')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Detalle del caso *</label>
+                        <textarea class="form-textarea" name="descripcion" rows="4" required>{{ old('descripcion', $proceso->descripcion) }}</textarea>
                     </div>
 
-                    <!-- Documento -->
+                    <!-- DOCUMENTOS EXISTENTES -->
+                    @if ($proceso->documentos->count())
+                        <hr>
+                        <h3 style="margin-bottom:15px;">📎 Documentos del proceso</h3>
+
+                        <div class="documents-list">
+                            @foreach ($proceso->documentos as $doc)
+                                <div class="doc-item">
+                                    <div class="doc-info">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span>{{ $doc->nombre }}</span>
+                                    </div>
+
+                                    <div class="doc-actions">
+                                        <a href="{{ Storage::url($doc->ruta) }}" target="_blank" class="btn-view">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        <button type="button" class="btn-delete"
+                                            onclick="eliminarDocumento({{ $doc->id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <!-- SUBIR NUEVOS DOCUMENTOS -->
                     <div class="form-group full-width">
-                        <label for="documento" class="form-label">
-                            <i class="fas fa-file-upload"></i>
-                            Documento
+                        <label class="form-label">
+                            <i class="fas fa-file-upload"></i> Subir nuevos documentos
                         </label>
 
-                        <!-- Archivo actual -->
-                        @if($proceso->documento)
-                        <div class="current-file">
-                            <div class="current-file-info">
-                                <span>
-                                    <i class="fas fa-file-pdf"></i>
-                                    Archivo actual: {{ basename($proceso->documento) }}
-                                </span>
-                            </div>
-                            <div class="current-file-actions">
-                                <a href="{{ Storage::url($proceso->documento) }}" class="btn-view" target="_blank">
-                                    <i class="fas fa-eye"></i>
-                                    Ver
-                                </a>
-                                <label class="btn-delete-file">
-                                    <button type="submit" name="eliminar_documento" value="1" class="delete-checkbox"></button>
-                                    <i class="fas fa-trash"></i>
-                                    Eliminar
-                                </label>
-                            </div>
-                        </div>
-                        @endif
-
-                        <!-- Input para nuevo archivo -->
                         <div class="file-input">
-                            <input type="file"
-                                class="form-control @error('documento') is-invalid @enderror"
-                                id="documento"
-                                name="documento"
-                                accept=".pdf,.doc,.docx">
+                            <input type="file" id="documento" name="documentos[]" multiple>
                             <label for="documento" class="file-input-label">
-                                <i class="fas fa-cloud-upload-alt file-input-icon"></i>
-                                <span>Seleccionar nuevo archivo o arrastra aquí</span>
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Seleccionar archivo</span>
                             </label>
                         </div>
-
-                        <div class="form-text">
-                            <i class="fas fa-info-circle"></i>
-                            Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 2MB
-                        </div>
-                        @error('documento')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
 
-                    <!-- Botones de acción -->
+                    <!-- BOTÓN FINAL -->
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i>
-                            Actualizar Proceso
+                            <i class="fas fa-save"></i> Actualizar Proceso
                         </button>
                     </div>
 
@@ -229,7 +155,54 @@
         </div>
     </div>
 
+    <!-- Modal eliminar documento -->
+    <div id="modalEliminar" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+
+            <h3>¿Eliminar este documento?</h3>
+            <p>Este documento se eliminara de forma inmediata,<br>
+                 incluso si no guarda el proceso.</p>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmarEliminar()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+
     <script>
+        let documentoAEliminar = null;
+
+        function eliminarDocumento(id) {
+            documentoAEliminar = id;
+            document.getElementById('modalEliminar').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            documentoAEliminar = null;
+            document.getElementById('modalEliminar').style.display = 'none';
+        }
+
+        function confirmarEliminar() {
+            fetch(`/documentos/${documentoAEliminar}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (res.ok) {
+                        location.reload();
+                    } else {
+                        alert('Error al eliminar el documento');
+                    }
+                });
+        }
         // Función para mostrar/ocultar alertas
         function showErrorAlert() {
             document.getElementById('error-alert').style.display = 'block';

@@ -38,10 +38,10 @@ class LawyerController extends Controller
      * Mensajes de duplicados por campo
      */
     private const DUPLICATE_MESSAGES = [
-        'numero_documento' => 'El número de documento ya está registrado',
-        'correo' => 'El correo electrónico ya está registrado',
-        'telefono' => 'El número de teléfono ya está registrado'
+        'numero_documento' => 'El número de documento :value ya está registrado',
+        'correo' => 'El correo electrónico :value ya está registrado',
     ];
+
 
     /**
      * Verificar si existe un campo específico
@@ -109,17 +109,24 @@ class LawyerController extends Controller
     {
         try {
             $duplicates = [];
-            $fieldsToCheck = ['numero_documento', 'correo', 'telefono'];
             $currentId = $request->input('current_id');
 
-            foreach ($fieldsToCheck as $field) {
-                $value = $request->input($field);
+            // SOLO revisar campos enviados
+            foreach ($request->only(['numero_documento', 'correo']) as $field => $value) {
 
-                if ($value && $this->fieldExists($field, $value, $currentId)) {
+                if (!$value) {
+                    continue;
+                }
+
+                if ($this->fieldExists($field, $value, $currentId)) {
                     $duplicates[] = [
                         'field' => $field,
                         'value' => $value,
-                        'message' => self::DUPLICATE_MESSAGES[$field] ?? 'El campo ya está registrado'
+                        'message' => str_replace(
+                            ':value',
+                            $value,
+                            self::DUPLICATE_MESSAGES[$field] ?? 'El valor ya está registrado'
+                        )
                     ];
                 }
             }
@@ -167,16 +174,31 @@ class LawyerController extends Controller
         }
 
         // ========= USERS =========
-        $userField = $field === 'correo' ? 'email' : $field;
+        if ($field === 'correo') {
 
-        $userQuery = User::where($userField, $value);
+            $userQuery = User::where('email', $value);
 
-        // Para users usamos user_id si existe
-        if ($currentId && is_numeric($currentId)) {
-            $userQuery->where('id', '!=', $currentId);
+            if ($currentId && is_numeric($currentId)) {
+
+                // Excluir usuario si es abogado
+                $lawyer = Lawyer::find($currentId);
+                if ($lawyer && $lawyer->user_id) {
+                    $userQuery->where('id', '!=', $lawyer->user_id);
+                }
+
+                // Excluir usuario si es asistente
+                $assistant = Assistant::find($currentId);
+                if ($assistant && $assistant->user_id) {
+                    $userQuery->where('id', '!=', $assistant->user_id);
+                }
+            }
+
+            if ($userQuery->exists()) {
+                return true;
+            }
         }
 
-        return $userQuery->exists();
+        return false;
     }
 
     /**
@@ -264,7 +286,9 @@ class LawyerController extends Controller
                     'nombre' => 'required|string|max:255',
                     'apellido' => 'required|string|max:255',
                     'tipo_documento' => 'required|string|max:50',
-                    'numero_documento' => 'required|string|max:50|unique:assistants,numero_documento',
+                    'numero_documento' => 'required|string|max:50'
+                        . '|unique:assistants,numero_documento'
+                        . '|unique:lawyers,numero_documento',
                     'correo' => 'required|email|max:255|unique:assistants,correo|unique:users,email',
                     'telefono' => 'nullable|string|max:20',
                     'lawyers' => 'array',
@@ -311,15 +335,26 @@ class LawyerController extends Controller
 
             // Si no coincide ningún tipo
             throw new \Exception('Tipo de usuario no válido.');
-        } catch (\Exception $e) {
+        } catch (ValidationException $e) {
 
             DB::rollBack();
 
-            return $this->errorResponse(
-                $request,
-                'Error al crear registro.',
-                $e->getMessage()
-            );
+            $messages = [];
+
+            if (isset($e->errors()['numero_documento'])) {
+                $messages[] = "• El número de documento {$request->numero_documento} ya está registrado";
+            }
+
+            if (isset($e->errors()['correo'])) {
+                $messages[] = "• El correo electrónico {$request->correo} ya está registrado";
+            }
+
+            return response()->json([
+                'success' => false,
+                'type' => 'duplicate',
+                'message' => 'Datos duplicados',
+                'duplicates' => $messages
+            ], 422);
         }
     }
     /**
@@ -334,8 +369,8 @@ class LawyerController extends Controller
                 'nombre' => 'required|string|max:255',
                 'apellido' => 'required|string|max:255',
                 'tipo_documento' => 'required|string|max:50',
-                'numero_documento' => 'required|string|max:50|unique:lawyers,numero_documento,' . $lawyer->id,
-                'correo' => 'required|email|max:255|unique:lawyers,correo,' . $lawyer->id . '|unique:users,email,' . ($lawyer->user_id ?? 'NULL'),
+                'numero_documento' => 'required|string|max:50',
+                'correo' => 'required|email|max:255',
                 'telefono' => 'nullable|string|max:20',
                 'especialidad' => 'nullable|string|max:255',
             ]);
@@ -505,7 +540,6 @@ class LawyerController extends Controller
                 'lawyers.*' => 'exists:lawyers,id',
             ]);
 
-
             $assistant->update([
                 'nombre' => $validated['nombre'],
                 'apellido' => $validated['apellido'],
@@ -514,8 +548,7 @@ class LawyerController extends Controller
                 'correo' => strtolower($validated['correo']),
                 'telefono' => $validated['telefono'] ?? null,
             ]);
-
-
+            // ✅ ACTUALIZAR usuario asociado
 
             if ($assistant->user) {
                 $assistant->user->update([
@@ -524,7 +557,6 @@ class LawyerController extends Controller
                     'numero_documento' => $validated['numero_documento'],
                 ]);
             }
-
 
             // ✅ ACTUALIZAR abogados relacionados
             $assistant->lawyers()->sync($request->lawyers ?? []);
@@ -540,11 +572,21 @@ class LawyerController extends Controller
 
             DB::rollBack();
 
+            $messages = [];
+
+            if (isset($e->errors()['numero_documento'])) {
+                $messages[] = "• El número de documento {$request->numero_documento} ya está registrado";
+            }
+
+            if (isset($e->errors()['correo'])) {
+                $messages[] = "• El correo electrónico {$request->correo} ya está registrado";
+            }
+
             return response()->json([
                 'success' => false,
                 'type' => 'duplicate',
                 'message' => 'Información duplicada detectada',
-                'errors' => $e->errors()
+                'duplicates' => $messages
             ], 422);
         } catch (\Exception $e) {
 

@@ -10,10 +10,13 @@
 
 <body>
     <!-- Modal para ver datos del proceso -->
-    <div id="viewProcessModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); align-items:center; justify-content:center;">
-        <div class="modal-content" style="background:white; border-radius:16px; max-width:500px; margin:auto; padding:2rem; position:relative;">
-            <span class="close-button" onclick="closeProcessModal()" style="position:absolute; top:1rem; right:1rem; font-size:2rem; cursor:pointer;">&times;</span>
-            <h2 style="font-size:1.25rem; font-weight:600; margin-bottom:1rem;">Datos del Proceso</h2>
+    <div id="viewProcessModal" class="modal"
+        style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); align-items:center; justify-content:center;">
+        <div class="modal-content"
+            style="background:white; border-radius:16px; max-width:500px; margin:auto; padding:2rem; position:relative;">
+            <span class="close-button" onclick="closeProcessModal()"
+                style="position:absolute; top:1rem; right:1rem; font-size:2rem; cursor:pointer;">&times;</span>
+            <h2 style="font-size:1.25rem; font-weight:600; margin-bottom:1rem;">Datos del Proceso </h2>
             <div id="processModalBody">
                 <p>Cargando datos...</p>
             </div>
@@ -27,7 +30,9 @@
                 <div class="header-left">
                     <div class="header-icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
                         </svg>
                     </div>
                     <div class="header-text">
@@ -44,7 +49,8 @@
             <!-- Mensaje de éxito (ejemplo) -->
             <div class="success-message" style="display: none;">
                 <svg class="success-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
                 </svg>
                 <p class="success-text">Proceso creado exitosamente</p>
             </div>
@@ -54,7 +60,8 @@
                 <div class="actions-content">
                     <div class="info-text">
                         <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span>Administre sus procesos judiciales desde esta vista</span>
                     </div>
@@ -67,20 +74,21 @@
                     <div class="button-group">
                         <a href="{{ route('dashboard.abogado') }}" class="btn btn-secondary">
                             <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>
                             Volver al Dashboard
                         </a>
 
-                        @if(Auth::user()->role_id == 2)
-                        <a href="{{ route('procesos.create') }}" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
-                            Nuevo Proceso
-                        </a>
+                        @if (Auth::user()->role_id == 2)
+                            <a href="{{ route('procesos.create') }}" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Nuevo Proceso
+                            </a>
                         @else
-                        <button class="btn btn-primary" disabled style="background: gray; cursor:not-allowed;">
-                            No tienes permisos
-                        </button>
+                            <button class="btn btn-primary" disabled style="background: gray; cursor:not-allowed;">
+                                No tienes permisos
+                            </button>
                         @endif
 
 
@@ -88,7 +96,8 @@
                     </div>
                 </div>
                 <div class="search-section">
-                    <input type="text" id="searchInput" class="form-control mb-3" placeholder="Buscar por nombre, apellido o número de radicado">
+                    <input type="text" id="searchInput" class="form-control mb-3"
+                        placeholder="Buscar por nombre, apellido o número de radicado">
                 </div>
 
             </div>
@@ -187,22 +196,77 @@
             fetch(`/procesos/${id}`)
                 .then(res => res.json())
                 .then(data => {
-                    body.innerHTML = `
-                        <p><strong>Radicado:</strong> ${data.numero_radicado}</p>
-                        <p><strong>Fecha radicacion</strong> ${data.created_at}</p>
-                        <p><strong>Estado:</strong> ${data.estado}</p>
-                        <p><strong>Tipo:</strong> ${data.tipo_proceso}</p>
-                        <p><strong>Demandante:</strong> ${data.demandante}</p>
-                        <p><strong>Demandado:</strong> ${data.demandado}</p>
-                        <p style="pre-wrap; word-wrap: break-word;">
-           <strong>Descripción:</strong> ${data.descripcion ?? 'Sin descripción'}
-</p>
 
-                    `;
+                    body.innerHTML = `
+    <div class="process-details">
+
+        <div class="detail-row">
+            <span class="label">Radicado</span>
+            <span class="value">${data.numero_radicado}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Fecha de radicación</span>
+            <span class="value">${data.created_at}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Estado</span>
+            <span class="value badge">${data.estado}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Tipo de proceso</span>
+            <span class="value">${data.tipo_proceso}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Demandante</span>
+            <span class="value">${data.demandante}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Demandado</span>
+            <span class="value">${data.demandado}</span>
+        </div>
+
+        <div class="detail-box scroll-box">
+            <span class="label">Detalle del caso</span>
+           <p style="pre-wrap; word-wrap: break-word;">${data.descripcion ?? 'Sin descripción'} </p>
+        </div>
+
+        <hr>
+
+    <h4 class="docs-title">📎 Documentos del proceso</h4>
+
+    ${renderDocuments(data.documentos)}
+
+</div>
+`;
+
                 })
                 .catch(() => {
                     body.innerHTML = '<p>Error al cargar los datos.</p>';
                 });
+        }
+
+        function renderDocuments(documentos) {
+            if (!documentos || documentos.length === 0) {
+                return `<p class="text-muted">No hay documentos asociados.</p>`;
+            }
+
+            return `
+        <ul class="documents-list">
+            ${documentos.map(doc => `
+                                        <li>
+                                            <i class="fas fa-file-pdf"></i>
+                                            <a href="/storage/${doc.ruta}" target="_blank">
+                                                ${doc.nombre}
+                                            </a>
+                                        </li>
+                                    `).join('')}
+        </ul>
+    `;
         }
 
         function closeProcessModal() {

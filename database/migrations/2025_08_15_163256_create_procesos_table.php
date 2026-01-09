@@ -18,23 +18,20 @@ return new class extends Migration
             $table->string('demandante', 255);
             $table->string('demandado', 255);
             $table->text('descripcion');
-            $table->string('documento')->nullable();
             $table->enum('estado', [
-                'Radicado',
                 'Pendiente',
-                'Primera instancia',
-                'En curso',
-                'Finalizado',
-                'En audiencia',
-                'Pendiente fallo',
-                'Favorable primera',
-                'Desfavorable primera',
-                'En apelacion',
-                'Conciliacion pendiente',
+                'Radicado',
+                'Admisión',
+                'Traslado',
+                'Audiencia',
+                'Pendiente de fallo',
+                'Fallo favorable',
+                'Fallo desfavorable',
+                'Apelación',
+                'Ejecutoria',
+                'Pago en trámite',
                 'Conciliado',
-                'Sentencia ejecutoriada',
-                'En proceso pago',
-                'Terminado'
+                'Archivado'
             ]);
             $table->timestamps();
             $table->unsignedBigInteger('user_id')->nullable();

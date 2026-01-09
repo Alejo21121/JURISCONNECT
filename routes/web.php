@@ -13,6 +13,7 @@ use App\Http\Controllers\ProcesoReportController;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AssistantExport;
 use App\Exports\LawyersExport;
+use App\Http\Controllers\DocumentoProcesoController;
 
 // ===================================================================
 // RUTA POR DEFECTO
@@ -61,7 +62,7 @@ Route::middleware(['auth'])->group(function () {
     // ABOGADOS (LAWYERS) - VALIDACIONES Y RUTAS ESPECÍFICAS
     // ===============================================================
     Route::prefix('lawyers')->name('lawyers.')->group(function () {
-        
+
         // VALIDACIONES (DEBEN IR PRIMERO)
         Route::post('/check-duplicates', [LawyerController::class, 'checkDuplicates'])
             ->name('check-duplicates');
@@ -91,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('assistants')->name('assistants.')->group(function () {
         Route::put('/{assistant}', [LawyerController::class, 'updateAssistant'])
             ->name('update');
-        
+
         Route::delete('/{assistant}', [LawyerController::class, 'destroyAsist'])
             ->name('destroy');
     });
@@ -182,10 +183,10 @@ Route::middleware(['auth'])->group(function () {
     // ===============================================================
     Route::prefix('conceptos')->name('conceptos.')->group(function () {
         Route::get('/create', [ConceptoController::class, 'create'])->name('create');
-        
+
         Route::post('/procesos/{proceso}/conceptos', [ConceptoController::class, 'store'])
             ->name('store');
-        
+
         Route::delete('/{id}', [ConceptoController::class, 'destroy'])
             ->name('destroy');
     });
@@ -197,3 +198,11 @@ Route::middleware(['auth'])->group(function () {
 
 //Validar asistente por admin
 Route::post('/validar-asistente', [LawyerController::class, 'validarAsistente'])->name('validar.asistente');
+
+//Historial de procesos
+
+Route::get('/procesos/{id}/historial', [LegalProcessController::class, 'historial'])
+    ->name('procesos.historial');
+
+Route::delete('/documentos/{id}', [LegalProcessController::class, 'destroyDocumento'])
+    ->name('documentos.destroy');
