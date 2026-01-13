@@ -71,6 +71,11 @@
                         <a href="{{ route('procesos.export.pdf') }}" class="btn-danger">EXPORTAR PDF</a>
                     </div>
 
+                    <a href="{{ route('pagos') }}" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Ver Pagos
+                    </a>
+
                     <div class="button-group">
                         <a href="{{ route('dashboard.abogado') }}" class="btn btn-secondary">
                             <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,7 +248,6 @@
 
 </div>
 `;
-
                 })
                 .catch(() => {
                     body.innerHTML = '<p>Error al cargar los datos.</p>';
@@ -258,13 +262,13 @@
             return `
         <ul class="documents-list">
             ${documentos.map(doc => `
-                                        <li>
-                                            <i class="fas fa-file-pdf"></i>
-                                            <a href="/storage/${doc.ruta}" target="_blank">
-                                                ${doc.nombre}
-                                            </a>
-                                        </li>
-                                    `).join('')}
+                                                    <li>
+                                                        <i class="fas fa-file-pdf"></i>
+                                                        <a href="/storage/${doc.ruta}" target="_blank">
+                                                            ${doc.nombre}
+                                                        </a>
+                                                    </li>
+                                                `).join('')}
         </ul>
     `;
         }

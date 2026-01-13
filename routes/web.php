@@ -79,6 +79,10 @@ Route::middleware(['auth'])->group(function () {
         })->name('export.excel');
     });
 
+    Route::get('/pagos', function () {
+        return view('pagos');
+    })->name('pagos');
+
     // RUTAS DE ACTUALIZACIÓN Y ELIMINACIÓN DE LAWYERS
     Route::put('/lawyers/{lawyer}', [LawyerController::class, 'update'])
         ->name('lawyers.update');

@@ -164,7 +164,7 @@
 
             <h3>¿Eliminar este documento?</h3>
             <p>Este documento se eliminara de forma inmediata,<br>
-                 incluso si no guarda el proceso.</p>
+                incluso si no guarda el proceso.</p>
 
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
