@@ -167,6 +167,8 @@
                         <div class="file-input">
                             <input type="file" name="documentos[]" id="documento" class="form-input" multiple>
                         </div>
+
+                        <div id="filePreview" class="file-preview"></div>
                         <p class="file-help">Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 10MB</p>
                     </div>
                 </div>
@@ -200,6 +202,10 @@
     // Envío del formulario con AJAX después de validación
     function submitFormularioAjax() {
         const formData = new FormData(document.getElementById('formProceso'));
+
+        archivosSeleccionados.forEach(file => {
+            formData.append('documentos[]', file);
+        });
 
         fetch('{{ route('procesos.store') }}', {
                 method: 'POST',
@@ -444,5 +450,43 @@
         console.log('2. showAlert("error", "Error", "Algo salió mal")');
         console.log('3. showAlert("warning", "Advertencia", "Tenga cuidado")');
         console.log('4. showAlert("info", "Información", "Datos importantes")');
+    }
+
+    let archivosSeleccionados = [];
+
+    const inputArchivo = document.getElementById('documento');
+    const preview = document.getElementById('filePreview');
+
+    inputArchivo.addEventListener('change', function() {
+        for (let file of this.files) {
+            archivosSeleccionados.push(file);
+        }
+        actualizarPreview();
+        this.value = ''; // permite volver a elegir el mismo archivo
+    });
+
+    function actualizarPreview() {
+        preview.innerHTML = '';
+
+        archivosSeleccionados.forEach((file, index) => {
+            const div = document.createElement('div');
+            div.className = 'file-item';
+
+            div.innerHTML = `
+            <div class="file-name">
+                📄 ${file.name}
+            </div>
+            <button type="button" class="file-remove" onclick="eliminarArchivo(${index})">
+                Eliminar
+            </button>
+        `;
+
+            preview.appendChild(div);
+        });
+    }
+
+    function eliminarArchivo(index) {
+        archivosSeleccionados.splice(index, 1);
+        actualizarPreview();
     }
 </script>

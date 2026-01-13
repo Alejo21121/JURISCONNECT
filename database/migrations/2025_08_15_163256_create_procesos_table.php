@@ -24,7 +24,6 @@ return new class extends Migration
                 'Admisión',
                 'Traslado',
                 'Audiencia',
-                'Pendiente de fallo',
                 'Fallo favorable',
                 'Fallo desfavorable',
                 'Apelación',

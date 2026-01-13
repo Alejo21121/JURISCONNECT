@@ -701,3 +701,40 @@ body {
         opacity: 1;
     }
 }
+
+.file-preview {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    padding: 10px 14px;
+    border-radius: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+.file-item span {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.file-item button {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.file-item button:hover {
+    background: #dc2626;
+}

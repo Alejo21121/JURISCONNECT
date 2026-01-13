@@ -46,7 +46,7 @@
                         <div class="form-group">
                             <label class="form-label">Estado de proceso *</label>
                             <select class="form-select" name="estado" required>
-                                @foreach (['Pendiente', 'Primera instancia', 'En curso', 'Finalizado', 'En audiencia', 'Pendiente fallo', 'Favorable primera', 'Desfavorable primera', 'En apelacion', 'Conciliacion pendiente', 'Conciliado', 'Sentencia ejecutoriada', 'En proceso pago', 'Terminado'] as $estado)
+                                @foreach (['Pendiente', 'Radicado', 'Admisión', 'Traslado', 'Audiencia', 'Fallo favorable', 'Fallo desfavorable', 'Apelación', 'Ejecutoria', 'Pago en trámite', 'Conciliado', 'Archivado'] as $estado)
                                     <option value="{{ $estado }}"
                                         {{ old('estado', $proceso->estado) == $estado ? 'selected' : '' }}>
                                         {{ $estado }}
@@ -135,12 +135,14 @@
                         </label>
 
                         <div class="file-input">
-                            <input type="file" id="documento" name="documentos[]" multiple>
+                            <input type="file" id="documento" multiple>
                             <label for="documento" class="file-input-label">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <span>Seleccionar archivo</span>
                             </label>
                         </div>
+
+                        <div id="filePreview" class="file-preview"></div>
                     </div>
 
                     <!-- BOTÓN FINAL -->
@@ -301,8 +303,62 @@
             });
         });
 
-        // Ejemplo de mostrar alerta de error (descomenta para probar)
-        // setTimeout(() => showErrorAlert(), 1000);
+        let archivosNuevos = [];
+
+        const inputArchivo = document.getElementById('documento');
+        const preview = document.getElementById('filePreview');
+
+        inputArchivo.addEventListener('change', function() {
+            for (let file of this.files) {
+                archivosNuevos.push(file);
+            }
+            actualizarPreview();
+            this.value = ''; // permite volver a elegir el mismo archivo
+        });
+
+        function actualizarPreview() {
+            preview.innerHTML = '';
+
+            archivosNuevos.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+
+                div.innerHTML = `
+            <span>📄 ${file.name}</span>
+            <button type="button" onclick="eliminarArchivoNuevo(${index})">
+                Eliminar
+            </button>
+        `;
+
+                preview.appendChild(div);
+            });
+        }
+
+        function eliminarArchivoNuevo(index) {
+            archivosNuevos.splice(index, 1);
+            actualizarPreview();
+        }
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (archivosNuevos.length === 0) return;
+
+            const formData = new FormData(this);
+
+            archivosNuevos.forEach(file => {
+                formData.append('documentos[]', file);
+            });
+
+            e.preventDefault();
+
+            fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(res => res.redirected ? window.location.href = res.url : location.reload());
+        });
     </script>
 </body>
 

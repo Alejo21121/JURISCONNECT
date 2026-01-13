@@ -99,8 +99,8 @@
                                         <i class="fas fa-handshake"></i>
                                     @break
 
-                                    @case('En proceso')
-                                        <i class="fas fa-hourglass-half"></i>
+                                    @case('Pendiente')
+                                        <i class="fas fa-handshake"></i>
                                     @break
 
                                     @case('Archivado')
@@ -477,26 +477,78 @@
         /* Colores por estado */
         .estado-conciliado {
             background: #2563eb;
-            color: #fff;    
+            color: #fff;
         }
 
-        .estado-en-proceso {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .estado-archivado {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .estado-suspendido {
+        .estado-pendiente {
             background: #fef3c7;
+            /* amarillo suave */
             color: #92400e;
         }
 
-        .estado-finalizado {
+        .estado-radicado {
             background: #e0f2fe;
+            /* azul claro */
             color: #075985;
+        }
+
+        .estado-admision {
+            background: #dcfce7;
+            /* verde suave */
+            color: #166534;
+        }
+
+        .estado-traslado {
+            background: #ede9fe;
+            /* morado claro */
+            color: #5b21b6;
+        }
+
+        .estado-audiencia {
+            background: #cffafe;
+            /* cian */
+            color: #155e75;
+        }
+
+        .estado-fallo-favorable {
+            background: #22c55e;
+            /* verde fuerte */
+            color: #ffffff;
+        }
+
+        .estado-fallo-desfavorable {
+            background: #ef4444;
+            /* rojo */
+            color: #ffffff;
+        }
+
+        .estado-apelacion {
+            background: #f97316;
+            /* naranja */
+            color: #ffffff;
+        }
+
+        .estado-ejecutoria {
+            background: #3b82f6;
+            /* azul sólido */
+            color: #ffffff;
+        }
+
+        .estado-pago-en-tramite {
+            background: #fde68a;
+            /* amarillo intenso */
+            color: #78350f;
+        }
+
+        .estado-conciliado {
+            background: #2563eb;
+            /* azul fuerte */
+            color: #ffffff;
+        }
+
+        .estado-archivado {
+            background: #e5e7eb;
+            /* gris */
+            color: #374151;
         }
     </style>

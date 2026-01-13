@@ -16,7 +16,6 @@ class ProcesoFactory extends Factory
             'Admisión',
             'Traslado',
             'Audiencia',
-            'Pendiente de fallo',
             'Fallo favorable',
             'Fallo desfavorable',
             'Apelación',
