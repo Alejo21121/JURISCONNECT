@@ -70,6 +70,18 @@ class PagoController extends Controller
             'comprobante' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
+        // 🔒 Buscar proceso
+        $proceso = Proceso::findOrFail($validated['proceso_id']);
+
+
+        // 🚫 si ya está archivado, no permitir pago
+        if ($proceso->estado === 'Archivado') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este proceso ya está archivado y no puede modificarse'
+            ], 403);
+        }
+
         // Crear pago
         $pago = Pago::create([
             'proceso_id' => $validated['proceso_id'],
@@ -93,6 +105,11 @@ class PagoController extends Controller
                 'tamano' => $file->getSize(),
             ]);
         }
+
+        // 🔥 CAMBIO DE ESTADO AUTOMÁTICO
+        $proceso->update([
+            'estado' => 'Archivado'
+        ]);
 
         return response()->json([
             'success' => true,

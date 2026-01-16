@@ -39,8 +39,7 @@ class NewPasswordController extends Controller
                     ->letters()
                     ->mixedCase()
                     ->numbers()
-                    ->symbols()
-                    ->uncompromised(),
+                    ->symbols(),
             ],
         ], [
             'password.confirmed' => 'Las contraseñas no coinciden.',

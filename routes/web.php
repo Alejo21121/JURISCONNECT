@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LawyerController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AbogadoController;
 use App\Http\Controllers\AsistenteController;
@@ -28,11 +27,6 @@ Route::get('/', function () {
 // ===================================================================
 require __DIR__ . '/auth.php';
 
-// ===================================================================
-// RUTAS PÚBLICAS
-// ===================================================================
-Route::post('/validar-registro', [RegisteredUserController::class, 'validarRegistro'])
-    ->name('register.validate');
 
 // ===================================================================
 // RUTAS PROTEGIDAS POR AUTENTICACIÓN

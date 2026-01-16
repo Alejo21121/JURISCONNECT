@@ -112,4 +112,5 @@ class Proceso extends Model
     {
         return $this->hasOne(Pago::class);
     }
+
 }

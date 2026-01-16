@@ -138,14 +138,26 @@
                                     </svg>
                                 </a>
 
-                                <a href="{{ route('procesos.edit', $proceso->id) }}" class="action-btn action-edit"
-                                    title="Editar">
-                                    <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg>
-                                </a>
+                                @if ($proceso->estado === 'Archivado')
+                                    <button class="action-btn action-edit opacity-50 cursor-not-allowed"
+                                        onclick="mostrarProcesoArchivado()" title="No editable">
+                                        <svg class="action-icon" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 15v2m0-8v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z" />
+                                        </svg>
+                                    </button>
+                                @else
+                                    <a href="{{ route('procesos.edit', $proceso->id) }}" class="action-btn action-edit"
+                                        title="Editar">
+                                        <svg class="action-icon" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                @endif
+
 
                                 <form action="{{ route('procesos.destroy', $proceso->id) }}" method="POST"
                                     class="form-delete-proceso" data-nombre="{{ $proceso->demandante }}">
@@ -188,6 +200,25 @@
                         <button id="alertConfirm" class="btn-confirm">Eliminar</button>
                     </div>
                 </div>
+
+                <!-- Modal Proceso Archivado -->
+                <div id="archivadoOverlay" class="alert-overlay hidden"></div>
+
+                <div id="archivadoModal" class="alert-modal hidden">
+                    <div class="alert-icon">📁</div>
+
+                    <h2>Proceso archivado</h2>
+
+                    <p>
+                        Este proceso está <strong>archivado</strong> y no se puede editar.<br>
+                        Si necesita realizar algún cambio, por favor contacte al administrador del sistema.
+                    </p>
+
+                    <div class="alert-buttons">
+                        <button class="btn-confirm" onclick="cerrarProcesoArchivado()">Entendido</button>
+                    </div>
+                </div>
+
 
                 <script>
                     // Función para abrir el modal de detalles del proceso
@@ -235,6 +266,16 @@
                             });
                         });
                     });
+
+                    function mostrarProcesoArchivado() {
+                        document.getElementById('archivadoOverlay').classList.remove('hidden');
+                        document.getElementById('archivadoModal').classList.remove('hidden');
+                    }
+
+                    function cerrarProcesoArchivado() {
+                        document.getElementById('archivadoOverlay').classList.add('hidden');
+                        document.getElementById('archivadoModal').classList.add('hidden');
+                    }
                 </script>
 
 

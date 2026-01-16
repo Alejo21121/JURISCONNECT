@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,10 +85,12 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <img src="https://senasofiaplus.xyz/wp-content/uploads/2023/10/logo-del-sena-01.png" alt="Logo SENA" class="logo">
+            <img src="https://senasofiaplus.xyz/wp-content/uploads/2023/10/logo-del-sena-01.png" alt="Logo SENA"
+                class="logo">
             <h1 class="title">Bienvenido(a) a JustConnect SENA</h1>
         </div>
 
@@ -107,12 +110,13 @@
             <p>Por seguridad, debes cambiar tu contraseña. Haz clic en el siguiente botón:</p>
 
             <div class="button-container">
-                <a href="{{ $resetUrl }}" class="button" style="color: #ffffff !important; text-decoration: none !important;">
+                <a href="{{ $resetUrl }}" class="button"
+                    style="color: #ffffff !important; text-decoration: none !important;">
                     Cambiar mi contraseña
                 </a>
             </div>
 
-            <p>Este enlace es válido durante los próximos <strong>30 minutos</strong>.</p>
+            <p>Este enlace es válido durante los próximos <strong>15 minutos</strong>.</p>
 
             <div class="footer">
                 <p>Gracias,<br>El equipo de JustConnect SENA</p>
@@ -121,4 +125,5 @@
         </div>
     </div>
 </body>
+
 </html>

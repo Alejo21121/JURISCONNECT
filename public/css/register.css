@@ -34,13 +34,12 @@ body {
     transform: translateY(20%);
 }
 
-.branding img { 
+.branding img {
     width: 70%;
     max-width: 450px;
     margin-bottom: 120px;
     animation: fadeInLeft 1s ease-out;
     transition: transform 0.3s ease;
-    
 }
 
 .branding h1 {
@@ -48,21 +47,22 @@ body {
     font-weight: bold;
 }
 
-
-.login-box{     /*Caja de inicio de sesión*/
-        background: rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 25px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        padding: 40px;
-        width: 100%;
-        max-width: 450px;
-        margin: 50px;
-        animation: fadeInRight 1s ease-out;
+.login-box {
+    /*Caja de inicio de sesión*/
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 25px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    margin: 50px;
+    animation: fadeInRight 1s ease-out;
 }
 
-.login-box h2 {  /*Título de la caja de inicio de sesión */
+.login-box h2 {
+    /*Título de la caja de inicio de sesión */
     margin-bottom: 20px;
     color: #fff;
     font-size: 1.8rem;
@@ -70,7 +70,8 @@ body {
     padding: 2px;
 }
 
-.login-box label {  /* Etiquetas de los campos de entrada */
+.login-box label {
+    /* Etiquetas de los campos de entrada */
     display: block;
     color: #fff;
     margin-bottom: 5px;
@@ -80,7 +81,8 @@ body {
     font-weight: bold;
 }
 
-.login-box input {  /* Campos (inputs) de entrada */
+.login-box input {
+    /* Campos (inputs) de entrada */
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(10px);
     width: 100%;
@@ -92,12 +94,14 @@ body {
     font-size: 1rem;
 }
 
-.login-box input:focus {  /* Efecto del borde de los inputs  */
-    border-color: #39A900;
+.login-box input:focus {
+    /* Efecto del borde de los inputs  */
+    border-color: #39a900;
 }
 
-.login-box button {  /* Botón de inicio de sesión */
-    background-color: #39A900;
+.login-box button {
+    /* Botón de inicio de sesión */
+    background-color: #39a900;
     color: white;
     border: none;
     padding: 12px;
@@ -111,18 +115,19 @@ body {
     background-color: #2d7a00;
 }
 
-.login-box a {      /*Texto de restablecer contraseña*/
+.login-box a {
+    /*Texto de restablecer contraseña*/
     color: #ffffff;
     text-decoration: underline;
     font-size: 1rem;
-    font-weight: bold;   /* mejor que font-style */
-    display: block;      /* hace que el enlace ocupe una línea */
-    text-align: center;  /* centrado, opcional */
-    margin-top: 20px;    /* separación con el botón */
+    font-weight: bold; /* mejor que font-style */
+    display: block; /* hace que el enlace ocupe una línea */
+    text-align: center; /* centrado, opcional */
+    margin-top: 20px; /* separación con el botón */
 }
 
-
-.login-box img { /* Logo de SENA */
+.login-box img {
+    /* Logo de SENA */
     margin-top: 15px;
     width: 80px;
 }
@@ -170,7 +175,6 @@ body {
     height: auto;
 }
 
-
 .button-group {
     display: flex;
     gap: 20px;
@@ -178,32 +182,32 @@ body {
     margin-bottom: 30px;
 }
 
-        /* Para que el ojito quede dentro del input */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+/* Para que el ojito quede dentro del input */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
-        .password-wrapper input {
-            width: 100%;
-            padding-right: 35px; /* espacio para el ojito */
-        }
+.password-wrapper input {
+    width: 100%;
+    padding-right: 35px; /* espacio para el ojito */
+}
 
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            top:10px;
-            left: auto;
-        }
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    top: 10px;
+    left: auto;
+}
 
-        .toggle-password svg {
-            width: 20px;
-            height: 20px;
-        }
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+}
 
 .btn {
     flex: 1;
@@ -226,13 +230,18 @@ body {
 }
 
 .btn::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
     transition: left 0.6s;
 }
 
@@ -264,8 +273,6 @@ body {
     background: linear-gradient(135deg, #15803d 0%, #166534 100%);
 }
 
-
-
 /* Media Queries para Responsive */
 
 /* Tablets */
@@ -273,15 +280,15 @@ body {
     body {
         padding: 0 5%;
     }
-    
+
     .branding img {
         margin-bottom: 80px;
     }
-    
+
     .branding h1 {
         font-size: 1.8rem;
     }
-    
+
     .login-box {
         transform: translate(-10%, 0%);
         width: 45vh;
@@ -298,7 +305,7 @@ body {
         gap: 30px !important;
         min-height: 100vh !important;
     }
-    
+
     .branding {
         order: 1;
         margin-bottom: 0;
@@ -306,18 +313,18 @@ body {
         max-width: 300px;
         flex: none;
     }
-    
+
     .branding img {
         width: 60%;
         max-width: 180px;
         margin-bottom: 20px;
     }
-    
+
     .branding h1 {
         font-size: 1.5rem;
         margin-bottom: 20px;
     }
-    
+
     .login-box {
         order: 2;
         transform: none !important;
@@ -337,21 +344,21 @@ body {
         padding: 15px;
         gap: 25px;
     }
-    
+
     .branding {
         max-width: 250px;
     }
-    
+
     .branding img {
         width: 50%;
         max-width: 140px;
         margin-bottom: 15px;
     }
-    
+
     .branding h1 {
         font-size: 1.3rem;
     }
-    
+
     .login-box {
         width: 95%;
         max-width: 320px;
@@ -360,32 +367,32 @@ body {
         /* Altura automática basada en contenido */
         height: auto;
     }
-    
+
     .login-box h2 {
         font-size: 1.4rem;
         margin-bottom: 15px;
     }
-    
+
     .login-box label {
         padding: 8px 5px;
         font-size: 0.9rem;
     }
-    
+
     .login-box input {
         padding: 8px;
         font-size: 0.9rem;
         margin-bottom: 12px;
     }
-    
+
     .login-box button {
         padding: 10px;
         font-size: 0.9rem;
     }
-    
+
     .login-box img {
         width: 60px;
     }
-    
+
     .sena-logo {
         width: 40px;
     }
@@ -396,21 +403,20 @@ body {
     .login-box {
         padding: 20px 15px;
     }
-    
+
     .branding h1 {
         font-size: 1.2rem;
     }
-    
+
     .login-box h2 {
         font-size: 1.3rem;
     }
-    
+
     .login-box input,
     .login-box button {
         font-size: 0.85rem;
     }
 }
-
 
 /* Animación al entrar la caja */
 @keyframes fadeInRight {
@@ -450,29 +456,28 @@ body {
     }
 }
 
-    /* Animaciones */
-    @keyframes fadeInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-60px);
-            }
-            to {
-            opacity: 1;
-            transform: translateX(0);
-            }
-        }
+/* Animaciones */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
-    @keyframes fadeInRight {
-        from {
-            opacity: 0;
-            transform: translateX(60px);
-            }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-            }
-        }
-
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
 .errors {
     background: #ffe6e6;
@@ -509,11 +514,115 @@ body {
 
 /* Animaciones suaves */
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Estilos para las alertas */
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-error {
+    background-color: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+}
+
+.alert-icon {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Cuadro de requisitos de contraseña */
+.password-requirements {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.password-requirements h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #495057;
+    font-weight: 600;
+}
+
+.requirement {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 13px;
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.requirement-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    background-color: #e9ecef;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.requirement.valid {
+    color: #28a745;
+}
+
+.requirement.valid .requirement-icon {
+    background-color: #28a745;
+    color: white;
+}
+
+.requirement.invalid {
+    color: #dc3545;
 }

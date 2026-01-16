@@ -24,8 +24,9 @@ return new class extends Migration
 
             // Usuario que hizo el cambio (abogado / asistente)
             $table->foreignId('user_id')
+                ->nullable() // 👈 ESTO ES CLAVE
                 ->constrained('users')
-                ->onDelete('set null');
+                ->nullOnDelete(); // equivalente a set null
 
             $table->timestamps();
         });

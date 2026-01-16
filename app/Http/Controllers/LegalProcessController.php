@@ -201,13 +201,29 @@ class LegalProcessController extends Controller
     /**
      * Mostrar un proceso específico
      */
-    public function show($id)
-    {
-        $proceso = Proceso::with('documentos')->findOrFail($id);
 
-        return response()->json($proceso);
-    }
+public function show($id)
+{
+    $proceso = Proceso::with(['documentos', 'pago'])->findOrFail($id); // 👈 Agregar 'pago'
 
+    return response()->json([
+        'id' => $proceso->id,
+        'numero_radicado' => $proceso->numero_radicado,
+        'tipo_proceso' => $proceso->tipo_proceso,
+        'demandante' => $proceso->demandante,
+        'demandado' => $proceso->demandado,
+        'descripcion' => $proceso->descripcion,
+        'estado' => $proceso->estado,
+        'requiere_pago' => $proceso->requiere_pago,
+        'valor_estimado' => $proceso->valor_estimado,
+        'created_at' => $proceso->created_at->format('d-m-Y'),
+        
+        // 🔥 AGREGAR ESTOS CAMPOS
+        'pago_realizado' => $proceso->pago !== null,
+        
+        'documentos' => $proceso->documentos,
+    ]);
+}
     /**
      * Mostrar formulario de edición
      */

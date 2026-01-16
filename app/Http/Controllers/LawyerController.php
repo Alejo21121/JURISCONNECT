@@ -265,14 +265,11 @@ class LawyerController extends Controller
                 DB::commit();
 
                 $this->sendCredentials($validated['correo'], $user, $validated['numero_documento'], $lawyer->id);
-
-                return $this->successResponse(
-                    $request,
-                    'Abogado creado correctamente.',
-                    ['lawyer' => $lawyer],
-                    201,
-                    'dashboard'
-                );
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Abogado creado correctamente.',
+                    'lawyer' => $lawyer
+                ], 201);
             }
 
             /**

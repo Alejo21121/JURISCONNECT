@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/pagos.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ asset('js/pagos.js') }}" defer></script>
+
 
 </head>
 
@@ -235,20 +235,20 @@
                             ${proceso.requiere_pago ? (
                                 proceso.pago_realizado 
                                     ? `<span class="status-badge pagado">
-                                                                            <i class="fas fa-check-circle"></i>
-                                                                            Pago Realizado
-                                                                           </span>`
+                                                                                <i class="fas fa-check-circle"></i>
+                                                                                Pago Realizado
+                                                                               </span>`
                                     : `<span class="status-badge pendiente">
-                                                                            <i class="fas fa-clock"></i>
-                                                                            Pago Pendiente
-                                                                           </span>`
+                                                                                <i class="fas fa-clock"></i>
+                                                                                Pago Pendiente
+                                                                               </span>`
                             ) : `<span class="status-badge no-requiere">No requiere pago</span>`}
                         </div>
                     </div>
                     
                     ${proceso.requiere_pago ? `
-                                                            <div class="pago-section">
-                                                                ${proceso.pago_realizado ? `
+                                                                <div class="pago-section">
+                                                                    ${proceso.pago_realizado ? `
                                 <div class="pago-realizado">
                                     <div class="pago-item destacado">
                                         <div class="label">Valor Pagado</div>
@@ -266,22 +266,22 @@
                                         </div>
                                     </div>
                               ${proceso.observaciones ? `
-                <div class="pago-item" style="grid-column: 1 / -1;">
-                    <div class="label">Observaciones</div>
-                    <div class="value">${proceso.observaciones}</div>
-                </div>
-            ` : ''}
+                    <div class="pago-item" style="grid-column: 1 / -1;">
+                        <div class="label">Observaciones</div>
+                        <div class="value">${proceso.observaciones}</div>
+                    </div>
+                ` : ''}
 
 ${proceso.comprobante ? `
-                <div class="pago-item" style="grid-column: 1 / -1;">
-                    <div class="label">Comprobante de Pago</div>
-                    <a href="/storage/${proceso.comprobante}" 
-                       target="_blank" 
-                       class="link-comprobante">
-                        <i class="fas fa-paperclip"></i> Ver comprobante
-                    </a>
-                </div>
-            ` : ''}
+                    <div class="pago-item" style="grid-column: 1 / -1;">
+                        <div class="label">Comprobante de Pago</div>
+                        <a href="/storage/${proceso.comprobante}" 
+                           target="_blank" 
+                           class="link-comprobante">
+                            <i class="fas fa-paperclip"></i> Ver comprobante
+                        </a>
+                    </div>
+                ` : ''}
 
                                 </div>
                             ` : `
@@ -296,8 +296,8 @@ ${proceso.comprobante ? `
                                     </button>
                                 </div>
                             `}
-                                                            </div>
-                                                        ` : ''}
+                                                                </div>
+                                                            ` : ''}
                 </div>
             `).join('');
         }
@@ -338,6 +338,22 @@ ${proceso.comprobante ? `
 
         // 🔥 REGISTRAR PAGO CON LARAVEL
         async function registrarPago() {
+
+            const confirmacion = await Swal.fire({  
+                title: '¿Confirmar pago?',
+                text: 'Una vez registrado el pago, el proceso será ARCHIVADO y no se podrá editar nuevamente.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, registrar pago',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#dc2626'
+            });
+
+            if (!confirmacion.isConfirmed) {
+                return;
+            }
+
             const valor = document.getElementById('valorSentencia').value;
             const forma = document.getElementById('formaPago').value;
             const fecha = document.getElementById('fechaPago').value;
@@ -392,11 +408,10 @@ ${proceso.comprobante ? `
                     actualizarEstadisticas();
                     renderizarProcesos();
                 } else {
-                    Swal.fire('Error', 'No se pudo registrar el pago', 'error');
+                    Swal.fire('Error', data.message, 'error');
                 }
 
             } catch (error) {
-                console.error(error);
                 Swal.fire('Error', 'Error de conexión', 'error');
             }
         }

@@ -255,6 +255,19 @@
     </span>
 </div>
 
+    <div class="detail-row">
+        <span class="label">Estado del pago</span>
+        <span class="value">
+            ${
+                data.requiere_pago == 0
+                    ? 'No aplica'
+                    : data.pago_realizado
+                        ? '<span style="color:#16a34a; font-weight:600;">✅ Pago realizado</span>'
+                        : '<span style="color:#d97706; font-weight:600;">⏳ Pago pendiente</span>'
+            }
+        </span>
+    </div>
+
 <hr>
 
     <h4 class="docs-title">📎 Documentos del proceso</h4>
@@ -279,13 +292,13 @@
             return `
         <ul class="documents-list">
             ${documentos.map(doc => `
-                                                                    <li>
-                                                                        <i class="fas fa-file-pdf"></i>
-                                                                        <a href="/storage/${doc.ruta}" target="_blank">
-                                                                            ${doc.nombre}
-                                                                        </a>
-                                                                    </li>
-                                                                `).join('')}
+                                                                                <li>
+                                                                                    <i class="fas fa-file-pdf"></i>
+                                                                                    <a href="/storage/${doc.ruta}" target="_blank">
+                                                                                        ${doc.nombre}
+                                                                                    </a>
+                                                                                </li>
+                                                                            `).join('')}
         </ul>
     `;
         }

@@ -32,7 +32,7 @@
 
             </div>
 
-            <p>Este enlace es válido durante los próximos <strong>30 minutos</strong>.</p>
+            <p>Este enlace es válido durante los próximos <strong>15 minutos</strong>.</p>
             <p>Si no solicitaste este cambio, puedes ignorar este mensaje.</p>
         </div>  
 
