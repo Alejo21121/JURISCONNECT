@@ -24,8 +24,6 @@
             z-index: -1;
         }
 
-
-
         h2 {
             text-align: center;
             margin-bottom: 20px;

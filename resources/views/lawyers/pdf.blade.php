@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Listado de Abogados</title>
@@ -11,7 +12,7 @@
         }
 
         /* Logo de fondo */
-        
+
         .background-logo {
             position: fixed;
             top: 30%;
@@ -34,7 +35,8 @@
             margin-top: 15px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #555;
             padding: 8px;
             text-align: left;
@@ -74,10 +76,11 @@
         }
     </style>
 </head>
+
 <body>
 
- <!-- Logo de fondo -->
-<img src="file://{{ $logoPath }}" class="background-logo">
+    <!-- Logo de fondo -->
+    <img src="file://{{ $logoPath }}" class="background-logo">
 
 
     <!-- Encabezado -->
@@ -120,4 +123,5 @@
     </footer>
 
 </body>
+
 </html>

@@ -251,10 +251,7 @@
 
                         <div class="form-group">
                             <label for="editNumeroDocumento">Número de Documento:</label>
-                            <input type="text"
-                                id="editAssistantNumeroDocumento"
-                                name="numero_documento"
-                                required>
+                            <input type="text" id="editAssistantNumeroDocumento" name="numero_documento" required>
                         </div>
 
 
@@ -408,7 +405,8 @@
                     </div>
 
                     <div class="search-section">
-                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre, apellido o número de documento">
+                        <input type="text" id="searchInput" class="search-input"
+                            placeholder="Buscar por nombre, apellido o número de documento">
                     </div>
 
 
@@ -452,7 +450,6 @@
         </div>
     </div>
     </div>
-
 
 
 </x-app-layout>

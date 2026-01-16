@@ -93,6 +93,27 @@
                         </div>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">¿Requiere pago? *</label>
+                            <select class="form-select" name="requiere_pago" id="requiere_pago" required>
+                                <option value="0" {{ $proceso->requiere_pago == 0 ? 'selected' : '' }}>
+                                    No
+                                </option>
+                                <option value="1" {{ $proceso->requiere_pago == 1 ? 'selected' : '' }}>
+                                    Sí
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="valor_pago_box" style="display:none;">
+                            <label class="form-label">Valor estimado *</label>
+                            <input type="number" class="form-control" name="valor_estimado" id="valor_estimado"
+                                min="0" step="0.01"
+                                value="{{ old('valor_estimado', $proceso->valor_estimado) }}">
+                        </div>
+                    </div>
+
                     <!-- DESCRIPCIÓN -->
                     <div class="form-group full-width">
                         <label class="form-label">Detalle del caso *</label>
@@ -359,6 +380,27 @@
                 })
                 .then(res => res.redirected ? window.location.href = res.url : location.reload());
         });
+
+        const requierePagoSelect = document.getElementById('requiere_pago');
+        const valorPagoBox = document.getElementById('valor_pago_box');
+        const valorInput = document.getElementById('valor_estimado');
+
+        function togglePago() {
+            if (requierePagoSelect.value === '1') {
+                valorPagoBox.style.display = 'block';
+                valorInput.required = true;
+            } else {
+                valorPagoBox.style.display = 'none';
+                valorInput.required = false;
+                valorInput.value = '';
+            }
+        }
+
+        // Inicializar al cargar
+        document.addEventListener('DOMContentLoaded', togglePago);
+
+        // Escuchar cambios
+        requierePagoSelect.addEventListener('change', togglePago);
     </script>
 </body>
 

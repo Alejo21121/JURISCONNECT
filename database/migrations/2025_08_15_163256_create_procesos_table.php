@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('procesos', function (Blueprint $table) {
             $table->id();
+
             $table->string('tipo_proceso', 100);
             $table->string('numero_radicado', 62)->unique();
+
             $table->string('demandante', 255);
             $table->string('demandado', 255);
             $table->text('descripcion');
+
             $table->enum('estado', [
                 'Pendiente',
                 'Radicado',
@@ -31,12 +34,20 @@ return new class extends Migration
                 'Pago en trámite',
                 'Conciliado',
                 'Archivado'
-            ]);
-            $table->timestamps();
+            ])->default('Pendiente');
+
+            /* 💰 PAGOS */
+            $table->boolean('requiere_pago')->default(false);
+            $table->decimal('valor_estimado', 12, 2)->nullable();
+
+            /* RELACIONES */
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('lawyer_id')->nullable();
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('lawyer_id')->references('id')->on('users')->onDelete('set null');
+
+            $table->timestamps();
         });
     }
 

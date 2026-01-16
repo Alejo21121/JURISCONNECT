@@ -4,24 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PagoDocumento;
+use App\Models\Proceso;
+
 
 class Pago extends Model
 {
     protected $fillable = [
         'proceso_id',
-        'valor',
+        'valor_pagado',
         'forma_pago',
         'fecha_pago',
         'observaciones'
     ];
 
-    public function proceso()
+    public function documentos()
     {
-        return $this->belongsTo(Proceso::class);
+        return $this->hasMany(PagoDocumento::class);
     }
 
-    public function comprobantes()
+
+    public function proceso()
     {
-        return $this->hasMany(ComprobantePago::class);
+        return $this->belongsTo(Proceso::class, 'proceso_id');
     }
 }

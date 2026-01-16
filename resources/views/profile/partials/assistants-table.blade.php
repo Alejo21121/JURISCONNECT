@@ -98,7 +98,7 @@
     @endif
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @vite('resources/js/asistentes.js')
+    <script src="{{ asset('js/asistentes.js') }}" defer></script>
 
 </body>
 

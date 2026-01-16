@@ -10,14 +10,25 @@ return new class extends Migration {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('proceso_id')
-                ->constrained('procesos')
-                ->onDelete('cascade');
+            $table->unsignedBigInteger('proceso_id');
 
-            $table->decimal('valor', 15, 2);
-            $table->string('forma_pago', 100);
+            $table->decimal('valor_pagado', 12, 2);
             $table->date('fecha_pago');
+
+            $table->enum('forma_pago', [
+                'Efectivo',
+                'Transferencia',
+                'Consignación',
+                'Tarjeta',
+                'Otro'
+            ])->default('Transferencia');
+
             $table->text('observaciones')->nullable();
+
+            $table->foreign('proceso_id')
+                ->references('id')
+                ->on('procesos')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });

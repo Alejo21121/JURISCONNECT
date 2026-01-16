@@ -12,7 +12,8 @@
             </tr>
         </thead>
         <tbody id="tableBodySimple">
-            @foreach ($lawyersSimple as $lawyer) <tr>
+            @foreach ($lawyersSimple as $lawyer)
+                <tr>
                     <td>{{ $lawyer->nombre }}</td>
                     <td>{{ $lawyer->apellido }}</td>
                     <td>{{ $lawyer->tipo_documento }}</td>
@@ -25,11 +26,10 @@
         </tbody>
     </table>
 
-        <!-- Incluir la paginación -->
-@include('profile.partials.pagination', [
-    'items' => $lawyersSimple,
-    'pageKey' => 'lawyersSimplePage'
-])
-
+    <!-- Incluir la paginación -->
+    @include('profile.partials.pagination', [
+        'items' => $lawyersSimple,
+        'pageKey' => 'lawyersSimplePage',
+    ])
 
 </div>

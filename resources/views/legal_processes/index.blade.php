@@ -71,9 +71,9 @@
                         <a href="{{ route('procesos.export.pdf') }}" class="btn-danger">EXPORTAR PDF</a>
                     </div>
 
-                    <a href="{{ route('pagos') }}" class="btn btn-primary">
+                    <a href="{{ route('pagos.index') }}" class="btn btn-pagos">
                         <i class="fas fa-save"></i>
-                        Ver Pagos
+                        Ver Pagos $
                     </a>
 
                     <div class="button-group">
@@ -95,7 +95,6 @@
                                 No tienes permisos
                             </button>
                         @endif
-
 
                         </a>
                     </div>
@@ -240,9 +239,27 @@
            <p style="pre-wrap; word-wrap: break-word;">${data.descripcion ?? 'Sin descripción'} </p>
         </div>
 
-        <hr>
+        <div class="detail-row">
+    <span class="label">¿Requiere pago?</span>
+    <span class="value">
+        ${data.requiere_pago == 1 ? 'Sí' : 'No requiere pago'}
+    </span>
+</div>
+
+<div class="detail-row">
+    <span class="label">Valor estimado</span>
+    <span class="value">
+        ${data.requiere_pago == 1
+            ? `$ ${Number(data.valor_estimado).toLocaleString('es-CO')}`
+            : '—'}
+    </span>
+</div>
+
+<hr>
 
     <h4 class="docs-title">📎 Documentos del proceso</h4>
+
+    
 
     ${renderDocuments(data.documentos)}
 
@@ -262,13 +279,13 @@
             return `
         <ul class="documents-list">
             ${documentos.map(doc => `
-                                                    <li>
-                                                        <i class="fas fa-file-pdf"></i>
-                                                        <a href="/storage/${doc.ruta}" target="_blank">
-                                                            ${doc.nombre}
-                                                        </a>
-                                                    </li>
-                                                `).join('')}
+                                                                    <li>
+                                                                        <i class="fas fa-file-pdf"></i>
+                                                                        <a href="/storage/${doc.ruta}" target="_blank">
+                                                                            ${doc.nombre}
+                                                                        </a>
+                                                                    </li>
+                                                                `).join('')}
         </ul>
     `;
         }

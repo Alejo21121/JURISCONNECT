@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\HistorialEstadoProceso;
+use App\Models\Pago;
+
 
 class Proceso extends Model
 {
@@ -22,13 +24,13 @@ class Proceso extends Model
         'demandante',
         'demandado',
         'descripcion',
-        'documento',
         'estado',
-        'fecha_inicio',
-        'fecha_fin',
         'user_id',
         'lawyer_id',
-        'created_at',
+
+        // 👇 PAGO
+        'requiere_pago',
+        'valor_estimado',
     ];
 
     protected $casts = [
@@ -104,5 +106,10 @@ class Proceso extends Model
             HistorialEstadoProceso::class,
             'proceso_id'
         )->orderBy('created_at', 'desc');
+    }
+
+    public function pago()
+    {
+        return $this->hasOne(Pago::class);
     }
 }

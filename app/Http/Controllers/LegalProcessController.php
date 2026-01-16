@@ -118,6 +118,14 @@ class LegalProcessController extends Controller
             // ✔️ Guardar el usuario que creó el proceso
             $validated['user_id'] = Auth::id();
 
+
+            // Normalizar pago
+            $validated['requiere_pago'] = (int) $request->requiere_pago;
+
+            if ($validated['requiere_pago'] === 0) {
+                $validated['valor_estimado'] = null;
+            }
+
             // ✔️ Obtener el abogado REAL del usuario
             // (de la tabla lawyers)
             $lawyer = Auth::user()->lawyer;
@@ -221,6 +229,12 @@ class LegalProcessController extends Controller
         $validated = $this->validateProcesoDataForUpdate($request, $id);
         $this->removeAuxiliaryFields($validated);
 
+        $validated['requiere_pago'] = (int) $request->requiere_pago;
+
+        if ($validated['requiere_pago'] === 0) {
+            $validated['valor_estimado'] = null;
+        }
+
         $proceso->update($validated);
 
         // ✅ GUARDAR DOCUMENTOS NUEVOS
@@ -291,6 +305,11 @@ class LegalProcessController extends Controller
             'demandante'      => 'required|string|max:255',
             'demandado'       => 'required|string|max:255',
             'descripcion'     => 'required|string',
+
+            // 👇 NUEVO
+            'requiere_pago'   => 'required|boolean',
+            'valor_estimado'  => 'nullable|required_if:requiere_pago,1|numeric|min:0',
+
             'estado'          => 'nullable|string',
             'documentos.*'    => 'file|mimes:pdf,doc,docx|max:10240',
         ]);
@@ -305,9 +324,15 @@ class LegalProcessController extends Controller
             'demandado'       => 'required|string|max:255',
             'descripcion'     => 'required|string',
             'estado'          => 'nullable|string',
+
+            // 👇 AÑADIR
+            'requiere_pago'   => 'required|boolean',
+            'valor_estimado'  => 'nullable|required_if:requiere_pago,1|numeric|min:0',
+
             'documentos.*'    => 'file|mimes:pdf,doc,docx|max:10240',
         ]);
     }
+
 
     public function historial($id)
     {

@@ -129,6 +129,22 @@
                             <input type="text" name="demandado" id="demandado" class="form-input demandado-input"
                                 placeholder="Nombre completo del demandado">
                         </div>
+
+                        <div class="field-group pago-group">
+                            <label class="form-label fw-bold">¿El proceso requiere pago?</label>
+                            <select name="requiere_pago" id="requiere_pago" class="form-select" required>
+                                <option value="">Seleccione</option>
+                                <option value="0">No</option>
+                                <option value="1">Sí</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group pago-group d-none" id="valorEstimadoDiv">
+                            <label class="form-label fw-bold">Valor estimado del proceso</label>
+                            <input type="number" name="valor_estimado" class="form-control"
+                                placeholder="Ej: 1500000" min="0" step="0.01">
+                        </div>
+
                     </div>
                 </div>
                 <!--  -->
@@ -489,4 +505,25 @@
         archivosSeleccionados.splice(index, 1);
         actualizarPreview();
     }
+
+    const requierePagoSelect = document.getElementById('requiere_pago');
+    const valorEstimadoDiv = document.getElementById('valorEstimadoDiv');
+    const valorEstimadoInput = valorEstimadoDiv.querySelector('input');
+
+    function toggleValorEstimado() {
+        if (requierePagoSelect.value === '1') {
+            valorEstimadoDiv.classList.remove('d-none');
+            valorEstimadoInput.setAttribute('required', 'required');
+        } else {
+            valorEstimadoDiv.classList.add('d-none');
+            valorEstimadoInput.removeAttribute('required');
+            valorEstimadoInput.value = '';
+        }
+    }
+
+    // Al cambiar el select
+    requierePagoSelect.addEventListener('change', toggleValorEstimado);
+
+    // 🚨 CLAVE: al cargar la página
+    document.addEventListener('DOMContentLoaded', toggleValorEstimado);
 </script>

@@ -9,7 +9,7 @@
 
     <!-- Enlace a CSS -->
     <link rel="stylesheet" href="{{ asset('css/createCon.css') }}">
-    
+
     <style>
         /* ESTILOS DEL MODAL DE CONFIRMACIÓN */
         .modal-overlay {
@@ -120,8 +120,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes slideUp {
@@ -129,6 +134,7 @@
                 transform: translateY(40px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -136,13 +142,23 @@
         }
 
         @keyframes scaleIn {
-            from { transform: scale(0); }
-            to { transform: scale(1); }
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
         }
 
         @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
         }
 
         .modal-overlay.hiding {
@@ -157,20 +173,20 @@
         <div class="header">
             <h2>Redactar Concepto Jurídico</h2>
             <a href="{{ route('conceptos.create') }}" class="btn-back">
-            <i class="fas fa-chevron-left" style="margin-right: 15px"></i>
-            Volver a la Lista
+                <i class="fas fa-chevron-left" style="margin-right: 15px"></i>
+                Volver a la Lista
             </a>
         </div>
 
         <!-- Alert -->
-        @if(session('success'))
-        <div id="successAlert" class="alert show">
-            <i class="fas fa-check-circle"></i>
-            <span>{{ session('success') }}</span>
-            <button onclick="this.parentElement.classList.remove('show')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+        @if (session('success'))
+            <div id="successAlert" class="alert show">
+                <i class="fas fa-check-circle"></i>
+                <span>{{ session('success') }}</span>
+                <button onclick="this.parentElement.classList.remove('show')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         @endif
 
         <!-- Información del Proceso -->
@@ -236,7 +252,8 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form id="conceptoForm" method="POST" action="{{ route('abogado.conceptos.storeProceso', $proceso->id) }}">
+                <form id="conceptoForm" method="POST"
+                    action="{{ route('abogado.conceptos.storeProceso', $proceso->id) }}">
                     @csrf
                     <!-- Título del Concepto Jurídico -->
                     <div class="form-group-modern">
@@ -246,14 +263,9 @@
                         </label>
 
                         <div class="input-wrapper-modern">
-                            <input
-                                type="text"
-                                id="titulo"
-                                name="titulo"
-                                value="{{ old('titulo') }}"
+                            <input type="text" id="titulo" name="titulo" value="{{ old('titulo') }}"
                                 class="form-input-modern"
-                                placeholder="Ejemplo: Análisis de la responsabilidad civil en el caso"
-                                maxlength="120"
+                                placeholder="Ejemplo: Análisis de la responsabilidad civil en el caso" maxlength="120"
                                 required>
                         </div>
 
@@ -273,23 +285,18 @@
                             Redacta un análisis jurídico completo y fundamentado del caso (mínimo 50 caracteres).
                         </div>
                         <div class="textarea-container">
-                            <textarea
-                                id="concepto"
-                                name="concepto"
-                                rows="12"
-                                class="form-textarea"
-                                required>{{ old('concepto') }}</textarea>
+                            <textarea id="concepto" name="concepto" rows="12" class="form-textarea" required>{{ old('concepto') }}</textarea>
                             <div id="conceptoCounter" class="char-counter">0 caracteres</div>
                         </div>
                         <div id="conceptoError" class="form-error">
                             El concepto debe tener al menos 50 caracteres.
                         </div>
                         @error('concepto')
-                        <div class="form-error show">{{ $message }}</div>
+                            <div class="form-error show">{{ $message }}</div>
                         @enderror
 
-                        @if($errors->has('general'))
-                        <div class="form-error show">{{ $errors->first('general') }}</div>
+                        @if ($errors->has('general'))
+                            <div class="form-error show">{{ $errors->first('general') }}</div>
                         @endif
                     </div>
 
@@ -376,7 +383,7 @@
                 </div>
                 <h3 class="modal-title">¡Perfecto!</h3>
                 <p class="modal-message">
-                    Una vez enviado, no podrás modificar este concepto jurídico. 
+                    Una vez enviado, no podrás modificar este concepto jurídico.
                     Asegúrate de que toda la información esté correcta.
                 </p>
             </div>
@@ -408,7 +415,7 @@
         function closeModal() {
             const modal = document.getElementById('confirmModal');
             modal.classList.add('hiding');
-            
+
             setTimeout(() => {
                 modal.classList.remove('show', 'hiding');
                 document.body.style.overflow = '';
@@ -416,15 +423,15 @@
             }, 200);
         }
 
-function confirmSubmit() {
-    if (formToSubmit) {
-        formToSubmit.removeEventListener('submit', handleFormSubmit);
-        formToSubmit.submit();
-    }
-    closeModal();
+        function confirmSubmit() {
+            if (formToSubmit) {
+                formToSubmit.removeEventListener('submit', handleFormSubmit);
+                formToSubmit.submit();
+            }
+            closeModal();
 
-    window.location.href = previousUrl;
-}
+            window.location.href = previousUrl;
+        }
 
         function handleFormSubmit(e) {
             e.preventDefault();

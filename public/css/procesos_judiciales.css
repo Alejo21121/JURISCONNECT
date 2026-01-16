@@ -17,7 +17,7 @@ body {
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 3rem 1rem;
 }
@@ -337,6 +337,20 @@ body {
 }
 
 .btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    box-shadow: 0 8px 25px -8px rgba(37, 99, 235, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-pagos {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
+    padding: 0.5rem 1.5rem;
+    margin-left: 235px;
+}
+
+.btn-pagos:hover {
     background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
     box-shadow: 0 8px 25px -8px rgba(37, 99, 235, 0.5);
     transform: translateY(-1px);

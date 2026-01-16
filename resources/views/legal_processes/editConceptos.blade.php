@@ -563,11 +563,7 @@
                             Redacta un análisis jurídico completo y fundamentado del caso (mínimo 50 caracteres).
                         </div>
                         <div class="textarea-container">
-                            <textarea
-                                id="concepto"
-                                name="concepto"
-                                rows="12"
-                                class="form-textarea"
+                            <textarea id="concepto" name="concepto" rows="12" class="form-textarea"
                                 placeholder="Ingresa aquí el análisis jurídico detallado del proceso...
                                 Estructura sugerida:
                                 1. Análisis de hechos
@@ -636,7 +632,9 @@
                 // Confirmación antes de enviar
                 document.getElementById('conceptoForm').addEventListener('submit', function(e) {
                     e.preventDefault();
-                    if (confirm('¿Estás seguro de que deseas finalizar este concepto? Una vez enviado, no podrás modificarlo.')) {
+                    if (confirm(
+                            '¿Estás seguro de que deseas finalizar este concepto? Una vez enviado, no podrás modificarlo.'
+                            )) {
                         // Simular envío exitoso
                         document.getElementById('successAlert').classList.add('show');
                         window.scrollTo({

@@ -18,18 +18,16 @@
 
                 <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" style="display: none;">
 
-                <div id="loadingIndicator" 
+                <div id="loadingIndicator"
                     style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
                     background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
                     Subiendo...
                 </div>
 
-                <div class="profile-pic profile-pic-clickable"
-                    onclick="document.getElementById('fileInput').click();" 
+                <div class="profile-pic profile-pic-clickable" onclick="document.getElementById('fileInput').click();"
                     title="Haz clic para cambiar tu foto">
                     <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('img/silueta-atardecer-foto-perfil.webp') }}"
-                        id="profileImage"
-                        alt="Foto de perfil">
+                        id="profileImage" alt="Foto de perfil">
                 </div>
 
                 <h3>{{ Auth::user()->name }}</h3>
@@ -66,7 +64,7 @@
 
                     <!-- TÍTULO CAMBIANTE -->
                     <h1>
-                        @if($isAbogado)
+                        @if ($isAbogado)
                             Panel del Abogado
                         @elseif($isAsistente)
                             Panel del Asistente Jurídico
@@ -83,7 +81,7 @@
             <div class="w-full text-center px-4 mt-4 md:mt-10">
                 <p class="text-gray-700 text-lg md:text-xl font-medium leading-snug">
                     Bienvenido, <span class="font-semibold text-green-700">{{ auth()->user()->name }}</span>.
-                    @if($isAbogado)
+                    @if ($isAbogado)
                         Gestiona tus procesos y conceptos jurídicos desde aquí.
                     @elseif($isAsistente)
                         Apoya la gestión de procesos y actividades jurídicas asignadas.
@@ -102,7 +100,7 @@
                     <h3>Registrar Proceso</h3>
                     <p>Inicia un nuevo expediente jurídico y asígnale los detalles correspondientes.</p>
 
-                    @if($isAbogado)
+                    @if ($isAbogado)
                         <a href="{{ route('legal_processes.create') }}">Registrar</a>
                     @else
                         <span style="color: red; font-weight:bold;">No tienes permisos</span>

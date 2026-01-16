@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AssistantExport;
 use App\Exports\LawyersExport;
 use App\Http\Controllers\DocumentoProcesoController;
+use App\Http\Controllers\PagoController;
 
 // ===================================================================
 // RUTA POR DEFECTO
@@ -78,10 +79,6 @@ Route::middleware(['auth'])->group(function () {
             return Excel::download(new LawyersExport, 'abogados.xlsx');
         })->name('export.excel');
     });
-
-    Route::get('/pagos', function () {
-        return view('pagos');
-    })->name('pagos');
 
     // RUTAS DE ACTUALIZACIÓN Y ELIMINACIÓN DE LAWYERS
     Route::put('/lawyers/{lawyer}', [LawyerController::class, 'update'])
@@ -210,3 +207,8 @@ Route::get('/procesos/{id}/historial', [LegalProcessController::class, 'historia
 
 Route::delete('/documentos/{id}', [LegalProcessController::class, 'destroyDocumento'])
     ->name('documentos.destroy');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
+    Route::post('/pagos', [PagoController::class, 'store'])->name('pagos.store');
+});

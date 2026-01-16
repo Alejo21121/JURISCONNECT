@@ -63,8 +63,8 @@
         <span class="pagination-btn disabled">Anterior</span>
     @else
         <a href="{{ $items->previousPageUrl() . '&' . $pageKey . '=' . ($items->currentPage() - 1) }}"
-           class="pagination-btn ajax-page">
-           Anterior
+            class="pagination-btn ajax-page">
+            Anterior
         </a>
     @endif
 
@@ -76,8 +76,7 @@
     @endphp
 
     @if ($start > 1)
-        <a href="{{ $items->url(1) . '&' . $pageKey . '=1' }}"
-           class="pagination-btn ajax-page">1</a>
+        <a href="{{ $items->url(1) . '&' . $pageKey . '=1' }}" class="pagination-btn ajax-page">1</a>
 
         @if ($start > 2)
             <span class="pagination-btn disabled">...</span>
@@ -88,9 +87,8 @@
         @if ($i == $currentPage)
             <span class="pagination-btn active">{{ $i }}</span>
         @else
-            <a href="{{ $items->url($i) . '&' . $pageKey . '=' . $i }}"
-               class="pagination-btn ajax-page">
-               {{ $i }}
+            <a href="{{ $items->url($i) . '&' . $pageKey . '=' . $i }}" class="pagination-btn ajax-page">
+                {{ $i }}
             </a>
         @endif
     @endfor
@@ -100,17 +98,16 @@
             <span class="pagination-btn disabled">...</span>
         @endif
 
-        <a href="{{ $items->url($lastPage) . '&' . $pageKey . '=' . $lastPage }}"
-           class="pagination-btn ajax-page">
-           {{ $lastPage }}
+        <a href="{{ $items->url($lastPage) . '&' . $pageKey . '=' . $lastPage }}" class="pagination-btn ajax-page">
+            {{ $lastPage }}
         </a>
     @endif
 
     <!-- Botón siguiente -->
     @if ($items->hasMorePages())
         <a href="{{ $items->nextPageUrl() . '&' . $pageKey . '=' . ($items->currentPage() + 1) }}"
-           class="pagination-btn ajax-page">
-           Siguiente
+            class="pagination-btn ajax-page">
+            Siguiente
         </a>
     @else
         <span class="pagination-btn disabled">Siguiente</span>

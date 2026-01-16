@@ -593,3 +593,54 @@ body {
         transform: translateY(0);
     }
 }
+
+/* ===============================
+   SECCIÓN PAGO
+================================ */
+
+.pago-group {
+    margin-top: 1.5rem;
+    animation: fadeInUp 0.4s ease;
+}
+
+.pago-group label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.pago-group select,
+.pago-group input {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: 10px;
+    border: 1.5px solid #c7d2fe;
+    background: #f8fafc;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+}
+
+.pago-group select:focus,
+.pago-group input:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Animación */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.d-none {
+    display: none !important;
+}
