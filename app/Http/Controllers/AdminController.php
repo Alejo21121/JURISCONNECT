@@ -88,10 +88,16 @@ class AdminController extends Controller
                 ->orderBy('id', 'asc')
                 ->paginate(10, ['*'], 'assistantsSimplePage');
 
+            // PROCESOS (TABLA SIMPLE DASHBOARD)
+
+            $procesosSimple = Proceso::with('lawyer')
+                ->orderBy('id', 'asc')
+                ->paginate(10, ['*'], 'procesosSimplePage');
+
             $abogados = Lawyer::all();
 
             // Mantener búsqueda en paginación
-            foreach ([$lawyers, $assistants, $lawyersSimple, $assistantsSimple] as $p) {
+            foreach ([$lawyers, $assistants, $lawyersSimple, $assistantsSimple, $procesosSimple] as $p) {
                 $p->appends(['search' => $searchTerm]);
             }
 
@@ -134,9 +140,16 @@ class AdminController extends Controller
                 } elseif ($request->has('assistantsSimplePage')) {
                     $html = view('profile.partials.assistants-table-simple', ['assistantsSimple' => $assistantsSimple])->render();
                 }
+                // 👇 AÑADIR ESTO
+                elseif ($request->has('procesosSimplePage')) {
+                    $html = view('profile.partials.procesos-table-simple', [
+                        'procesosSimple' => $procesosSimple
+                    ])->render();
+                }
 
                 return response()->json(['html' => $html, 'success' => true]);
             }
+
 
             // ============================
             // CONTADORES PARA DASHBOARD
@@ -144,7 +157,6 @@ class AdminController extends Controller
             $totalLawyers = Lawyer::count();
             $cases_count = Proceso::count();
             $totalAsistentes = Assistant::count();
-
             return view('dashboard', compact(
                 'lawyers',
                 'totalLawyers',
@@ -153,7 +165,8 @@ class AdminController extends Controller
                 'cases_count',
                 'totalAsistentes',
                 'assistants',
-                'assistantsSimple'
+                'assistantsSimple',
+                'procesosSimple' // 👈 AÑADIDO
             ));
         } catch (\Exception $e) {
 

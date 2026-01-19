@@ -46,7 +46,7 @@
                         <div class="form-group">
                             <label class="form-label">Estado de proceso *</label>
                             <select class="form-select" name="estado" id="estadoSelect" required>
-                                @foreach (['Pendiente', 'Radicado', 'Admisión', 'Traslado', 'Audiencia', 'Fallo favorable', 'Fallo desfavorable', 'Apelación', 'Ejecutoria', 'Pago en trámite', 'Conciliado', 'Archivado'] as $estado)
+                                @foreach (['Pendiente', 'Radicado', 'Admisión', 'Traslado', 'Audiencia', 'Fallo favorable', 'Fallo desfavorable', 'Apelación', 'Ejecutoria', 'Conciliado', 'Archivado'] as $estado)
                                     <option value="{{ $estado }}"
                                         {{ old('estado', $proceso->estado) == $estado ? 'selected' : '' }}>
                                         {{ $estado }}

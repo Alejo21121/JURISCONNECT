@@ -9,15 +9,20 @@
 </head>
 
 <body>
+   
     <!-- Modal para ver datos del proceso -->
-    <div id="viewProcessModal" class="modal"
-        style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); align-items:center; justify-content:center;">
-        <div class="modal-content"
-            style="background:white; border-radius:16px; max-width:500px; margin:auto; padding:2rem; position:relative;">
-            <span class="close-button" onclick="closeProcessModal()"
-                style="position:absolute; top:1rem; right:1rem; font-size:2rem; cursor:pointer;">&times;</span>
-            <h2 style="font-size:1.25rem; font-weight:600; margin-bottom:1rem;">Datos del Proceso </h2>
-            <div id="processModalBody">
+    <div id="viewProcessModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <!-- Header con botón de cierre -->
+            <div class="modal-header-custom">
+                <h2>
+                    <i class="fas fa-gavel"></i>
+                    Datos del Proceso
+                </h2>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body-custom" id="processModalBody">
                 <p>Cargando datos...</p>
             </div>
         </div>
@@ -119,7 +124,6 @@
             const searchInput = document.getElementById("searchInput");
             const searchBtn = document.getElementById("searchBtn");
 
-            // Búsqueda al escribir (con debounce)
             if (searchInput) {
                 searchInput.addEventListener("input", function() {
                     clearTimeout(searchTimeout);
@@ -129,7 +133,6 @@
                     }, 300);
                 });
 
-                // Búsqueda al presionar ENTER
                 searchInput.addEventListener("keypress", function(event) {
                     if (event.key === 'Enter') {
                         clearTimeout(searchTimeout);
@@ -138,7 +141,6 @@
                 });
             }
 
-            // Búsqueda al hacer click en botón
             if (searchBtn) {
                 searchBtn.addEventListener("click", function() {
                     const searchTerm = searchInput.value.trim();
@@ -147,7 +149,6 @@
             }
         });
 
-        // Función principal de búsqueda AJAX
         function performSearch(searchTerm) {
             const params = new URLSearchParams();
             if (searchTerm) {
@@ -165,10 +166,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.html) {
-                        // Actualizar contenedor de tabla
                         document.getElementById('procesosTableContainer').innerHTML = data.html;
-
-                        // Actualizar total de resultados
                         if (data.total !== undefined) {
                             document.getElementById('totalCount').textContent = data.total;
                         }
@@ -181,7 +179,6 @@
                 });
         }
 
-        // Función para limpiar búsqueda
         function clearSearch() {
             const searchInput = document.getElementById("searchInput");
             if (searchInput) {
@@ -190,124 +187,181 @@
             }
         }
 
-        // Función para ver los datos del proceso en un modal
-
+        // ========================================
+        // MODAL DE PROCESO - VERSIÓN MEJORADA
+        // ========================================
         function openProcessModal(id) {
-            document.getElementById('viewProcessModal').style.display = 'flex';
+            const modal = document.getElementById('viewProcessModal');
             const body = document.getElementById('processModalBody');
-            body.innerHTML = '<p>Cargando datos...</p>';
+
+            modal.style.display = 'flex';
+            body.innerHTML = '<p style="text-align:center; padding:2rem; color:#64748b;">⏳ Cargando datos...</p>';
 
             fetch(`/procesos/${id}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error('Error al cargar datos');
+                    return res.json();
+                })
                 .then(data => {
+                    console.log('Datos recibidos:', data);
 
                     body.innerHTML = `
-    <div class="process-details">
+<div class="process-details">
 
-        <div class="detail-row">
-            <span class="label">Radicado</span>
-            <span class="value">${data.numero_radicado}</span>
-        </div>
-
-        <div class="detail-row">
-            <span class="label">Fecha de radicación</span>
-            <span class="value">${data.created_at}</span>
-        </div>
-
-        <div class="detail-row">
-            <span class="label">Estado</span>
-            <span class="value badge">${data.estado}</span>
-        </div>
-
-        <div class="detail-row">
-            <span class="label">Tipo de proceso</span>
-            <span class="value">${data.tipo_proceso}</span>
-        </div>
-
-        <div class="detail-row">
-            <span class="label">Demandante</span>
-            <span class="value">${data.demandante}</span>
-        </div>
-
-        <div class="detail-row">
-            <span class="label">Demandado</span>
-            <span class="value">${data.demandado}</span>
-        </div>
-
-        <div class="detail-box scroll-box">
-            <span class="label">Detalle del caso</span>
-           <p style="pre-wrap; word-wrap: break-word;">${data.descripcion ?? 'Sin descripción'} </p>
-        </div>
-
-        <div class="detail-row">
-    <span class="label">¿Requiere pago?</span>
-    <span class="value">
-        ${data.requiere_pago == 1 ? 'Sí' : 'No requiere pago'}
-    </span>
-</div>
-
-<div class="detail-row">
-    <span class="label">Valor estimado</span>
-    <span class="value">
-        ${data.requiere_pago == 1
-            ? `$ ${Number(data.valor_estimado).toLocaleString('es-CO')}`
-            : '—'}
-    </span>
-</div>
+    <!-- INFORMACIÓN BÁSICA -->
+    <div class="detail-row">
+        <span class="label">📋 Radicado</span>
+        <span class="value"><strong>${data.numero_radicado}</strong></span>
+    </div>
 
     <div class="detail-row">
-        <span class="label">Estado del pago</span>
+        <span class="label">📅 Fecha radicación</span>
+        <span class="value">${data.created_at}</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">📊 Estado</span>
         <span class="value">
-            ${
-                data.requiere_pago == 0
-                    ? 'No aplica'
-                    : data.pago_realizado
-                        ? '<span style="color:#16a34a; font-weight:600;">✅ Pago realizado</span>'
-                        : '<span style="color:#d97706; font-weight:600;">⏳ Pago pendiente</span>'
-            }
+            <span class="badge estado-${data.estado.toLowerCase().replace(/ /g, '-')}">
+                ${getEstadoIcon(data.estado)} ${data.estado}
+            </span>
         </span>
     </div>
 
-<hr>
+    <div class="detail-row">
+        <span class="label">⚖️ Tipo de proceso</span>
+        <span class="value">${data.tipo_proceso}</span>
+    </div>
 
-    <h4 class="docs-title">📎 Documentos del proceso</h4>
+    <div class="detail-row">
+        <span class="label">👤 Demandante</span>
+        <span class="value">${data.demandante}</span>
+    </div>
 
-    
+    <div class="detail-row">
+        <span class="label">👥 Demandado</span>
+        <span class="value">${data.demandado}</span>
+    </div>
 
+    <!-- DESCRIPCIÓN -->
+    <div class="detail-box">
+        <span class="label">📝 Detalle del caso</span>
+        <p style="white-space: pre-wrap; word-wrap: break-word;">${data.descripcion || 'Sin descripción'}</p>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- INFORMACIÓN DE PAGO -->
+    <h4 class="section-title">💰 Información de Pago</h4>
+
+    <div class="detail-row">
+        <span class="label">¿Requiere pago?</span>
+        <span class="value">
+            ${data.requiere_pago == 1 
+                ? '<strong style="color:#059669;">✅ Sí</strong>' 
+                : '<strong style="color:#6b7280;">❌ No</strong>'}
+        </span>
+    </div>
+
+    ${data.requiere_pago == 1 ? `
+                        <div class="detail-row">
+                            <span class="label">Valor estimado</span>
+                            <span class="value">
+                                <strong style="color:#2563eb; font-size:1.125rem;">
+                                    $ ${Number(data.valor_estimado || 0).toLocaleString('es-CO')}
+                                </strong>
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="label">Estado del pago</span>
+                            <span class="value">
+                                ${data.pago_realizado === true
+                                    ? '<span class="badge pago-realizado"><i class="fas fa-check-circle"></i> Pago realizado</span>'
+                                    : '<span class="badge pago-pendiente"><i class="fas fa-clock"></i> Pago pendiente</span>'}
+                            </span>
+                        </div>
+
+                        ${data.pago_realizado === true && data.pago ? `
+            <div class="pago-card">
+                <h5 style="color:#065f46; font-size:1rem; margin:0 0 1rem 0; font-weight:700; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Detalles del Pago Realizado
+                </h5>
+                <div class="pago-grid">
+                    <div class="pago-item">
+                        <span class="label">Valor Pagado</span>
+                        <span class="value">$ ${Number(data.pago.valor_pagado || 0).toLocaleString('es-CO')}</span>
+                    </div>
+                    <div class="pago-item">
+                        <span class="label">Fecha de Pago</span>
+                        <span class="value"><i class="fas fa-calendar-check"></i> ${data.pago.fecha_pago || 'N/A'}</span>
+                    </div>
+                    <div class="pago-item">
+                        <span class="label">Forma de Pago</span>
+                        <span class="value">${data.pago.forma_pago || 'N/A'}</span>
+                    </div>
+                    ${data.pago.observaciones ? `
+                                        <div class="pago-item" style="grid-column: 1 / -1;">
+                                            <span class="label">Observaciones</span>
+                                            <span class="value" style="font-size:0.9rem; font-weight:500; color:#374151;">${data.pago.observaciones}</span>
+                                        </div>
+                                    ` : ''}
+                </div>
+            </div>
+        ` : ''}
+                    ` : `
+                        <div class="detail-row">
+                            <span class="label">Estado del pago</span>
+                            <span class="value">
+                                <span class="badge pago-no-aplica">— No aplica</span>
+                            </span>
+                        </div>
+                    `}
+
+    <div class="section-divider"></div>
+
+    <!-- DOCUMENTOS -->
+    <h4 class="section-title">
+        <i class="fas fa-paperclip"></i>
+        Documentos del proceso
+    </h4>
     ${renderDocuments(data.documentos)}
 
 </div>
 `;
                 })
-                .catch(() => {
-                    body.innerHTML = '<p>Error al cargar los datos.</p>';
+                .catch(error => {
+                    console.error('Error:', error);
+                    body.innerHTML = `
+                    <div style="text-align:center; padding:2rem;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem; color:#dc2626; margin-bottom:1rem;"></i>
+                        <p style="color:#dc2626; font-weight:600;">❌ Error al cargar los datos</p>
+                        <p style="color:#64748b; font-size:0.875rem; margin-top:0.5rem;">${error.message}</p>
+                    </div>
+                `;
                 });
         }
 
-        function renderDocuments(documentos) {
-            if (!documentos || documentos.length === 0) {
-                return `<p class="text-muted">No hay documentos asociados.</p>`;
-            }
-
-            return `
-        <ul class="documents-list">
-            ${documentos.map(doc => `
-                                                                                <li>
-                                                                                    <i class="fas fa-file-pdf"></i>
-                                                                                    <a href="/storage/${doc.ruta}" target="_blank">
-                                                                                        ${doc.nombre}
-                                                                                    </a>
-                                                                                </li>
-                                                                            `).join('')}
-        </ul>
-    `;
-        }
-
+        // Cerrar modal
         function closeProcessModal() {
             document.getElementById('viewProcessModal').style.display = 'none';
         }
 
-        //  Cerrar modal con la tecla ESC
+        // 🔥 CERRAR MODAL AL HACER CLIC FUERA
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('viewProcessModal');
+
+            // Si el modal está visible
+            if (modal && modal.style.display === 'flex') {
+                // Si el clic fue en el fondo negro (no en el contenido)
+                if (event.target === modal) {
+                    closeProcessModal();
+                }
+            }
+        });
+
+        // Cerrar modal con ESC
         document.addEventListener('keydown', function(event) {
             const modal = document.getElementById('viewProcessModal');
             if (event.key === 'Escape' && modal.style.display === 'flex') {
@@ -315,6 +369,62 @@
             }
         });
 
+        // Helper para iconos de estado
+        function getEstadoIcon(estado) {
+            const icons = {
+                'Pendiente': '⏳',
+                'Radicado': '📋',
+                'Archivado': '📁',
+                'Finalizado': '✅',
+                'En proceso': '🔄',
+                'Reabierto': '🔓',
+                'Admisión': '📝',
+                'Traslado': '📤',
+                'Audiencia': '👨‍⚖️',
+                'Fallo favorable': '✅',
+                'Fallo desfavorable': '❌',
+                'Apelación': '⚖️',
+                'Ejecutoria': '🔨',
+                'Pago en trámite': '💰',
+                'Conciliado': '🤝'
+            };
+            return icons[estado] || '📄';
+        }
+
+        // Renderizar documentos
+        function renderDocuments(documentos) {
+            if (!documentos || documentos.length === 0) {
+                return `<p class="text-muted">📄 No hay documentos asociados a este proceso.</p>`;
+            }
+
+            return `
+            <ul class="documents-list">
+                ${documentos.map(doc => `
+                                    <li>
+                                        <a href="/storage/${doc.ruta}" target="_blank">
+                                            <i class="fas fa-file-pdf"></i>
+                                            ${doc.nombre}
+                                        </a>
+                                    </li>
+                                `).join('')}
+            </ul>
+        `;
+        }
+
+        // Cerrar modal
+        function closeProcessModal() {
+            document.getElementById('viewProcessModal').style.display = 'none';
+        }
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(event) {
+            const modal = document.getElementById('viewProcessModal');
+            if (event.key === 'Escape' && modal.style.display === 'flex') {
+                closeProcessModal();
+            }
+        });
+
+        // Confirmar eliminación
         function confirmDelete(id, nombre) {
             Swal.fire({
                 title: 'Confirmar Eliminación',
@@ -324,14 +434,8 @@
                 confirmButtonText: 'Eliminar',
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true,
-                customClass: {
-                    popup: 'custom-popup',
-                    title: 'custom-title',
-                    htmlContainer: 'custom-text',
-                    confirmButton: 'custom-confirm',
-                    cancelButton: 'custom-cancel',
-                    icon: 'custom-icon'
-                }
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280'
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById(`delete-form-${id}`).submit();

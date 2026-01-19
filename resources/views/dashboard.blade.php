@@ -371,7 +371,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card" id="casesStatCard">
+                        <div class="stat-card" id="casesStatCard" style="cursor: pointer;">
                             <div class="stat-icon">📋</div>
                             <div class="stat-info">
                                 <h3>{{ $cases_count }}</h3>
@@ -396,7 +396,34 @@
                     <div id="assistantsTableWrapper" style="display: none; margin-top: 30px;">
                         @include('profile.partials.assistants-table-simple', ['assistants' => $assistants])
                     </div>
+
+                    <!-- 🔽🔽🔽 TABLA DE PROCESOS OCULTA INICIALMENTE 🔽🔽🔽 -->
+                    <div id="procesosTableWrapper" style="display:none; margin-top:30px;">
+                        @include('profile.partials.procesos-table-simple', [
+                            'procesosSimple' => $procesosSimple,
+                        ])
+                    </div>
                 </div>
+
+                {{-- MODAL REABRIR PROCESO --}}
+                <div id="reabrirOverlay" class="modal-overlay hidden"></div>
+
+                <div id="reabrirModal" class="modal-alert hidden">
+                    <div class="modal-icon">⚠️</div>
+
+                    <h3>Reabrir proceso</h3>
+
+                    <p>
+                        ¿Está seguro de reabrir este proceso?<br>
+                        <small>El abogado podrá editarlo nuevamente.</small>
+                    </p>
+
+                    <div class="modal-actions">
+                        <button id="cancelReabrir" class="btn-cancel">Cancelar</button>
+                        <button id="confirmReabrir" class="btn-danger">Reabrir</button>
+                    </div>
+                </div>
+
                 <!-- SECCIÓN GESTIÓN DE ASISTENTES JURÍDICOS -->
                 <div class="section-content" id="assistants-section">
                     <div class="section-header">
@@ -441,6 +468,7 @@
                     <div id="AbogadosTableWrapper">
                         @include('profile.partials.lawyers-table', ['lawyers' => $lawyers])
                     </div>
+
 
 
                 </div>

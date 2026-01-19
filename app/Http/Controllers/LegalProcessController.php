@@ -12,9 +12,6 @@ use App\Models\HistorialEstadoProceso;
 use App\Models\ProcesoDocumento;
 
 
-
-
-
 class LegalProcessController extends Controller
 {
     // ===============================
@@ -202,28 +199,28 @@ class LegalProcessController extends Controller
      * Mostrar un proceso específico
      */
 
-public function show($id)
-{
-    $proceso = Proceso::with(['documentos', 'pago'])->findOrFail($id); // 👈 Agregar 'pago'
+    public function show($id)
+    {
+        $proceso = Proceso::with(['documentos', 'pago'])->findOrFail($id); // 👈 Agregar 'pago'
 
-    return response()->json([
-        'id' => $proceso->id,
-        'numero_radicado' => $proceso->numero_radicado,
-        'tipo_proceso' => $proceso->tipo_proceso,
-        'demandante' => $proceso->demandante,
-        'demandado' => $proceso->demandado,
-        'descripcion' => $proceso->descripcion,
-        'estado' => $proceso->estado,
-        'requiere_pago' => $proceso->requiere_pago,
-        'valor_estimado' => $proceso->valor_estimado,
-        'created_at' => $proceso->created_at->format('d-m-Y'),
-        
-        // 🔥 AGREGAR ESTOS CAMPOS
-        'pago_realizado' => $proceso->pago !== null,
-        
-        'documentos' => $proceso->documentos,
-    ]);
-}
+        return response()->json([
+            'id' => $proceso->id,
+            'numero_radicado' => $proceso->numero_radicado,
+            'tipo_proceso' => $proceso->tipo_proceso,
+            'demandante' => $proceso->demandante,
+            'demandado' => $proceso->demandado,
+            'descripcion' => $proceso->descripcion,
+            'estado' => $proceso->estado,
+            'requiere_pago' => $proceso->requiere_pago,
+            'valor_estimado' => $proceso->valor_estimado,
+            'created_at' => $proceso->created_at->format('d-m-Y'),
+
+            // 🔥 AGREGAR ESTOS CAMPOS
+            'pago_realizado' => $proceso->pago !== null,
+
+            'documentos' => $proceso->documentos,
+        ]);
+    }
     /**
      * Mostrar formulario de edición
      */
@@ -380,5 +377,24 @@ public function show($id)
     private function removeAuxiliaryFields(array &$validated)
     {
         unset($validated['eliminar_documento']);
+    }
+
+    public function reabrir($id)
+    {
+        $proceso = Proceso::findOrFail($id);
+
+        // Cambiar estado
+        $proceso->estado = 'Reabierto';
+        $proceso->save();
+
+        // Registrar en historial
+        HistorialEstadoProceso::create([
+            'proceso_id' => $proceso->id,
+            'estado' => 'Reabierto',
+            'observacion' => 'Proceso reabierto',
+            'user_id' => Auth::id(),
+        ]);
+
+        return response()->json(['success' => true]);
     }
 }

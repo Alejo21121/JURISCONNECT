@@ -206,3 +206,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
     Route::post('/pagos', [PagoController::class, 'store'])->name('pagos.store');
 });
+
+Route::post('/procesos/{id}/reabrir', [LegalProcessController::class, 'reabrir'])
+    ->middleware('auth');

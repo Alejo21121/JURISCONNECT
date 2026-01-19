@@ -33,7 +33,8 @@ return new class extends Migration
                 'Ejecutoria',
                 'Pago en trámite',
                 'Conciliado',
-                'Archivado'
+                'Archivado',
+                'Reabierto' // 👈 NUEVO ESTADO
             ])->default('Pendiente');
 
             /* 💰 PAGOS */

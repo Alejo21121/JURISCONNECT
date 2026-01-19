@@ -546,6 +546,7 @@ function handleAjaxPagination() {
         document.querySelector("#assistants-section"),
         document.querySelector("#lawyersTableWrapper"),
         document.querySelector("#assistantsTableWrapper"),
+        document.querySelector("#procesosTableWrapper"), // 👈 AÑADIDO
     ];
 
     sections.forEach((section) => {
@@ -1062,46 +1063,110 @@ function setupImageUpload() {
 // Inicializar subida de imagen
 setupImageUpload();
 
+/* =============================
+   =    DASHBOARD SLIDE TOGGLE
+   ============================= */
+
 document.addEventListener("DOMContentLoaded", function () {
     const lawyersCard = document.getElementById("lawyersStatCard");
     const assistantsCard = document.getElementById("assistantsStatCard");
+    const casesCard = document.getElementById("casesStatCard");
 
     const lawyersWrapper = document.getElementById("lawyersTableWrapper");
     const assistantsWrapper = document.getElementById("assistantsTableWrapper");
+    const procesosWrapper = document.getElementById("procesosTableWrapper");
 
-    // función para deslizar
+    function isVisible(element) {
+        return window.getComputedStyle(element).display !== "none";
+    }
+
     function slideToggle(element) {
-        if (element.style.display === "none") {
+        if (!isVisible(element)) {
             element.style.display = "block";
-            element.style.maxHeight = "0px";
             element.style.overflow = "hidden";
-            setTimeout(() => {
-                element.style.transition = "max-height 0.4s ease";
-                element.style.maxHeight = element.scrollHeight + "px";
-            }, 10);
-        } else {
-            element.style.transition = "max-height 0.4s ease";
             element.style.maxHeight = "0px";
-            setTimeout(() => (element.style.display = "none"), 400);
+            element.style.transition = "max-height 0.4s ease";
+
+            requestAnimationFrame(() => {
+                element.style.maxHeight = element.scrollHeight + "px";
+            });
+        } else {
+            element.style.maxHeight = "0px";
+            setTimeout(() => {
+                element.style.display = "none";
+            }, 400);
         }
     }
 
-    // clic en la tarjeta de abogados
+    function closeOthers(current) {
+        [lawyersWrapper, assistantsWrapper, procesosWrapper].forEach((el) => {
+            if (el !== current && isVisible(el)) {
+                slideToggle(el);
+            }
+        });
+    }
+
     lawyersCard.addEventListener("click", () => {
-        if (assistantsWrapper.style.display === "block") {
-            slideToggle(assistantsWrapper);
-        }
+        closeOthers(lawyersWrapper);
         slideToggle(lawyersWrapper);
     });
 
-    // clic en la tarjeta de asistentes
     assistantsCard.addEventListener("click", () => {
-        if (lawyersWrapper.style.display === "block") {
-            slideToggle(lawyersWrapper);
-        }
+        closeOthers(assistantsWrapper);
         slideToggle(assistantsWrapper);
     });
+
+    casesCard.addEventListener("click", () => {
+        closeOthers(procesosWrapper);
+        slideToggle(procesosWrapper);
+    });
 });
+
+/* =============================    
+     REABRIR PROCESO MODAL  
+    ============================= */
+let procesoAReabrir = null;
+
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("reopen-process-btn")) {
+        procesoAReabrir = e.target.dataset.id;
+
+        document.getElementById("reabrirOverlay").classList.remove("hidden");
+        document.getElementById("reabrirModal").classList.remove("hidden");
+    }
+});
+
+// Cancelar
+document.getElementById("cancelReabrir").addEventListener("click", () => {
+    cerrarModalReabrir();
+});
+
+// Confirmar
+document.getElementById("confirmReabrir").addEventListener("click", () => {
+    fetch(`/procesos/${procesoAReabrir}/reabrir`, {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
+        },
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert("Error al reabrir el proceso");
+            }
+        })
+        .catch(() => alert("Error de servidor"));
+});
+
+function cerrarModalReabrir() {
+    document.getElementById("reabrirOverlay").classList.add("hidden");
+    document.getElementById("reabrirModal").classList.add("hidden");
+    procesoAReabrir = null;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const lawyerContainer = document.getElementById("lawyerSelectContainer");

@@ -1380,3 +1380,192 @@ tr:hover td {
         padding: var(--spacing-3);
     }
 }
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
+}
+
+/* ===== MODAL ===== */
+.modal-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    width: 420px;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: scaleIn 0.25s ease;
+}
+
+.modal-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.modal-alert h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.modal-alert p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* ===== BOTONES ===== */
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn-cancel {
+    background: #ccc;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background: #e63946;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background: #d62839;
+}
+
+/* ===== HIDDEN ===== */
+.hidden {
+    display: none;
+}
+
+/* ===== ANIMACIÓN ===== */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.estado-badge.reopen-process-btn {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.estado-badge.reopen-process-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Estado badge */
+.estado-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* Colores por estado */
+.estado-conciliado {
+    background: #2563eb;
+    color: #fff;
+}
+
+.estado-pendiente {
+    background: #fef3c7;
+    /* amarillo suave */
+    color: #92400e;
+}
+
+.estado-radicado {
+    background: #e0f2fe;
+    /* azul claro */
+    color: #075985;
+}
+
+.estado-admision {
+    background: #dcfce7;
+    /* verde suave */
+    color: #166534;
+}
+
+.estado-traslado {
+    background: #ede9fe;
+    /* morado claro */
+    color: #5b21b6;
+}
+
+.estado-audiencia {
+    background: #cffafe;
+    /* cian */
+    color: #155e75;
+}
+
+.estado-reabierto {
+    background: #dcfce7;
+    /* verde suave */
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.estado-fallo-favorable {
+    background: #22c55e;
+    /* verde fuerte */
+    color: #ffffff;
+}
+
+.estado-fallo-desfavorable {
+    background: #ef4444;
+    /* rojo */
+    color: #ffffff;
+}
+
+.estado-apelacion {
+    background: #f97316;
+    /* naranja */
+    color: #ffffff;
+}
+
+.estado-ejecutoria {
+    background: #3b82f6;
+    /* azul sólido */
+    color: #ffffff;
+}
+
+.estado-pago-en-tramite {
+    background: #fde68a;
+    /* amarillo intenso */
+    color: #78350f;
+}
+
+.estado-conciliado {
+    background: #2563eb;
+    /* azul fuerte */
+    color: #ffffff;
+}
+
+.estado-archivado {
+    background: #e5e7eb;
+    /* gris */
+    color: #374151;
+}

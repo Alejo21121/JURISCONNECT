@@ -9,6 +9,7 @@ use App\Models\Lawyer;
 use App\Models\Assistant;
 use App\Models\PagoDocumento;
 use Illuminate\Http\Request;
+use App\Models\HistorialEstadoProceso;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -73,7 +74,6 @@ class PagoController extends Controller
         // 🔒 Buscar proceso
         $proceso = Proceso::findOrFail($validated['proceso_id']);
 
-
         // 🚫 si ya está archivado, no permitir pago
         if ($proceso->estado === 'Archivado') {
             return response()->json([
@@ -107,8 +107,15 @@ class PagoController extends Controller
         }
 
         // 🔥 CAMBIO DE ESTADO AUTOMÁTICO
-        $proceso->update([
-            'estado' => 'Archivado'
+        $proceso->estado = 'Archivado';
+        $proceso->save();
+
+        // 🔥 REGISTRAR EN HISTORIAL
+        HistorialEstadoProceso::create([
+            'proceso_id' => $proceso->id,
+            'estado' => 'Archivado',
+            'observacion' => 'Proceso pagado',
+            'user_id' => Auth::id(),
         ]);
 
         return response()->json([

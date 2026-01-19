@@ -218,10 +218,10 @@ estadoSelect.addEventListener("change", function () {
             html: `
                     <p><strong>⚠️ Advertencia</strong></p>
                     <p>Al archivar este proceso:</p>
-                    <ul style="text-align:left;">
-                        <li>❌ No podrá volver a editarse</li>
-                        <li>❌ No se podrán modificar pagos ni documentos</li>
-                        <li>✔ El proceso quedará cerrado definitivamente</li>
+                    <ul style="text-align:center;">
+                        ❌ No podrá volver a editarse</li>
+                        ❌ No se podrán modificar pagos ni documentos</li>
+                        ✔ El proceso quedará cerrado definitivamente</li>
                     </ul>
                 `,
             showCancelButton: true,

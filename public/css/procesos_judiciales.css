@@ -347,7 +347,7 @@ body {
     color: white;
     box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
     padding: 0.5rem 1.5rem;
-    margin-left: 235px;
+    margin-left: 220px;
 }
 
 .btn-pagos:hover {
@@ -977,4 +977,324 @@ body {
 .text-muted {
     color: #64748b;
     font-size: 13px;
+}
+
+/* ========================================
+   MODAL MEJORADO
+   ======================================== */
+
+#viewProcessModal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 90vh;
+    margin: auto;
+    padding: 0;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease-out;
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from { 
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   HEADER DEL MODAL
+   ======================================== */
+
+.modal-header-custom {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    position: relative;
+}
+
+
+.modal-header-custom h2 i {
+    font-size: 1.75rem;
+}
+
+/* ========================================
+   BODY DEL MODAL
+   ======================================== */
+
+.modal-body-custom {
+    padding: 2rem;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+}
+
+.modal-body-custom::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body-custom::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.modal-body-custom::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.modal-body-custom::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ========================================
+   BADGES
+   ======================================== */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    width: fit-content;
+}
+
+.badge.estado-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge.estado-radicado {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge.estado-archivado {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.badge.estado-reabierto {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge.estado-finalizado {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge.pago-realizado {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge.pago-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge.pago-no-aplica {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+/* ========================================
+   SECCIONES
+   ======================================== */
+
+.section-divider {
+    margin: 1.5rem 0;
+    border: none;
+    border-top: 2px solid #e5e7eb;
+}
+
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========================================
+   BOX DE DESCRIPCIÓN
+   ======================================== */
+
+.detail-box {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.detail-box .label {
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.detail-box p {
+    color: #475569;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ========================================
+   CARD DE PAGO
+   ======================================== */
+
+.pago-card {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid #6ee7b7;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.pago-card h5 {
+    color: #065f46;
+    font-size: 1rem;
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pago-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.pago-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.pago-item .label {
+    font-size: 0.75rem;
+    color: #059669;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pago-item .value {
+    font-size: 1.125rem;
+    color: #065f46;
+    font-weight: 700;
+}
+
+/* ========================================
+   DOCUMENTOS
+   ======================================== */
+
+.documents-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.documents-list li {
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.documents-list li:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateX(4px);
+}
+
+.documents-list li a {
+    color: #2563eb;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+.documents-list li a:hover {
+    color: #1d4ed8;
+}
+
+.documents-list li i {
+    color: #dc2626;
+    font-size: 1.25rem;
+}
+
+.text-muted {
+    color: #94a3b8;
+    font-style: italic;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 640px) {
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-body-custom {
+        padding: 1rem;
+    }
+
+    .modal-header-custom {
+        padding: 1rem 1.5rem;
+    }
+
+    .modal-header-custom h2 {
+        font-size: 1.25rem;
+    }
+
+    .pago-grid {
+        grid-template-columns: 1fr;
+    }
 }
