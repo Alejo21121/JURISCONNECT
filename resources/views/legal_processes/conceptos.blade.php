@@ -49,29 +49,34 @@
                     @foreach ($conceptos as $c)
                         <div class="concept-card fade-in-up">
                             <h5>{{ $c->titulo }}</h5>
-                            <div class="concept-meta">Redactado por:
-                                {{ $c->abogado->name ?? ($c->abogado->user->name ?? '—') }} ·
-                                {{ $c->created_at->format('d M Y') ?? '' }}</div>
+                            <div class="concept-meta">
+                                Redactado por: {{ $c->abogado->name ?? ($c->abogado->user->name ?? '—') }} ·
+                                {{ $c->created_at->format('d M Y') ?? '' }}
+                            </div>
                             <p>{{ \Illuminate\Support\Str::limit($c->descripcion ?? ($c->concepto ?? ''), 300) }}</p>
+
                             <div class="concept-actions">
                                 <a href="{{ route('concepto.show', $c->id) }}" class="btn btn-view btn-sm">
                                     <i class="fas fa-eye"></i>
                                     Ver detalle
                                 </a>
 
-                                <button type="button" class="btn btn-delete btn-sm" 
+                                {{-- 🔥 SOLO MOSTRAR BOTÓN ELIMINAR SI NO ESTÁ ARCHIVADO --}}
+                                @if ($proceso->estado !== 'Archivado')
+                                    <button type="button" class="btn btn-delete btn-sm"
                                         onclick="showDeleteModal({{ $c->id }}, '{{ addslashes($c->titulo) }}')">
-                                    <i class="fas fa-trash"></i>
-                                    Eliminar
-                                </button>
+                                        <i class="fas fa-trash"></i>
+                                        Eliminar
+                                    </button>
 
-                                <form id="delete-form-{{ $c->id }}" 
-                                      action="{{ route('conceptos.destroy', $c->id) }}" 
-                                      method="POST" 
-                                      style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
+                                    <form id="delete-form-{{ $c->id }}"
+                                        action="{{ route('conceptos.destroy', $c->id) }}" method="POST"
+                                        style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                @else
+                                @endif
                             </div>
                         </div>
                     @endforeach

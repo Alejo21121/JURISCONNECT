@@ -12,11 +12,11 @@
                         <span class="abogado-nombre">
                             – Abogado: {{ auth()->user()->name ?? 'Sin asignar' }}
                         </span>
-
                     </h2>
-
                 </div>
-                <span class="status-badge">{{ $proceso->estado }}</span>
+                <span class="status-badge {{ $proceso->estado === 'Archivado' ? 'status-archivado' : '' }}">
+                    {{ $proceso->estado }}
+                </span>
             </div>
 
             <div class="card-body">
@@ -76,6 +76,17 @@
                     </div>
                 </div>
 
+                {{-- 🚫 ALERTA SI ESTÁ ARCHIVADO --}}
+                @if ($proceso->estado === 'Archivado')
+                    <div class="alert-archivado">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <strong>Proceso Archivado</strong>
+                            <p>No se pueden crear nuevos conceptos jurídicos ni eliminar para este proceso.</p>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="card-footer">
                     <a class="action-btn action-view" onclick="toggleHistorial({{ $proceso->id }})"
                         title="Historial del proceso">
@@ -83,11 +94,19 @@
                         <i class="fa-solid fa-clock-rotate-left"></i>
                     </a>
 
-
-                    <a href="{{ route('abogado.crear-concepto', $proceso->id) }}" class="action-btn">
-                        <i class="fas fa-edit"></i>
-                        Redactar Concepto Jurídico
-                    </a>
+                    {{-- 🔥 BOTÓN CONDICIONADO --}}
+                    @if ($proceso->estado === 'Archivado')
+                        <button class="action-btn btn-disabled" disabled
+                            title="No se pueden crear conceptos en procesos archivados">
+                            <i class="fas fa-lock"></i>
+                            Proceso Archivado
+                        </button>
+                    @else
+                        <a href="{{ route('abogado.crear-concepto', $proceso->id) }}" class="action-btn">
+                            <i class="fas fa-edit"></i>
+                            Redactar Concepto Jurídico
+                        </a>
+                    @endif
 
                     @php
                         $conceptosColeccion = collect($proceso->conceptos ?? []);
@@ -126,7 +145,8 @@
                                 <tr>
                                     <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
-                                        <span class="status-badge">
+                                        <span
+                                            class="status-badge {{ $item->estado === 'Archivado' ? 'status-archivado' : '' }}">
                                             {{ $item->estado }}
                                         </span>
                                     </td>
@@ -160,12 +180,66 @@
 <style>
     .abogado-nombre {
         font-size: inherit;
-        /* Igual que el título */
         color: inherit;
-        /* Mismo color */
         font-weight: normal;
-        /* Para diferenciar del título */
         margin-left: 6px;
+    }
+
+    /* 🚫 BADGE DE ARCHIVADO */
+    .status-archivado {
+        background: #fef2f2 !important;
+        color: #dc2626 !important;
+        border: 1px solid #fecaca !important;
+        font-weight: 600 !important;
+    }
+
+    /* 🚫 ALERTA DE PROCESO ARCHIVADO */
+    .alert-archivado {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fef2f2;
+        border-left: 4px solid #dc2626;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin: 16px 0;
+        animation: slideIn 0.4s ease-out;
+    }
+
+    .alert-archivado i {
+        font-size: 24px;
+        color: #dc2626;
+    }
+
+    .alert-archivado strong {
+        display: block;
+        color: #dc2626;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .alert-archivado p {
+        margin: 0;
+        color: #991b1b;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    /* 🔒 BOTÓN DESHABILITADO */
+    .btn-disabled {
+        background: #e5e7eb !important;
+        color: #9ca3af !important;
+        border: 1px solid #d1d5db !important;
+        cursor: not-allowed !important;
+        opacity: 0.7;
+    }
+
+    .btn-disabled:hover {
+        background: #e5e7eb !important;
+        color: #9ca3af !important;
+        transform: none !important;
+        box-shadow: none !important;
     }
 
     .historial-box {
@@ -215,6 +289,18 @@
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
         }
     }
 </style>

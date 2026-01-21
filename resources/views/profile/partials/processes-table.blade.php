@@ -212,7 +212,7 @@
 
                     <p>
                         Este proceso está <strong>archivado</strong> y no se puede editar.<br>
-                        Si necesita realizar algún cambio, por favor contacte al administrador del sistema.
+                        Si necesita realizar algún cambio, por favor contacte al administrador.
                     </p>
 
                     <div class="alert-buttons">

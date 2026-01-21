@@ -5,8 +5,9 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+        Cantarell, sans-serif;
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     min-height: 100vh;
     padding: 24px;
@@ -302,6 +303,7 @@ body {
     align-items: center;
     gap: 8px;
     transition: background 0.3s;
+    margin-top: 12px;
 }
 
 .btn-registrar:hover {
@@ -563,4 +565,43 @@ body {
 
 .link-comprobante:hover {
     text-decoration: underline;
+}
+
+.btn-toggle-historial {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.btn-toggle-historial:hover {
+    text-decoration: underline;
+}
+
+.historial-contenido {
+    margin-top: 0.75rem;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
 }

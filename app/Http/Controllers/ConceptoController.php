@@ -17,6 +17,13 @@ class ConceptoController extends Controller
 
     public function storeProceso(Request $request, $id)
     {
+        // 🚫 VALIDAR SI EL PROCESO ESTÁ ARCHIVADO
+        $proceso = Proceso::findOrFail($id);
+
+        if ($proceso->estado === 'Archivado') {
+            return redirect()->back()->with('error', 'No se puede crear un concepto jurídico para un proceso archivado.');
+        }
+
         // Validación
         $validated = $request->validate([
             'titulo' => 'required|string|max:120',
@@ -33,7 +40,6 @@ class ConceptoController extends Controller
 
         return back()->with('success', 'Concepto jurídico creado correctamente.');
     }
-
 
     public function index(Request $request)
     {
@@ -150,8 +156,6 @@ class ConceptoController extends Controller
 
         return view('legal_processes.showConceptos', compact('procesos'));
     }
-
-
     /**
      * Guardar el concepto para un proceso específico
      */

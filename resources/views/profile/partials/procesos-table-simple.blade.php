@@ -1,6 +1,18 @@
 <div class="table-wrapper">
-    <table class="lawyers-table">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <table class="lawyers-table" id="tablaProcesos">
         <thead>
+            <tr>
+                <th colspan="6">
+                    <div style="position: relative; margin: 0 auto;">
+                        <i class="fas fa-search"
+                            style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; z-index: 1;"></i>
+
+                        <input type="text" id="buscadorProcesos" class="input-buscador" placeholder="Buscar proceso"
+                            style="padding-left: 40px; width: 100%;">
+                    </div>
+                </th>
+            </tr>
             <tr>
                 <th>Radicado</th>
                 <th>Tipo de Proceso</th>
@@ -37,8 +49,6 @@
                             </span>
                         @endif
                     </td>
-
-
                 </tr>
             @empty
                 <tr>
@@ -49,6 +59,23 @@
             @endforelse
         </tbody>
     </table>
+
+    <script>
+        document.getElementById('buscadorProcesos').addEventListener('input', function() {
+            const filtro = this.value.toLowerCase();
+            const filas = document.querySelectorAll('#tablaProcesos tbody tr');
+
+            filas.forEach(fila => {
+                const textoFila = fila.innerText.toLowerCase();
+
+                if (textoFila.includes(filtro)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
 
     @include('profile.partials.pagination', [

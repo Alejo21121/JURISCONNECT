@@ -469,8 +469,6 @@
                         @include('profile.partials.lawyers-table', ['lawyers' => $lawyers])
                     </div>
 
-
-
                 </div>
 
             </div>
@@ -478,6 +476,5 @@
         </div>
     </div>
     </div>
-
 
 </x-app-layout>
