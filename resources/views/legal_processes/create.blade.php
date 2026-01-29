@@ -141,8 +141,8 @@
 
                         <div class="field-group pago-group d-none" id="valorEstimadoDiv">
                             <label class="form-label fw-bold">Valor estimado del proceso</label>
-                            <input type="number" name="valor_estimado" class="form-control"
-                                placeholder="Ej: 1500000" min="0" step="0.01">
+                            <input type="text" name="valor_estimado" id="valor_estimado" class="form-control"
+                                placeholder="Ej: 1.500.000">
                         </div>
 
                     </div>
@@ -190,7 +190,7 @@
                 </div>
                 <!-- Botones -->
                 <div class="button-container">
-                    <a href="{{ route('dashboard.abogado') }}" class="btn btn-cancel">
+                    <a href="javascript:void(0)" class="btn btn-cancel" onclick="window.history.back()">
                         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 19l-7-7 7-7" />
@@ -236,7 +236,7 @@
                 if (result.success) {
                     showAlert('success', '¡Éxito!', 'Proceso creado exitosamente. Redirigiendo...');
                     setTimeout(() => {
-                        window.location.href = '{{ route('dashboard.abogado') }}';
+                        window.location.href = "{{ route('procesos.index') }}";
                     }, 1500);
                 } else {
                     if (result.errors) {
@@ -526,4 +526,9 @@
 
     // 🚨 CLAVE: al cargar la página
     document.addEventListener('DOMContentLoaded', toggleValorEstimado);
+
+    document.getElementById('valor_estimado').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        e.target.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    });
 </script>

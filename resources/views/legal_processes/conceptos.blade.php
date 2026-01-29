@@ -31,10 +31,6 @@
                     <i class="fas fa-list"></i>
                     Volver al listado
                 </a>
-                <a class="btn-secondary" href="{{ route('dashboard.abogado') }}">
-                    <i class="fas fa-xmark"></i>
-                    Cancelar
-                </a>
             </div>
         </div>
 

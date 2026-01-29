@@ -18,10 +18,8 @@ class LawyersExport implements FromCollection, WithHeadings, WithTitle, WithStyl
         $lawyers = Lawyer::select('nombre', 'apellido', 'correo', 'telefono', 'especialidad')->get();
 
         $data = [];
-        $contador = 1;
         foreach ($lawyers as $lawyer) {
             $data[] = [
-                'ID' => $contador++,
                 'Nombre' => $lawyer->nombre,
                 'Apellido' => $lawyer->apellido,
                 'Correo Electrónico' => $lawyer->correo,
@@ -35,8 +33,9 @@ class LawyersExport implements FromCollection, WithHeadings, WithTitle, WithStyl
 
     public function headings(): array
     {
-        return ['ID', 'Nombre', 'Apellido', 'Correo Electrónico', 'Teléfono', 'Especialidad'];
+        return ['Nombre', 'Apellido', 'Correo Electrónico', 'Teléfono', 'Especialidad'];
     }
+
 
     public function title(): string
     {
@@ -45,7 +44,7 @@ class LawyersExport implements FromCollection, WithHeadings, WithTitle, WithStyl
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:F1')->applyFromArray([
+        $sheet->getStyle('A1:E1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -63,7 +62,7 @@ class LawyersExport implements FromCollection, WithHeadings, WithTitle, WithStyl
             ],
         ]);
 
-        foreach (range('A', 'F') as $col) {
+        foreach (range('A', 'E') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
     }
@@ -75,7 +74,7 @@ class LawyersExport implements FromCollection, WithHeadings, WithTitle, WithStyl
         $drawing->setDescription('Logo del SENA');
         $drawing->setPath(public_path('img/LogoInsti.png'));
         $drawing->setHeight(60);
-        $drawing->setCoordinates('G1');
+        $drawing->setCoordinates('F1');
         $drawing->setOffsetX(5);
         $drawing->setOffsetY(5);
 

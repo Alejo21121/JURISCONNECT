@@ -9,7 +9,7 @@
 </head>
 
 <body>
-   
+
     <!-- Modal para ver datos del proceso -->
     <div id="viewProcessModal" class="modal" style="display:none;">
         <div class="modal-content">
@@ -92,7 +92,10 @@
 
                         @if (Auth::user()->role_id == 2)
                             <a href="{{ route('procesos.create') }}" class="btn btn-primary">
-                                <i class="fas fa-save"></i>
+                                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
                                 Nuevo Proceso
                             </a>
                         @else
@@ -263,61 +266,63 @@
         </span>
     </div>
 
-    ${data.requiere_pago == 1 ? `
-                        <div class="detail-row">
-                            <span class="label">Valor estimado</span>
-                            <span class="value">
-                                <strong style="color:#2563eb; font-size:1.125rem;">
-                                    $ ${Number(data.valor_estimado || 0).toLocaleString('es-CO')}
-                                </strong>
-                            </span>
-                        </div>
+${data.requiere_pago == 1 ? `
+        <div class="detail-row">
+            <span class="label">Valor estimado</span>
+            <span class="value">
+                <strong style="color:#2563eb; font-size:1.125rem;">
+                    $ ${Number(data.valor_estimado || 0).toLocaleString('es-CO')}
+                </strong>
+            </span>
+        </div>
 
-                        <div class="detail-row">
-                            <span class="label">Estado del pago</span>
-                            <span class="value">
-                                ${data.pago_realizado === true
-                                    ? '<span class="badge pago-realizado"><i class="fas fa-check-circle"></i> Pago realizado</span>'
-                                    : '<span class="badge pago-pendiente"><i class="fas fa-clock"></i> Pago pendiente</span>'}
-                            </span>
-                        </div>
+        <div class="detail-row">
+            <span class="label">Estado del pago</span>
+            <span class="value">
+                ${data.porcentaje >= 100
+                    ? '<span class="badge pago-realizado"><i class="fas fa-check-circle"></i> Pago completado</span>'
+                    : data.porcentaje > 0
+                        ? '<span class="badge pago-tramite"><i class="fas fa-spinner"></i> Pago en trámite</span>'
+                        : '<span class="badge pago-pendiente"><i class="fas fa-clock"></i> Pago pendiente</span>'}
+            </span>
+        </div>
 
-                        ${data.pago_realizado === true && data.pago ? `
-            <div class="pago-card">
-                <h5 style="color:#065f46; font-size:1rem; margin:0 0 1rem 0; font-weight:700; display:flex; align-items:center; gap:0.5rem;">
-                    <i class="fas fa-money-bill-wave"></i>
-                    Detalles del Pago Realizado
-                </h5>
-                <div class="pago-grid">
-                    <div class="pago-item">
-                        <span class="label">Valor Pagado</span>
-                        <span class="value">$ ${Number(data.pago.valor_pagado || 0).toLocaleString('es-CO')}</span>
-                    </div>
-                    <div class="pago-item">
-                        <span class="label">Fecha de Pago</span>
-                        <span class="value"><i class="fas fa-calendar-check"></i> ${data.pago.fecha_pago || 'N/A'}</span>
-                    </div>
-                    <div class="pago-item">
-                        <span class="label">Forma de Pago</span>
-                        <span class="value">${data.pago.forma_pago || 'N/A'}</span>
-                    </div>
-                    ${data.pago.observaciones ? `
-                                        <div class="pago-item" style="grid-column: 1 / -1;">
-                                            <span class="label">Observaciones</span>
-                                            <span class="value" style="font-size:0.9rem; font-weight:500; color:#374151;">${data.pago.observaciones}</span>
-                                        </div>
-                                    ` : ''}
+        ${data.porcentaje >= 100 && data.pago ? `
+        <div class="pago-card">
+            <h5 style="color:#065f46; font-size:1rem; margin:0 0 1rem 0; font-weight:700; display:flex; align-items:center; gap:0.5rem;">
+                <i class="fas fa-money-bill-wave"></i>
+                Detalles del Pago Realizado
+            </h5>
+            <div class="pago-grid">
+                <div class="pago-item">
+                    <span class="label">Valor Pagado</span>
+                    <span class="value">$ ${Number(data.pago.valor_pagado || 0).toLocaleString('es-CO')}</span>
                 </div>
-            </div>
-        ` : ''}
-                    ` : `
-                        <div class="detail-row">
-                            <span class="label">Estado del pago</span>
-                            <span class="value">
-                                <span class="badge pago-no-aplica">— No aplica</span>
-                            </span>
+                <div class="pago-item">
+                    <span class="label">Fecha de Pago</span>
+                    <span class="value"><i class="fas fa-calendar-check"></i> ${data.pago.fecha_pago || 'N/A'}</span>
+                </div>
+                <div class="pago-item">
+                    <span class="label">Forma de Pago</span>
+                    <span class="value">${data.pago.forma_pago || 'N/A'}</span>
+                </div>
+                ${data.pago.observaciones ? `
+                        <div class="pago-item" style="grid-column: 1 / -1;">
+                            <span class="label">Observaciones</span>
+                            <span class="value" style="font-size:0.9rem; font-weight:500; color:#374151;">${data.pago.observaciones}</span>
                         </div>
-                    `}
+                    ` : ''}
+            </div>
+        </div>
+    ` : ''}
+    ` : `
+        <div class="detail-row">
+            <span class="label">Estado del pago</span>
+            <span class="value">
+                <span class="badge pago-no-aplica">— No aplica</span>
+            </span>
+        </div>
+    `}
 
     <div class="section-divider"></div>
 
@@ -400,13 +405,13 @@
             return `
             <ul class="documents-list">
                 ${documentos.map(doc => `
-                                    <li>
-                                        <a href="/storage/${doc.ruta}" target="_blank">
-                                            <i class="fas fa-file-pdf"></i>
-                                            ${doc.nombre}
-                                        </a>
-                                    </li>
-                                `).join('')}
+                                        <li>
+                                            <a href="/storage/${doc.ruta}" target="_blank">
+                                                <i class="fas fa-file-pdf"></i>
+                                                ${doc.nombre}
+                                            </a>
+                                        </li>
+                                    `).join('')}
             </ul>
         `;
         }

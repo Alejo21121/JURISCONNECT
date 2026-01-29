@@ -21,7 +21,7 @@ class NewPasswordController extends Controller
             'token' => $token,
             'email' => $request->email,
         ]);
-    } 
+    }
 
     /**
      * Procesa el restablecimiento de la contraseña.
@@ -63,8 +63,20 @@ class NewPasswordController extends Controller
             }
         );
 
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', 'Tu contraseña ha sido restablecida correctamente.')
-            : back()->withErrors(['email' => 'No se pudo restablecer la contraseña.']);
+        return match ($status) {
+            Password::PASSWORD_RESET =>
+            redirect()->route('login')
+                ->with('status', 'Tu contraseña ha sido restablecida correctamente.'),
+
+            Password::INVALID_TOKEN =>
+            back()->withErrors([
+                'email' => __('passwords.token'),
+            ]),
+
+            default =>
+            back()->withErrors([
+                'email' => __('passwords.user'),
+            ]),
+        };
     }
 }

@@ -697,7 +697,9 @@ tr:hover td {
     z-index: 20000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s ease;
+    transition:
+        opacity 0.35s ease,
+        visibility 0.35s ease;
 }
 .alert-overlay.show {
     opacity: 1;
@@ -787,7 +789,9 @@ tr:hover td {
     border: none;
     cursor: pointer;
     font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
     color: #fff;
     min-width: 130px;
 }
@@ -1436,18 +1440,6 @@ tr:hover td {
     cursor: pointer;
 }
 
-.btn-danger {
-    background: #e63946;
-    color: #fff;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.btn-danger:hover {
-    background: #d62839;
-}
 
 /* ===== HIDDEN ===== */
 .hidden {
@@ -1468,7 +1460,9 @@ tr:hover td {
 
 .estado-badge.reopen-process-btn {
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 .estado-badge.reopen-process-btn:hover {
@@ -1592,5 +1586,3 @@ tr:hover td {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     background-color: #f8fafc;
 }
-
-

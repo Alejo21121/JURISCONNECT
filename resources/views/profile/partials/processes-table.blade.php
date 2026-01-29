@@ -62,7 +62,8 @@
 
                     <th>
                         <div class="header-content-cell">
-                            <span>Estado</span>
+                            <span>Estado </span>
+                            <span>📊</span>
                         </div>
                     </th>
 

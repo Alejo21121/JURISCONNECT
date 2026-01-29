@@ -415,7 +415,7 @@
 
                     <p>
                         ¿Está seguro de reabrir este proceso?<br>
-                        <small>El abogado podrá editarlo nuevamente.</small>
+                        El abogado podrá editarlo nuevamente.
                     </p>
 
                     <div class="modal-actions">

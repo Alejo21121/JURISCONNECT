@@ -63,17 +63,27 @@ class AdminController extends Controller
                     }
                 });
             }
-
             // ============================
-            // BUSCAR PROCESOS POR RADICADO
+            // BUSCAR PROCESOS
             // ============================
-
             $procesosQuery = Proceso::with('lawyer');
 
             if ($request->filled('radicado')) {
-                $procesosQuery->where('numero_radicado', 'ILIKE', '%' . $radicado . '%');
+                $radicado = $request->get('radicado');
+                $procesosQuery->where(function ($q) use ($radicado) {
+                    $q->where('numero_radicado', 'ILIKE', '%' . $radicado . '%')
+                        ->orWhere('tipo_proceso', 'ILIKE', '%' . $radicado . '%')
+                        ->orWhere('demandante', 'ILIKE', '%' . $radicado . '%')
+                        ->orWhere('demandado', 'ILIKE', '%' . $radicado . '%')
+                        ->orWhere('estado', 'ILIKE', '%' . $radicado . '%')
+                        ->orWhereHas('lawyer', function ($q2) use ($radicado) {
+                            $q2->where('nombre', 'ILIKE', '%' . $radicado . '%')
+                                ->orWhere('apellido', 'ILIKE', '%' . $radicado . '%');
+                        });
+                });
             }
 
+            $procesosSimple = $procesosQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'procesosSimplePage');
 
             // ============================
             // PAGINACIONES

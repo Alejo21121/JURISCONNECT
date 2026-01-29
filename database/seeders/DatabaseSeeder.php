@@ -24,7 +24,7 @@ public function run(): void
 
     // Crear rol de administrador sin el campo slug
     $adminRole = Role::firstOrCreate([
-        'name' => 'Administrador'
+        'name' => 'admin'
     ]);
 
     // Crear un usuario con ese rol
@@ -33,7 +33,7 @@ public function run(): void
         'email' => 'brendaModa45@gmail.com'
 
     ], [
-        'name' => 'Admin',
+        'name' => 'admin',
         'password' => Hash::make('admin123'), 
         'role_id' => $adminRole->id,
         'remember_token' => Str::random(10),

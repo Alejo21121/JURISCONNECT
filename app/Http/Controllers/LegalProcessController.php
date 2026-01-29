@@ -97,44 +97,39 @@ class LegalProcessController extends Controller
 
         return view('legal_processes.create');
     }
-
     public function store(Request $request)
     {
-        // ❌ SOLO ABOGADO (role_id = 2) puede crear
         if (Auth::user()->role_id != 2) {
             abort(403, 'No tienes permisos para crear procesos.');
         }
 
         try {
 
+            // 🔑 LIMPIAR ANTES DE VALIDAR
+            if ($request->requiere_pago == 1 && $request->valor_estimado) {
+                $request->merge([
+                    'valor_estimado' => preg_replace('/\D/', '', $request->valor_estimado)
+                ]);
+            }
+
+            // ✅ VALIDAR UNA SOLA VEZ
             $validated = $this->validateProcesoData($request);
 
-            // Estado por defecto
             $validated['estado'] = 'Pendiente';
-
-            // ✔️ Guardar el usuario que creó el proceso
             $validated['user_id'] = Auth::id();
-
-
-            // Normalizar pago
             $validated['requiere_pago'] = (int) $request->requiere_pago;
 
             if ($validated['requiere_pago'] === 0) {
                 $validated['valor_estimado'] = null;
             }
 
-            // ✔️ Obtener el abogado REAL del usuario
-            // (de la tabla lawyers)
             $lawyer = Auth::user()->lawyer;
-
             if (!$lawyer) {
-                throw new \Exception("El usuario no tiene un abogado asociado en la tabla lawyers.");
+                throw new \Exception("El usuario no tiene abogado asociado.");
             }
 
-            // ✔️ Guardar ID del abogado correcto
             $validated['lawyer_id'] = $lawyer->id;
 
-            // Crear proceso
             $proceso = Proceso::create($validated);
 
             if ($request->hasFile('documentos')) {
@@ -203,6 +198,11 @@ class LegalProcessController extends Controller
     {
         $proceso = Proceso::with(['documentos', 'pago'])->findOrFail($id); // 👈 Agregar 'pago'
 
+        // Calcular porcentaje de pago
+        $totalPagado = $proceso->cuotas->where('estado', 'Pagada')->sum('valor');
+        $valorTotal = $proceso->valor_estimado ?? 0;
+        $porcentaje = $valorTotal > 0 ? round(($totalPagado / $valorTotal) * 100, 2) : 0;
+
         return response()->json([
             'id' => $proceso->id,
             'numero_radicado' => $proceso->numero_radicado,
@@ -214,10 +214,8 @@ class LegalProcessController extends Controller
             'requiere_pago' => $proceso->requiere_pago,
             'valor_estimado' => $proceso->valor_estimado,
             'created_at' => $proceso->created_at->format('d-m-Y'),
-
-            // 🔥 AGREGAR ESTOS CAMPOS
             'pago_realizado' => $proceso->pago !== null,
-
+            'porcentaje' => $porcentaje, // 👈 AGREGAR ESTO
             'documentos' => $proceso->documentos,
         ]);
     }
@@ -227,7 +225,14 @@ class LegalProcessController extends Controller
     public function edit($id)
     {
         $proceso = Proceso::findOrFail($id);
-        return view('legal_processes.editProcesos', compact('proceso'));
+
+        // ✅ El proceso se considera pagado si tiene al menos una cuota
+        $procesoPagado = $proceso->cuotas()->exists();
+
+        return view('legal_processes.editProcesos', compact(
+            'proceso',
+            'procesoPagado'
+        ));
     }
 
     /**
@@ -236,9 +241,16 @@ class LegalProcessController extends Controller
     public function update(Request $request, $id)
     {
         $proceso = Proceso::findOrFail($id);
-
         $estadoAnterior = $proceso->estado;
 
+        // 🔑 LIMPIAR ANTES DE VALIDAR
+        if ($request->requiere_pago == 1 && $request->valor_estimado) {
+            $request->merge([
+                'valor_estimado' => preg_replace('/\D/', '', $request->valor_estimado)
+            ]);
+        }
+
+        // ✅ VALIDAR UNA SOLA VEZ
         $validated = $this->validateProcesoDataForUpdate($request, $id);
         $this->removeAuxiliaryFields($validated);
 

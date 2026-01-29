@@ -179,7 +179,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
         },
         body: formData,
     }).then((res) =>
-        res.redirected ? (window.location.href = res.url) : location.reload()
+        res.redirected ? (window.location.href = res.url) : location.reload(),
     );
 });
 
@@ -187,56 +187,62 @@ const requierePagoSelect = document.getElementById("requiere_pago");
 const valorPagoBox = document.getElementById("valor_pago_box");
 const valorInput = document.getElementById("valor_estimado");
 
-function togglePago() {
-    if (requierePagoSelect.value === "1") {
-        valorPagoBox.style.display = "block";
-        valorInput.required = true;
-    } else {
-        valorPagoBox.style.display = "none";
-        valorInput.required = false;
-        valorInput.value = "";
+if (requierePagoSelect) {
+    function togglePago() {
+        if (requierePagoSelect.value === "1") {
+            valorPagoBox.style.display = "block";
+            valorInput.required = true;
+        } else {
+            valorPagoBox.style.display = "none";
+            valorInput.required = false;
+            valorInput.value = "";
+        }
     }
+
+    document.addEventListener("DOMContentLoaded", togglePago);
+    requierePagoSelect.addEventListener("change", togglePago);
 }
-
-// Inicializar al cargar
-document.addEventListener("DOMContentLoaded", togglePago);
-
-// Escuchar cambios
-requierePagoSelect.addEventListener("change", togglePago);
 
 const estadoSelect = document.getElementById("estadoSelect");
 const form = document.querySelector("form");
 
-let estadoOriginal = "{{ $proceso->estado }}";
+let estadoOriginal = window.procesoEstado;
 let archivadoConfirmado = false;
 
-estadoSelect.addEventListener("change", function () {
-    if (this.value === "Archivado" && !archivadoConfirmado) {
-        Swal.fire({
-            icon: "warning",
-            title: "¿Archivar proceso?",
-            html: `
+if (estadoSelect) {
+    estadoSelect.addEventListener("change", function () {
+        if (this.value === "Archivado" && !archivadoConfirmado) {
+            Swal.fire({
+                icon: "warning",
+                title: "¿Archivar proceso?",
+                html: `
                     <p><strong>⚠️ Advertencia</strong></p>
                     <p>Al archivar este proceso:</p>
-                    <ul style="text-align:center;">
-                        ❌ No podrá volver a editarse</li>
-                        ❌ No se podrán modificar pagos ni documentos</li>
-                        ✔ El proceso quedará cerrado definitivamente</li>
+                    <ul style="text-align:left;">
+                        <li>❌ No podrá volver a editarse</li>
+                        <li>❌ No se podrán modificar pagos ni documentos</li>
+                        <li>✔️ El proceso quedará cerrado definitivamente</li>
                     </ul>
                 `,
-            showCancelButton: true,
-            confirmButtonText: "Sí, archivar",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                archivadoConfirmado = true;
-            } else {
-                // Volver al estado anterior
-                estadoSelect.value = estadoOriginal;
-            }
-        });
+                showCancelButton: true,
+                confirmButtonText: "Sí, archivar",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    archivadoConfirmado = true;
+                } else {
+                    estadoSelect.value = estadoOriginal;
+                }
+            });
+        }
+    });
+}
+
+form.addEventListener("submit", function (e) {
+    if (estadoSelect.value === "Archivado" && !archivadoConfirmado) {
+        e.preventDefault();
     }
 });
 
@@ -245,3 +251,10 @@ form.addEventListener("submit", function (e) {
         e.preventDefault();
     }
 });
+
+document
+    .getElementById("valor_estimado")
+    .addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\D/g, "");
+        e.target.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });

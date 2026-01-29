@@ -1,5 +1,5 @@
 // ========== CONFIGURACIÓN DE TIEMPO DE EXPIRACIÓN ==========
-const TOKEN_EXPIRATION_TIME = 15 * 60 * 1000; // 15 minutos
+const TOKEN_EXPIRATION_TIME = 1 * 60 * 1000; // 1 minuto
 let tokenExpirationTimer;
 
 // ========== FUNCIÓN PARA MOSTRAR ALERTAS ==========
@@ -69,7 +69,7 @@ function startTokenExpirationTimer() {
     tokenExpirationTimer = setTimeout(() => {
         showAlert(
             "El enlace de restablecimiento ha expirado. Por favor, solicita uno nuevo.",
-            "warning"
+            "warning",
         );
 
         // Deshabilitar el formulario
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ========== NUEVAS FUNCIONALIDADES ==========
     const passwordInput = document.getElementById("password");
     const confirmPasswordInput = document.getElementById(
-        "password_confirmation"
+        "password_confirmation",
     );
     const resetForm = document.getElementById("resetPasswordForm");
 
@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             showAlert(
                 "Las contraseñas no coinciden. Por favor, verifica que ambas contraseñas sean iguales.",
-                "error"
+                "error",
             );
             confirmPasswordInput.focus();
             return;
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             showAlert(
                 "La contraseña no cumple con todos los requisitos de seguridad.",
-                "error"
+                "error",
             );
             passwordInput.focus();
             return;
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     console.log(
-        "JurisConnect - Recuperar Contraseña inicializado correctamente"
+        "JurisConnect - Recuperar Contraseña inicializado correctamente",
     );
 });
 

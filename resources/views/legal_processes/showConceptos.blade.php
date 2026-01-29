@@ -37,7 +37,7 @@
             <div class="search-wrapper">
                 <div class="search-group">
                     <input type="text" id="searchInput" class="search-input-modern"
-                        placeholder="Buscar por ID, radicado o fecha...">
+                        placeholder="Buscar por #, radicado o fecha...">
                     <button id="searchBtn" class="search-button-modern">
                         <i class="fas fa-search"></i>
                     </button>

@@ -39,7 +39,7 @@
                 <th>Demandante</th>
                 <th>Demandado</th>
                 <th>Estado</th>
-                <th>Fecha</th>
+                <th>Fecha radicación</th>
             </tr>
         </thead>
         <tbody>

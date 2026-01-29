@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 
+
 <head>
     <meta charset="UTF-8">
     <title>JurisConnect SENA - Restablecer Contraseña</title>
     <link rel="stylesheet" href="{{ asset('/css/register.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -118,5 +120,20 @@
     </div>
     <script src="{{ asset('/js/reset-password.js') }}"></script>
 </body>
+
+@if ($errors->has('email') && $errors->first('email') === __('passwords.token'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Enlace expirado',
+                text: 'El enlace de restablecimiento ya no es válido. Por favor solicita uno nuevo.',
+                confirmButtonText: 'Solicitar nuevo enlace'
+            }).then(() => {
+                window.location.href = "/forgot-password";
+            });
+        });
+    </script>
+@endif
 
 </html>

@@ -17,13 +17,12 @@ class AssistantExport implements FromCollection, WithHeadings, WithTitle, WithSt
 {
     public function collection()
     {
-        $assistants = Assistant::select('id', 'nombre', 'apellido', 'tipo_documento', 'correo', 'telefono')->get();
+        $assistants = Assistant::select( 'nombre', 'apellido', 'tipo_documento', 'correo', 'telefono')->get();
 
         $data = [];
         $contador = 1;
         foreach ($assistants as $assistant) {
             $data[] = [
-                'id' => $contador++,
                 'nombre' => $assistant->nombre,
                 'apellido' => $assistant->apellido,
                 'tipo_documento' => $assistant->tipo_documento,
@@ -38,7 +37,7 @@ class AssistantExport implements FromCollection, WithHeadings, WithTitle, WithSt
 
     public function headings(): array
     {
-        return ['id', 'nombre', 'apellido', 'tipo_documento','correo', 'teléfono'];
+        return ['nombre', 'apellido', 'tipo_documento','correo', 'teléfono'];
     }
 
     public function title(): string
@@ -48,7 +47,7 @@ class AssistantExport implements FromCollection, WithHeadings, WithTitle, WithSt
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:F1')->applyFromArray([
+        $sheet->getStyle('A1:E1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -66,7 +65,7 @@ class AssistantExport implements FromCollection, WithHeadings, WithTitle, WithSt
             ],
         ]);
 
-        foreach (range('A', 'F') as $col) {
+        foreach (range('A', 'E') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
     }
@@ -78,7 +77,7 @@ class AssistantExport implements FromCollection, WithHeadings, WithTitle, WithSt
         $drawing->setDescription('Logo del SENA');
         $drawing->setPath(public_path('img/LogoInsti.png'));
         $drawing->setHeight(60);
-        $drawing->setCoordinates('G1');
+        $drawing->setCoordinates('F1');
         $drawing->setOffsetX(5);
         $drawing->setOffsetY(5);
 

@@ -79,6 +79,13 @@ class PagoController extends Controller
 
     public function store(Request $request)
     {
+        // 🔑 LIMPIAR EL VALOR ANTES DE VALIDAR
+        if ($request->valor_pagado) {
+            $request->merge([
+                'valor_pagado' => preg_replace('/\D/', '', $request->valor_pagado)
+            ]);
+        }
+
         $validated = $request->validate([
             'proceso_id' => 'required|exists:procesos,id',
             'valor_pagado' => 'required|numeric|min:0',

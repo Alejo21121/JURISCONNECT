@@ -43,14 +43,27 @@
 
                     <!-- ESTADO -->
                     <div class="form-row">
+
+                        @php
+                            $estadosNoSeleccionables = ['Reabierto', 'Pago en trámite'];
+                        @endphp
+
                         <div class="form-group">
                             <label class="form-label">Estado de proceso *</label>
+
                             <select class="form-select" name="estado" id="estadoSelect" required>
-                                @foreach (['Pendiente', 'Radicado', 'Admisión', 'Traslado', 'Audiencia', 'Fallo favorable', 'Fallo desfavorable', 'Apelación', 'Ejecutoria', 'Conciliado', 'Archivado'] as $estado)
-                                    <option value="{{ $estado }}"
-                                        {{ old('estado', $proceso->estado) == $estado ? 'selected' : '' }}>
-                                        {{ $estado }}
-                                    </option>
+                                @foreach (['Pendiente', 'Radicado', 'Admisión', 'Traslado', 'Audiencia', 'Fallo favorable', 'Fallo desfavorable', 'Apelación', 'Ejecutoria', 'Conciliado', 'Archivado', 'Reabierto', 'Pago en trámite'] as $estado)
+                                    @php
+                                        $esActual = old('estado', $proceso->estado) === $estado;
+                                        $esBloqueado = in_array($estado, $estadosNoSeleccionables);
+                                    @endphp
+
+                                    @if (!$esBloqueado || $esActual)
+                                        <option value="{{ $estado }}" {{ $esActual ? 'selected' : '' }}
+                                            {{ $esBloqueado && !$esActual ? 'disabled' : '' }}>
+                                            {{ $estado }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -93,24 +106,42 @@
                         </div>
                     </div>
 
+                    @if ($procesoPagado)
+                        <div class="alert alert-warning" style="margin-bottom:20px;">
+                            <i class="fas fa-lock"></i>
+                            Este proceso ya cuenta con pagos registrados.
+                            <strong>Los datos de pago no pueden ser modificados.</strong>
+                        </div>
+                    @endif
+
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">¿Requiere pago? *</label>
-                            <select class="form-select" name="requiere_pago" id="requiere_pago" required>
-                                <option value="0" {{ $proceso->requiere_pago == 0 ? 'selected' : '' }}>
-                                    No
-                                </option>
-                                <option value="1" {{ $proceso->requiere_pago == 1 ? 'selected' : '' }}>
-                                    Sí
-                                </option>
-                            </select>
+
+                            @if ($procesoPagado)
+                                <!-- SOLO TEXTO -->
+                                <div class="form-control bg-light" style="pointer-events:none;">
+                                    {{ $proceso->requiere_pago ? 'Sí' : 'No' }}
+                                </div>
+
+                                <!-- Mantener valor para el backend -->
+                                <input type="hidden" name="requiere_pago" value="{{ $proceso->requiere_pago }}">
+                            @else
+                                <!-- SELECT NORMAL -->
+                                <select class="form-select" name="requiere_pago" id="requiere_pago">
+                                    <option value="0" {{ $proceso->requiere_pago == 0 ? 'selected' : '' }}>No
+                                    </option>
+                                    <option value="1" {{ $proceso->requiere_pago == 1 ? 'selected' : '' }}>Sí
+                                    </option>
+                                </select>
+                            @endif
                         </div>
 
                         <div class="form-group" id="valor_pago_box" style="display:none;">
                             <label class="form-label">Valor estimado *</label>
-                            <input type="number" class="form-control" name="valor_estimado" id="valor_estimado"
-                                min="0" step="0.01"
-                                value="{{ old('valor_estimado', $proceso->valor_estimado) }}">
+                            <input type="text" class="form-control" name="valor_estimado" id="valor_estimado"
+                                value="{{ old('valor_estimado', number_format($proceso->valor_estimado, 0, ',', '.')) }}"
+                                {{ $procesoPagado ? 'readonly' : '' }}>
                         </div>
                     </div>
 
@@ -195,6 +226,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+        window.procesoEstado = "{{ $proceso->estado }}";
+    </script>
+
     <script src="{{ asset('js/editPro.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
