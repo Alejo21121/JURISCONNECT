@@ -477,4 +477,6 @@
     </div>
     </div>
 
+    <script src="{{ asset('js/proTable.js') }}"></script>
+
 </x-app-layout>

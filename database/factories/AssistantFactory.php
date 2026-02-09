@@ -13,7 +13,7 @@ class AssistantFactory extends Factory
     public function definition(): array
     {
 
-        $tipos_documento = ['CC', 'CE','PAS'];
+        $tipos_documento = ['CC','CE','PAS'];
 
         // Crear usuario con rol de asistente
         $user = User::factory()->create([
@@ -22,7 +22,6 @@ class AssistantFactory extends Factory
 
         return [
             'user_id' => $user->id,
-
             'nombre' => $this->faker->firstName(),
             'apellido' => $this->faker->lastName(),
             'tipo_documento'   => $this->faker->randomElement($tipos_documento),

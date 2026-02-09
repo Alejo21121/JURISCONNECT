@@ -30,10 +30,7 @@ class LegalProcessController extends Controller
 
         // --- Si el usuario es abogado (role_id = 2) ---
         if (Auth::user()->role_id == 2) {
-
-            // buscar lawyer por user_id
             $lawyer = \App\Models\Lawyer::where('user_id', Auth::id())->first();
-
             if ($lawyer) {
                 $query->where('lawyer_id', $lawyer->id);
             }
@@ -41,36 +38,32 @@ class LegalProcessController extends Controller
 
         // --- Si el usuario es asistente (role_id = 3) ---
         if (Auth::user()->role_id == 3) {
-
-            // 1. Obtener el asistente vinculado al usuario
-            $assistant = Auth::user()->assistant; // relación user -> assistant
-
-            // 2. Si existe, obtener los abogados vinculados
+            $assistant = Auth::user()->assistant;
             if ($assistant) {
                 $lawyerIds = $assistant->lawyers()->pluck('lawyer_id');
-
-                // 3. Filtrar procesos de esos abogados
                 $query->whereIn('lawyer_id', $lawyerIds);
             }
         }
-        // --- BÚSQUEDA ---
-        if ($request->has('search') && $request->get('search')) {
-            $search = $request->get('search');
 
+        // --- BÚSQUEDA ---
+        $search = $request->get('search', ''); // ⭐ Guardar el término
+
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('procesos.numero_radicado', 'ILIKE', "%$search%")
                     ->orWhere('procesos.demandante', 'ILIKE', "%$search%")
                     ->orWhere('procesos.demandado', 'ILIKE', "%$search%")
                     ->orWhere('procesos.tipo_proceso', 'ILIKE', "%$search%")
                     ->orWhere('procesos.estado', 'ILIKE', "%$search%")
-
-                    // ⭐ AHORA SÍ BUSCA POR EL ABOGADO
                     ->orWhere('users.name', 'ILIKE', "%{$search}%")
                     ->orWhere('users.email', 'ILIKE', "%{$search}%");
             });
         }
 
-        $procesos = $query->orderBy('id', 'asc')->paginate(10);
+        $procesos = $query
+            ->orderBy('id', 'asc')
+            ->paginate(10)
+            ->appends(['search' => $search]); // ⭐ AGREGAR ESTO en lugar de withQueryString()
 
         // --- AJAX ---
         if ($request->ajax() || $request->get('ajax')) {
@@ -358,7 +351,6 @@ class LegalProcessController extends Controller
         ]);
     }
 
-
     public function historial($id)
     {
         $historial = \App\Models\HistorialEstadoProceso::with('user')
@@ -378,7 +370,7 @@ class LegalProcessController extends Controller
             Storage::disk('public')->delete($proceso->documento);
         }
     }
-
+    
     private function deleteAssociatedDocument(Proceso $proceso)
     {
         if ($proceso->documento && Storage::disk('public')->exists($proceso->documento)) {

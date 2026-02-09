@@ -17,7 +17,7 @@
 
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/css/dashboard.css', 'resources/js/app.js', 'resources/js/dash.js'])
+    @vite(['resources/css/app.css', 'resources/css/dashboard.css', 'resources/js/dash.js'])
 
 </head>
 

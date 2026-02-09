@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conceptos Jurídicos - Sistema Jurídico</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/editCon.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/conceptos.css') }}">
 </head>
 
 <body>
@@ -221,43 +221,7 @@
             </div>
         </div>
     </div>
-
-    <script>
-        let deleteConceptId = null;
-
-        function showDeleteModal(id, title) {
-            deleteConceptId = id;
-            document.getElementById('conceptTitle').textContent = title;
-            document.getElementById('deleteModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-            deleteConceptId = null;
-        }
-
-        function confirmDelete() {
-            if (deleteConceptId) {
-                document.getElementById('delete-form-' + deleteConceptId).submit();
-            }
-        }
-
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDeleteModal();
-            }
-        });
-
-        // Cerrar modal con tecla ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeDeleteModal();
-            }
-        });
-    </script>
+    <script src="{{ asset('js/conceptos.js') }}"></script>
 
 </body>
 

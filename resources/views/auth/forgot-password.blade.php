@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>JurisConnect SENA - Recuperar Contraseña</title>
@@ -14,7 +15,7 @@
 
     {{-- -------------- Lógica Blade PRIMERO para definir variables -------------- --}}
     @php
-        // Obtenemos el primer error de 'email' si existe
+        // error de 'email' si existe
         $emailError = $errors->first('email') ?? null;
         $showThrottle = false;
         $showNotRegistered = false;
@@ -24,15 +25,19 @@
             // Normalizamos a minúsculas para comparaciones
             $lower = mb_strtolower($emailError);
 
-            // Caso 1: Email no registrado
-            // Laravel por defecto usa: "We can't find a user with that email address."
-            // O en español: "No podemos encontrar un usuario con esa dirección de correo."
-            if (preg_match('/no podemos encontrar|can\'t find|not find|no encontrado|no existe|no registrado|not registered|doesn\'t exist/i', $lower)) {
+            //Email no registrado
+            // "No podemos encontrar un usuario con esa dirección de correo."
+            if (
+                preg_match(
+                    '/no podemos encontrar|can\'t find|not find|no encontrado|no existe|no registrado|not registered|doesn\'t exist/i',
+                    $lower,
+                )
+            ) {
                 $showNotRegistered = true;
             }
             // Caso 2: mensajes que contienen la palabra "segundo(s)" o "second(s)" y un número
             elseif (preg_match('/(\d+)\s*(segundo|segundos|second|seconds)/i', $emailError, $m)) {
-                $throttleSeconds = (int)$m[1];
+                $throttleSeconds = (int) $m[1];
                 $showThrottle = true;
             }
             // Caso 3: mensajes con palabras clave comunes (incluye "wait", "retry", "retrying")
@@ -49,7 +54,7 @@
                 $showThrottle = true;
                 // Intentar extraer segundos si vienen en el status
                 if (preg_match('/(\d+)\s*(segundo|segundos|second|seconds)/i', $status, $m2)) {
-                    $throttleSeconds = (int)$m2[1];
+                    $throttleSeconds = (int) $m2[1];
                 }
             }
         }
@@ -70,7 +75,8 @@
             <form method="POST" action="{{ route('password.email') }}" id="recoveryForm">
                 @csrf
                 <div class="form-group">
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="Correo Electrónico" class="form-input">
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                        placeholder="Correo Electrónico" class="form-input">
                     {{-- Solo mostramos el error debajo del input si NO es un error de throttle ni de no registrado --}}
                     @if ($errors->has('email') && !$showThrottle && !$showNotRegistered)
                         <div class="input-error">{{ $errors->first('email') }}</div>
@@ -121,69 +127,12 @@
             <div class="custom-alert-icon-circle warning">⚠</div>
             <h3 class="custom-alert-title">Correo No Registrado</h3>
             <p class="custom-alert-message">
-                El correo electrónico ingresado no está registrado en nuestro sistema. 
+                El correo electrónico ingresado no está registrado en nuestro sistema.
                 Por favor verifica que hayas escrito correctamente tu correo o contacta al administrador.
             </p>
             <button class="custom-alert-btn" onclick="closeNotRegisteredAlert()">Entendido</button>
         </div>
     </div>
-
-    <script>
-    /* ---------- Funciones de manejo de alertas ---------- */
-    // Éxito
-    function showAlert() {
-        const overlay = document.getElementById('alertOverlay');
-        if (overlay) overlay.style.display = 'flex';
-    }
-    
-    function closeAlert() {
-        const overlay = document.getElementById('alertOverlay');
-        if (overlay) overlay.style.display = 'none';
-    }
-
-    // Error / Throttle
-    function showErrorAlert(message) {
-        const overlay = document.getElementById('alertErrorOverlay');
-        const msgEl = document.getElementById('alertErrorMessage');
-        if (message && msgEl) msgEl.textContent = message;
-        if (overlay) overlay.style.display = 'flex';
-    }
-    
-    function closeErrorAlert() {
-        const overlay = document.getElementById('alertErrorOverlay');
-        if (overlay) overlay.style.display = 'none';
-    }
-
-    // Email No Registrado
-    function showNotRegisteredAlert() {
-        const overlay = document.getElementById('alertNotRegisteredOverlay');
-        if (overlay) overlay.style.display = 'flex';
-    }
-    
-    function closeNotRegisteredAlert() {
-        const overlay = document.getElementById('alertNotRegisteredOverlay');
-        if (overlay) overlay.style.display = 'none';
-    }
-
-    // Cierre al click fuera o Escape (aplica para todas)
-    document.addEventListener('click', function(e) {
-        const overlay = document.getElementById('alertOverlay');
-        const overlayError = document.getElementById('alertErrorOverlay');
-        const overlayNotRegistered = document.getElementById('alertNotRegisteredOverlay');
-        
-        if (overlay && e.target === overlay) closeAlert();
-        if (overlayError && e.target === overlayError) closeErrorAlert();
-        if (overlayNotRegistered && e.target === overlayNotRegistered) closeNotRegisteredAlert();
-    });
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeAlert();
-            closeErrorAlert();
-            closeNotRegisteredAlert();
-        }
-    });
-    </script>
 
     {{-- Mostrar alerta de email no registrado --}}
     @if ($showNotRegistered)
@@ -201,7 +150,8 @@
             if ($throttleSeconds && $throttleSeconds > 0) {
                 $throttleMsg = "Debes esperar {$throttleSeconds} segundos antes de solicitar un nuevo enlace. Inténtalo nuevamente en un momento.";
             } else {
-                $throttleMsg = "Debes esperar 30 segundos antes de solicitar un nuevo enlace. Inténtalo nuevamente en un momento.";
+                $throttleMsg =
+                    'Debes esperar 30 segundos antes de solicitar un nuevo enlace. Inténtalo nuevamente en un momento.';
             }
         @endphp
         <script>
@@ -219,6 +169,8 @@
             });
         </script>
     @endif
+
+    <script src="{{ asset('js/recuperar.js') }}"></script>
 
 </body>
 

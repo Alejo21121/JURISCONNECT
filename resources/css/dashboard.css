@@ -330,6 +330,13 @@ body {
     color: var(--color-text-secondary);
     font-size: 0.9rem;
     margin-top: var(--spacing-1);
+
+    /* ⭐ SOLUCIÓN PARA EL CORREO LARGO */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all; /* Rompe palabras largas si es necesario */
+    max-width: 100%;
+    line-height: 1.4;
 }
 
 .nav-menu {
@@ -955,6 +962,14 @@ tr:hover td {
         z-index: 1001;
     }
 
+    @media (max-width: 768px) {
+        .sidebar {
+            height: 100vh;
+            overflow-y: auto; /* 👈 ESTO ES CLAVE */
+            padding-bottom: 250px; /* espacio para el botón */
+        }
+    }
+
     .sidebar.active {
         margin-left: 0;
     }
@@ -1439,7 +1454,6 @@ tr:hover td {
     border-radius: 6px;
     cursor: pointer;
 }
-
 
 /* ===== HIDDEN ===== */
 .hidden {
