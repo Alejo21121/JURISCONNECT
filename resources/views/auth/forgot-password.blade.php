@@ -3,6 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>JurisConnect SENA - Recuperar Contraseña</title>
     <link rel="stylesheet" href="{{ asset('/css/recuperar.css') }}">
 </head>
@@ -90,7 +94,7 @@
 
                 <!-- Logo SENA -->
                 <div class="sena-container">
-                    <img src="{{ asset('img/Sena.png') }}" alt="Logo SENA">
+                    <img src="{{ asset('img/Sena.png') }}" alt="Logo SENA" class="sena-logo">
                 </div>
             </form>
         </div>

@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Color del tema para navegadores móviles -->
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <title>JurisConnect</title>
 
     <!-- Fonts -->
@@ -15,11 +20,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/css/dashboard.css', 'resources/js/dash.js'])
 
+    <!-- Contenido adicional del header -->
+    @isset($header)
+        {{ $header }}
+    @endisset
+
 </head>
+<!-- resto del código... -->
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">

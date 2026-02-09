@@ -1,12 +1,17 @@
 <x-app-layout>
-    <x-slot name="header"></x-slot>
+    <x-slot name="header">
+        <!-- Meta tags y links van AQUÍ dentro del slot header -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
+    </x-slot>
 
     <div class="dashboard-wrapper">
 
@@ -26,7 +31,7 @@
 
                 <div class="profile-pic profile-pic-clickable" onclick="document.getElementById('fileInput').click();"
                     title="Haz clic para cambiar tu foto">
-                    <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()-> foto_perfil) : asset('img/silueta-atardecer-foto-perfil.webp') }}"
+                    <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('img/silueta-atardecer-foto-perfil.webp') }}"
                         id="profileImage" alt="Foto de perfil">
                 </div>
 

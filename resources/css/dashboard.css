@@ -672,6 +672,20 @@ tr:hover td {
     background: var(--color-danger-dark);
 }
 
+/* Tabla procesos y asistentes simple */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; 
+}
+
+.lawyers-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
 /* ==============================================
    ===        ALERTAS CUSTOMIZADAS (UPGRADED) ===
    ============================================== */
@@ -1600,3 +1614,4 @@ tr:hover td {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     background-color: #f8fafc;
 }
+

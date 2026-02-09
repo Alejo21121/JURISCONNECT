@@ -164,7 +164,9 @@ body {
 }
 
 .sena-logo {
-    transform: translateX(150px);
+    display: block;
+    margin: 20px auto 0;
+    max-width: 80px;
 }
 
 .login-box p {
@@ -625,4 +627,314 @@ body {
 
 .requirement.invalid {
     color: #dc3545;
+}
+
+/* Tablets y dispositivos medianos */
+@media screen and (max-width: 1024px) {
+    .background-image {
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .login-box {
+        width: 450px;
+        padding: 35px;
+    }
+
+    .branding img {
+        max-width: 180px;
+    }
+}
+
+/* Móviles grandes */
+@media screen and (max-width: 768px) {
+    body {
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .background-image img {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Logo arriba en móviles */
+    .branding {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+    }
+
+    .branding img {
+        max-width: 150px;
+    }
+
+    /* Formulario centrado */
+    .login-box {
+        width: 95%;
+        max-width: 450px;
+        margin: 100px auto 20px;
+        padding: 30px 25px;
+        position: relative;
+        z-index: 1;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+
+    .login-box h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .login-box label {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .login-box input[type="email"],
+    .login-box input[type="password"] {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .password-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .password-wrapper input {
+        width: 100%;
+        padding-right: 45px;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    .toggle-password svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* Requisitos de contraseña */
+    .password-requirements {
+        margin: 15px 0;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+    }
+
+    .password-requirements h4 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .requirement {
+        font-size: 13px;
+        margin: 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .requirement-icon {
+        font-size: 16px;
+    }
+
+    /* Botones */
+    .button-group {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 12px;
+        font-size: 16px;
+        flex: 1;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-back {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+    }
+
+    /* Logo SENA */
+    .sena-logo {
+        display: block;
+        margin: 20px auto 0;
+        max-width: 70px;
+    }
+
+    /* Alertas */
+    #alert-container {
+        margin-bottom: 15px;
+    }
+
+    .error-message {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+}
+
+/* Móviles pequeños */
+@media screen and (max-width: 480px) {
+    .branding img {
+        max-width: 120px;
+    }
+
+    .login-box {
+        width: 98%;
+        padding: 25px 20px;
+        margin: 80px auto 15px;
+        max-height: 88vh;
+    }
+
+    .login-box h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+
+    .login-box label {
+        font-size: 13px;
+    }
+
+    .login-box input[type="email"],
+    .login-box input[type="password"] {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .password-requirements {
+        padding: 12px;
+        margin: 12px 0;
+    }
+
+    .password-requirements h4 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .requirement {
+        font-size: 12px;
+        margin: 6px 0;
+    }
+
+    .requirement-icon {
+        font-size: 14px;
+    }
+
+    .button-group {
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .btn {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .sena-logo {
+        max-width: 60px;
+        margin-top: 15px;
+    }
+
+    .toggle-password svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Orientación horizontal en móviles */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .branding {
+        top: 10px;
+    }
+
+    .branding img {
+        max-width: 100px;
+    }
+
+    .login-box {
+        margin: 70px auto 10px;
+        padding: 20px;
+        max-height: 92vh;
+    }
+
+    .login-box h2 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .login-box label {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .login-box input {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .password-requirements {
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+    .password-requirements h4 {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .requirement {
+        font-size: 11px;
+        margin: 4px 0;
+    }
+
+    .button-group {
+        margin-top: 12px;
+    }
+
+    .btn {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .sena-logo {
+        max-width: 50px;
+        margin-top: 10px;
+    }
+}
+
+/* Mejora para el scroll en contenedores pequeños */
+.login-box {
+    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+}
+
+/* Asegurar que los inputs no hagan zoom en iOS */
+@media screen and (max-width: 768px) {
+    input[type="email"],
+    input[type="password"] {
+        font-size: 16px !important; /* iOS no hace zoom con 16px+ */
+    }
 }
