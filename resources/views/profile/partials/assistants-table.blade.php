@@ -43,24 +43,26 @@
                             @endif
                         </td>
                         <td>
-                            <button class="btn-edit-assistant" data-id="{{ $assistant->id }}"
-                                data-nombre="{{ $assistant->nombre }}" data-apellido="{{ $assistant->apellido }}"
-                                data-tipo_documento="{{ $assistant->tipo_documento }}"
-                                data-numero_documento="{{ $assistant->numero_documento }}"
-                                data-correo="{{ $assistant->correo }}" data-telefono="{{ $assistant->telefono }}"
-                                data-lawyers='@json($assistant->lawyers->pluck('id'))'>
-                                Editar
-                            </button>
-                            <form action="{{ route('asistentes.destroy', $assistant->id) }}" method="POST"
-                                class="delete-assistant-form"
-                                data-name="{{ $assistant->nombre }} {{ $assistant->apellido }}"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-delete">
-                                    Eliminar
+                            <div class="action-buttons">
+                                <button class="btn-edit-assistant" data-id="{{ $assistant->id }}"
+                                    data-nombre="{{ $assistant->nombre }}" data-apellido="{{ $assistant->apellido }}"
+                                    data-tipo_documento="{{ $assistant->tipo_documento }}"
+                                    data-numero_documento="{{ $assistant->numero_documento }}"
+                                    data-correo="{{ $assistant->correo }}" data-telefono="{{ $assistant->telefono }}"
+                                    data-lawyers='@json($assistant->lawyers->pluck('id'))'>
+                                    Editar
                                 </button>
-                            </form>
+                                <form action="{{ route('asistentes.destroy', $assistant->id) }}" method="POST"
+                                    class="delete-assistant-form"
+                                    data-name="{{ $assistant->nombre }} {{ $assistant->apellido }}"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-delete">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty

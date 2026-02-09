@@ -23,22 +23,26 @@
                     <td>{{ $lawyer->telefono }}</td>
                     <td>{{ $lawyer->especialidad }}</td>
                     <td>
-                        <button class="btn-edit" data-id="{{ $lawyer->id }}" data-nombre="{{ $lawyer->nombre }}"
-                            data-apellido="{{ $lawyer->apellido }}" data-tipo_documento="{{ $lawyer->tipo_documento }}"
-                            data-numero_documento="{{ $lawyer->numero_documento }}" data-correo="{{ $lawyer->correo }}"
-                            data-telefono="{{ $lawyer->telefono }}" data-especialidad="{{ $lawyer->especialidad }}">
-                            Editar
-                        </button>
-
-                        <form action="{{ route('lawyers.destroy', $lawyer->id) }}" method="POST"
-                            class="delete-lawyer-form" data-id="{{ $lawyer->id }}"
-                            data-name="{{ $lawyer->nombre }} {{ $lawyer->apellido }}" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-delete">
-                                Eliminar
+                        <div class="action-buttons">
+                            <button class="btn-edit" data-id="{{ $lawyer->id }}" data-nombre="{{ $lawyer->nombre }}"
+                                data-apellido="{{ $lawyer->apellido }}"
+                                data-tipo_documento="{{ $lawyer->tipo_documento }}"
+                                data-numero_documento="{{ $lawyer->numero_documento }}"
+                                data-correo="{{ $lawyer->correo }}" data-telefono="{{ $lawyer->telefono }}"
+                                data-especialidad="{{ $lawyer->especialidad }}">
+                                Editar
                             </button>
-                        </form>
+
+                            <form action="{{ route('lawyers.destroy', $lawyer->id) }}" method="POST"
+                                class="delete-lawyer-form" data-id="{{ $lawyer->id }}"
+                                data-name="{{ $lawyer->nombre }} {{ $lawyer->apellido }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-delete">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach

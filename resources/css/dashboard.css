@@ -677,7 +677,7 @@ tr:hover td {
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch; 
+    -webkit-overflow-scrolling: touch;
 }
 
 .lawyers-table {
@@ -1615,3 +1615,29 @@ tr:hover td {
     background-color: #f8fafc;
 }
 
+.action-buttons {
+    display: flex;
+    gap: 8px; /* espacio entre botones */
+}
+
+.btn-edit,
+.btn-edit-assistant,
+.btn-delete {
+    min-width: 80px; /* mismos ancho mínimo */
+    text-align: center;
+    padding: 6px 12px;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+    .action-buttons {
+        flex-direction: column; /* apila los botones */
+        gap: 6px;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        width: 100%; /* ancho completo en móvil */
+        font-size: 0.75rem;
+    }
+}
