@@ -87,7 +87,7 @@ para correr el proyecto, necesitas las sigiantes herramientas:
 Clona este repositorio a tu carpeta designada:
 ```sh
  
- git clone https://github.com/Norelly-Salinas-Bre/MI_APP.git
+ git clone https://github.com/Alejo21121/JURISCONNECT.git
  cd MI_APP
 ```
 
