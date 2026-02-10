@@ -145,6 +145,8 @@ Correr el servidor
 - GitHub: [@Norelly-Salinas-Bre] (https://github.com/Norelly-Salinas-Bre)
 - Github: [@santiago5627] (https://github.com/santiago5627)
 - GitHub: [@victor3spitia] (https://github.com/Victor3spitia)
+- GitHub: [@alejo21121]
+(https://github.com/alejo21121)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
