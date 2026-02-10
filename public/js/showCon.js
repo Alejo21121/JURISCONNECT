@@ -1,3 +1,4 @@
+
 function closeAlert(alertId) {
     document.getElementById(alertId).classList.add("hidden");
 }
@@ -112,3 +113,73 @@ function confirmDelete(id, nombre) {
         }
     });
 }
+
+function renderizarProcesos() {
+    const container = document.querySelector(".process-grid");
+
+    let procesosFiltrados = procesos.filter((p) => {
+        if (!terminoBusqueda) return true;
+        return (
+            p.radicado.toString().includes(terminoBusqueda) ||
+            p.numero.toString().includes(terminoBusqueda) ||
+            p.fecha.includes(terminoBusqueda)
+        );
+    });
+
+    const inicio = (paginaActual - 1) * itemsPorPagina;
+    const fin = inicio + itemsPorPagina;
+    const procesosPagina = procesosFiltrados.slice(inicio, fin);
+
+    if (procesosPagina.length === 0) {
+        container.innerHTML = "<p>No se encontraron procesos.</p>";
+        return;
+    }
+
+    container.innerHTML = procesosPagina
+        .map(
+            (p) => `
+        <div class="process-card">
+            <h3>${p.nombre}</h3>
+            <p>Radicado: ${p.radicado}</p>
+            <p>Fecha: ${p.fecha}</p>
+            <button onclick="verDetalle(${p.id})">Ver detalle</button>
+        </div>
+    `,
+        )
+        .join("");
+
+    renderizarPaginacion(procesosFiltrados.length);
+}
+
+function renderizarPaginacion(totalItems) {
+    const totalPaginas = Math.ceil(totalItems / itemsPorPagina);
+    let pagContainer = document.getElementById("paginacion");
+
+    if (!pagContainer) {
+        pagContainer = document.createElement("div");
+        pagContainer.id = "paginacion";
+        pagContainer.style.display = "flex";
+        pagContainer.style.justifyContent = "center";
+        pagContainer.style.gap = "0.5rem";
+        document.querySelector(".process-grid").after(pagContainer);
+    }
+
+    pagContainer.innerHTML = "";
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.className = i === paginaActual ? "active-page" : "";
+        btn.addEventListener("click", () => {
+            paginaActual = i;
+            renderizarProcesos();
+        });
+        pagContainer.appendChild(btn);
+    }
+}
+
+document.getElementById("searchInput").addEventListener("input", function () {
+    terminoBusqueda = this.value.trim();
+    paginaActual = 1;
+    renderizarProcesos();
+});

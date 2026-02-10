@@ -10,8 +10,10 @@ return new class extends Migration {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
 
+            // Relación con proceso
             $table->unsignedBigInteger('proceso_id');
 
+            // Datos del pago
             $table->decimal('valor_pagado', 12, 2);
             $table->date('fecha_pago');
 
@@ -25,10 +27,26 @@ return new class extends Migration {
 
             $table->text('observaciones')->nullable();
 
+            // 🔐 Validación del abogado
+            $table->enum('estado', [
+                'Pendiente',
+                'Aprobado',
+                'Rechazado'
+            ])->default('Pendiente');
+
+            $table->unsignedBigInteger('validado_por')->nullable(); // abogado
+            $table->timestamp('fecha_validacion')->nullable();
+
+            // Relaciones
             $table->foreign('proceso_id')
                 ->references('id')
                 ->on('procesos')
                 ->onDelete('cascade');
+
+            $table->foreign('validado_por')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
 
             $table->timestamps();
         });

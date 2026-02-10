@@ -90,6 +90,10 @@
         <!-- Lista de procesos -->
         <div class="procesos-list" id="procesosList"></div>
 
+        <!-- Contenedor de paginación -->
+        <div class="pagination-desktop" style="display:flex; justify-content:center; gap:0.3rem; margin-top:1rem;">
+        </div>
+
         <!-- Estado vacío -->
         <div class="empty-state" id="emptyState" style="display: none;">
             <i class="fas fa-exclamation-circle"></i>
@@ -161,6 +165,8 @@
     </div>
 
     <script>
+        let paginaActual = 1;
+        const itemsPorPagina = 10;
         let procesos = @json($procesosData);
         let filtroActual = 'todos';
         let procesoSeleccionado = null;
@@ -213,101 +219,109 @@
             if (procesosFiltrados.length === 0) {
                 lista.style.display = 'none';
                 emptyState.style.display = 'block';
+                document.querySelector('.pagination-desktop').innerHTML = '';
                 return;
             }
 
             lista.style.display = 'grid';
             emptyState.style.display = 'none';
 
+            const totalItems = procesosFiltrados.length;
+            const inicio = (paginaActual - 1) * itemsPorPagina;
+            const fin = inicio + itemsPorPagina;
+            procesosFiltrados = procesosFiltrados.slice(inicio, fin);
+
             lista.innerHTML = procesosFiltrados.map(proceso => `
-                <div class="proceso-card">
-                    <div class="proceso-header" style="display:flex; justify-content:space-between; gap:1rem;">
-                        <div class="proceso-info">
-                            <h3>${proceso.nombre}</h3>
-                            <p><strong>Radicado:</strong> ${proceso.radicado}</p>
-                            <p><strong>Demandante:</strong> ${proceso.demandante}</p>
-                        </div>
-                        <div>
-                            ${!proceso.requiere_pago
-                                ? `<span class="status-badge no-requiere">No requiere pago</span>`
-                                : proceso.porcentaje >= 100
-                                    ? `<span class="status-badge pagado"><i class="fas fa-check-circle"></i> Pago completado</span>`
-                                    : `<span class="status-badge pendiente"><i class="fas fa-clock"></i> Pago en trámite</span>`
-                            }
-                        </div>
+            <div class="proceso-card">
+                <div class="proceso-header" style="display:flex; justify-content:space-between; gap:1rem;">
+                    <div class="proceso-info">
+                        <h3>${proceso.nombre}</h3>
+                        <p><strong>Radicado:</strong> ${proceso.radicado}</p>
+                        <p><strong>Demandante:</strong> ${proceso.demandante}</p>
                     </div>
-
-                    ${proceso.requiere_pago ? `
-                                                            <div class="pago-section">
-                                                                <div class="pago-realizado">
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Valor Estimado</div>
-                                                                        <div class="value">${formatearPeso(proceso.valor_estimado)}</div>
-                                                                    </div>
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Total Pagado</div>
-                                                                        <div class="value">${formatearPeso(proceso.total_pagado)}</div>
-                                                                    </div>
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Falta por Pagar</div>
-                                                                        <div class="value">${formatearPeso(proceso.falta_pagar)}</div>
-                                                                    </div>
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Progreso</div>
-                                                                        <div class="value">${proceso.porcentaje}%</div>
-                                                                    </div>
-                                                                </div>
-
-                                                                ${proceso.porcentaje > 0 ? `
-                                <div style="margin: 1rem 0;">
-                                    <div style="background: #e2e8f0; border-radius: 999px; height: 12px; overflow: hidden;">
-                                        <div style="background: linear-gradient(90deg, #16a34a, #22c55e); height: 100%; width: ${proceso.porcentaje}%; transition: width 0.3s ease;"></div>
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                                                                ${proceso.cuotas && proceso.cuotas.length > 0 ? `
-                                <div class="historial-pagos">
-                                    <button class="btn-toggle-historial" onclick="toggleHistorial(${proceso.id})">
-                                        <i class="fas fa-chevron-down"></i>
-                                        Ver historial de pagos (${proceso.cuotas.length})
-                                    </button>
-                                    <div class="historial-contenido" id="historial-${proceso.id}" style="display:none;">
-                                        ${proceso.cuotas.map((pago, index) => `
-                                                                                <div style="margin-top: 0.5rem; padding: 0.75rem; background: #f8fafc; border-radius: 8px; border-left: 3px solid #16a34a;">
-                                                                                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
-                                                                                        <div>
-                                                                                            <div style="font-weight:600;">Pago #${index + 1} - ${formatearPeso(pago.valor_pagado)}</div>
-                                                                                            <div style="font-size:0.85rem; color:#64748b;"><i class="fas fa-calendar"></i> ${formatearFecha(pago.fecha_pago)}</div>
-                                                                                        </div>
-                                                                                        ${pago.comprobante ? `
-                                                        <a href="/storage/${pago.comprobante}" target="_blank" style="padding: 0.4rem 0.75rem; background: white; border: 1px solid #e2e8f0; border-radius: 6px; color: #3b82f6; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;">
-                                                            <i class="fas fa-file-pdf"></i> Ver comprobante
-                                                        </a>
-                                                    ` : ''}
-                                                                                    </div>
-                                                                                    ${pago.observaciones ? `
-                                                    <div style="margin-top:0.5rem; padding:0.5rem; background:white; border-radius:6px; border-left:2px solid #3b82f6; font-size:0.85rem;">
-                                                        <strong>Observaciones:</strong>
-                                                        <div>${pago.observaciones}</div>
-                                                    </div>
-                                                ` : ''}
-                                                                                </div>
-                                                                            `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                                                                ${proceso.porcentaje < 100 ? `
-                                <button class="btn-registrar" onclick="abrirModal(${proceso.id})">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    Registrar nuevo pago
-                                </button>
-                            ` : ''}
-                                                            </div>
-                                                        ` : ''}
+                    <div>
+                        ${!proceso.requiere_pago
+                            ? `<span class="status-badge no-requiere">No requiere pago</span>`
+                            : proceso.porcentaje >= 100
+                                ? `<span class="status-badge pagado"><i class="fas fa-check-circle"></i> Pago completado</span>`
+                                : `<span class="status-badge pendiente"><i class="fas fa-clock"></i> Pago en trámite</span>`
+                        }
+                    </div>
                 </div>
-            `).join('');
+
+                ${proceso.requiere_pago ? `
+                            <div class="pago-section">
+                                <div class="pago-realizado">
+                                    <div class="pago-item">
+                                        <div class="label">Valor Estimado</div>
+                                        <div class="value">${formatearPeso(proceso.valor_estimado)}</div>
+                                    </div>
+                                    <div class="pago-item">
+                                        <div class="label">Total Pagado</div>
+                                        <div class="value">${formatearPeso(proceso.total_pagado)}</div>
+                                    </div>
+                                    <div class="pago-item">
+                                        <div class="label">Falta por Pagar</div>
+                                        <div class="value">${formatearPeso(proceso.falta_pagar)}</div>
+                                    </div>
+                                    <div class="pago-item">
+                                        <div class="label">Progreso</div>
+                                        <div class="value">${proceso.porcentaje}%</div>
+                                    </div>
+                                </div>
+
+                                ${proceso.porcentaje > 0 ? `
+                            <div style="margin: 1rem 0;">
+                                <div style="background: #e2e8f0; border-radius: 999px; height: 12px; overflow: hidden;">
+                                    <div style="background: linear-gradient(90deg, #16a34a, #22c55e); height: 100%; width: ${proceso.porcentaje}%; transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                                ${proceso.cuotas && proceso.cuotas.length > 0 ? `
+                            <div class="historial-pagos">
+                                <button class="btn-toggle-historial" onclick="toggleHistorial(${proceso.id})">
+                                    <i class="fas fa-chevron-down"></i>
+                                    Ver historial de pagos (${proceso.cuotas.length})
+                                </button>
+                                <div class="historial-contenido" id="historial-${proceso.id}" style="display:none;">
+                                    ${proceso.cuotas.map((pago, index) => `
+                                                <div style="margin-top: 0.5rem; padding: 0.75rem; background: #f8fafc; border-radius: 8px; border-left: 3px solid #16a34a;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                                                        <div>
+                                                            <div style="font-weight:600;">Pago #${index + 1} - ${formatearPeso(pago.valor_pagado)}</div>
+                                                            <div style="font-size:0.85rem; color:#64748b;"><i class="fas fa-calendar"></i> ${formatearFecha(pago.fecha_pago)}</div>
+                                                        </div>
+                                                        ${pago.comprobante ? `
+                                                    <a href="/storage/${pago.comprobante}" target="_blank" style="padding: 0.4rem 0.75rem; background: white; border: 1px solid #e2e8f0; border-radius: 6px; color: #3b82f6; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;">
+                                                        <i class="fas fa-file-pdf"></i> Ver comprobante
+                                                    </a>
+                                                ` : ''}
+                                                    </div>
+                                                    ${pago.observaciones ? `
+                                                <div style="margin-top:0.5rem; padding:0.5rem; background:white; border-radius:6px; border-left:2px solid #3b82f6; font-size:0.85rem;">
+                                                    <strong>Observaciones:</strong>
+                                                    <div>${pago.observaciones}</div>
+                                                </div>
+                                            ` : ''}
+                                                </div>
+                                            `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                                ${proceso.porcentaje < 100 ? `
+                            <button class="btn-registrar" onclick="abrirModal(${proceso.id})">
+                                <i class="fas fa-dollar-sign"></i>
+                                Registrar nuevo pago
+                            </button>
+                        ` : ''}
+                            </div>
+                        ` : ''}
+            </div>
+        `).join('');
+
+            renderizarPaginacion(totalItems);
         }
 
         function toggleHistorial(id) {
@@ -329,16 +343,16 @@
             procesoSeleccionado = procesos.find(p => p.id === id);
 
             document.getElementById('procesoInfoModal').innerHTML = `
-                <h3>${procesoSeleccionado.nombre}</h3>
-                <p><strong>Radicado:</strong> ${procesoSeleccionado.radicado}</p>
-                <p><strong>Demandante:</strong> ${procesoSeleccionado.demandante}</p>
-                <div style="margin-top: 0.75rem; padding: 0.75rem; background: #fef2f2; border-left: 3px solid #dc2626; border-radius: 6px;">
-                    <div style="color: #dc2626; font-weight: 600;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        Falta por pagar: ${formatearPeso(procesoSeleccionado.falta_pagar)}
-                    </div>
+            <h3>${procesoSeleccionado.nombre}</h3>
+            <p><strong>Radicado:</strong> ${procesoSeleccionado.radicado}</p>
+            <p><strong>Demandante:</strong> ${procesoSeleccionado.demandante}</p>
+            <div style="margin-top: 0.75rem; padding: 0.75rem; background: #fef2f2; border-left: 3px solid #dc2626; border-radius: 6px;">
+                <div style="color: #dc2626; font-weight: 600;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Falta por pagar: ${formatearPeso(procesoSeleccionado.falta_pagar)}
                 </div>
-            `;
+            </div>
+        `;
 
             document.getElementById('valorSentencia').max = procesoSeleccionado.falta_pagar;
             document.getElementById('valorSentencia').value = '';
@@ -353,15 +367,12 @@
             document.getElementById('modalPago').classList.add('show');
         }
 
-        // Cerrar modal
         function cerrarModal() {
             document.getElementById('modalPago').classList.remove('show');
             procesoSeleccionado = null;
         }
 
-        // Registrar pago
         async function registrarPago() {
-            // 🔑 LIMPIAR EL VALOR (quitar puntos, comas, etc.)
             const valorRaw = document.getElementById('valorSentencia').value;
             const valor = parseInt(valorRaw.replace(/\D/g, ''), 10);
 
@@ -392,12 +403,12 @@
             const confirmacion = await Swal.fire({
                 title: '¿Confirmar pago?',
                 html: `
-            <p>Valor a registrar: <strong>${formatearPeso(valor)}</strong></p>
-            ${valor >= procesoSeleccionado.falta_pagar
-                ? '<p style="color: #dc2626; font-weight: 600;">⚠️ Este pago completará el total y el proceso será ARCHIVADO.</p>'
-                : '<p style="color: #f59e0b;">Este es un pago parcial. El proceso quedará en estado "Pago en trámite".</p>'
-            }
-        `,
+                <p>Valor a registrar: <strong>${formatearPeso(valor)}</strong></p>
+                ${valor >= procesoSeleccionado.falta_pagar
+                    ? '<p style="color: #dc2626; font-weight: 600;">⚠️ Este pago completará el total y el proceso será ARCHIVADO.</p>'
+                    : '<p style="color: #f59e0b;">Este es un pago parcial. El proceso quedará en estado "Pago en trámite".</p>'
+                }
+            `,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, registrar',
@@ -410,7 +421,7 @@
 
             const formData = new FormData();
             formData.append('proceso_id', procesoSeleccionado.id);
-            formData.append('valor_pagado', valor); // 👈 ya limpio
+            formData.append('valor_pagado', valor);
             formData.append('forma_pago', forma);
             formData.append('fecha_pago', fecha);
             formData.append('observaciones', obs);
@@ -444,38 +455,154 @@
                 Swal.fire('Error', 'Error de conexión', 'error');
             }
         }
-        // Filtros
+
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 filtroActual = this.dataset.filtro;
+                paginaActual = 1;
                 renderizarProcesos();
             });
         });
 
-        // Buscador
         document.getElementById('searchRadicado').addEventListener('input', function() {
             terminoBusqueda = this.value.trim();
+            paginaActual = 1;
             renderizarProcesos();
         });
 
-        // Cerrar modal al hacer clic fuera
         document.getElementById('modalPago').addEventListener('click', function(e) {
             if (e.target === this) {
                 cerrarModal();
             }
         });
 
-        // Inicializar
-        actualizarEstadisticas();
-        renderizarProcesos();
-
         document.getElementById('valorSentencia').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             e.target.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         });
+
+        // Inicializar
+        actualizarEstadisticas();
+        renderizarProcesos();
+
+        // -------------------------------------------------
+        // PAGINACIÓN ESTILO BLADE
+        // -------------------------------------------------
+        function renderizarPaginacion(totalItems) {
+            const totalPaginas = Math.ceil(totalItems / itemsPorPagina);
+            const pagContainer = document.querySelector('.pagination-desktop');
+            if (!pagContainer) return;
+
+            pagContainer.innerHTML = ''; // limpiar
+
+            // ANTERIOR
+            if (paginaActual === 1) {
+                const spanPrev = document.createElement('span');
+                spanPrev.className = 'pagination-btn disabled';
+                spanPrev.textContent = 'Anterior';
+                pagContainer.appendChild(spanPrev);
+            } else {
+                const aPrev = document.createElement('a');
+                aPrev.className = 'pagination-btn ajax-page';
+                aPrev.href = '#';
+                aPrev.textContent = 'Anterior';
+                aPrev.addEventListener('click', e => {
+                    e.preventDefault();
+                    paginaActual--;
+                    renderizarProcesos();
+                });
+                pagContainer.appendChild(aPrev);
+            }
+
+            const start = Math.max(1, paginaActual - 2);
+            const end = Math.min(totalPaginas, paginaActual + 2);
+
+            // PRIMERA PÁGINA + "..."
+            if (start > 1) {
+                const first = document.createElement('a');
+                first.className = 'pagination-btn ajax-page';
+                first.href = '#';
+                first.textContent = '1';
+                first.addEventListener('click', e => {
+                    e.preventDefault();
+                    paginaActual = 1;
+                    renderizarProcesos();
+                });
+                pagContainer.appendChild(first);
+
+                if (start > 2) {
+                    const dots = document.createElement('span');
+                    dots.className = 'pagination-btn disabled';
+                    dots.textContent = '...';
+                    pagContainer.appendChild(dots);
+                }
+            }
+
+            // BOTONES DEL RANGO
+            for (let i = start; i <= end; i++) {
+                if (i === paginaActual) {
+                    const spanActive = document.createElement('span');
+                    spanActive.className = 'pagination-btn active';
+                    spanActive.textContent = i;
+                    pagContainer.appendChild(spanActive);
+                } else {
+                    const aPage = document.createElement('a');
+                    aPage.className = 'pagination-btn ajax-page';
+                    aPage.href = '#';
+                    aPage.textContent = i;
+                    aPage.addEventListener('click', e => {
+                        e.preventDefault();
+                        paginaActual = i;
+                        renderizarProcesos();
+                    });
+                    pagContainer.appendChild(aPage);
+                }
+            }
+
+            // ÚLTIMA PÁGINA + "..."
+            if (end < totalPaginas) {
+                if (end < totalPaginas - 1) {
+                    const dots = document.createElement('span');
+                    dots.className = 'pagination-btn disabled';
+                    dots.textContent = '...';
+                    pagContainer.appendChild(dots);
+                }
+
+                const last = document.createElement('a');
+                last.className = 'pagination-btn ajax-page';
+                last.href = '#';
+                last.textContent = totalPaginas;
+                last.addEventListener('click', e => {
+                    e.preventDefault();
+                    paginaActual = totalPaginas;
+                    renderizarProcesos();
+                });
+                pagContainer.appendChild(last);
+            }
+
+            // SIGUIENTE
+            if (paginaActual === totalPaginas || totalPaginas === 0) {
+                const spanNext = document.createElement('span');
+                spanNext.className = 'pagination-btn disabled';
+                spanNext.textContent = 'Siguiente';
+                pagContainer.appendChild(spanNext);
+            } else {
+                const aNext = document.createElement('a');
+                aNext.className = 'pagination-btn ajax-page';
+                aNext.href = '#';
+                aNext.textContent = 'Siguiente';
+                aNext.addEventListener('click', e => {
+                    e.preventDefault();
+                    paginaActual++;
+                    renderizarProcesos();
+                });
+                pagContainer.appendChild(aNext);
+            }
+        }
     </script>
+
 </body>
 
 </html>

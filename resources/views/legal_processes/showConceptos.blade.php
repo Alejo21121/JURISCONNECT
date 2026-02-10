@@ -108,6 +108,13 @@
         </div>
     </div>
 
+    <script>
+        const procesos = @json($procesos);
+        let terminoBusqueda = '';
+        let paginaActual = 1;
+        const itemsPorPagina = 10;
+    </script>
+
 </body>
 
 </html>

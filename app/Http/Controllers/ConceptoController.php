@@ -142,7 +142,7 @@ class ConceptoController extends Controller
         }
 
         // Obtener procesos filtrados
-        $procesos = $query->orderBy('id', 'asc')->get();
+        $procesos = $query->orderBy('id', 'asc')->paginate(10); // 10 por página
 
         // --- AJAX ---
         if ($request->ajax() || $request->get('ajax')) {

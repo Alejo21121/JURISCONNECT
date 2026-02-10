@@ -7,7 +7,7 @@
                         <i class="fas fa-gavel"></i>
                     </div>
 
-                      <link rel="stylesheet" href="{{ asset('css/processCard.css') }}">
+                    <link rel="stylesheet" href="{{ asset('css/processCard.css') }}">
 
                     <h2 class="titulo-proceso" data-numero="{{ $loop->iteration }}">
                         Proceso Legal {{ $loop->iteration }}
@@ -178,6 +178,11 @@
         </div>
     @endforelse
 </div>
+
+<div class="pagination-wrapper">
+    {{ $procesos->links() }}
+</div>
+
 
 <script>
     document.getElementById('searchInput')?.addEventListener('input', function() {
