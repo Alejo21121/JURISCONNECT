@@ -61,72 +61,72 @@
             </div>
 
             <!-- Barra de acciones -->
+            <!-- Barra de acciones -->
             <div class="actions-bar">
                 <div class="actions-content">
-                    <div class="info-text">
-                        <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span>Administre sus procesos judiciales desde esta vista</span>
-                    </div>
-
-                    <div class="action-buttons">
-                        <a href="{{ route('procesos.export.excel') }}" class="btn-success">EXPORTAR EXCEL</a>
-                        <a href="{{ route('procesos.export.pdf') }}" class="btn-danger">EXPORTAR PDF</a>
-                    </div>
-
-                    <a href="{{ route('pagos.index') }}" class="btn btn-pagos">
-                        <i class="fas fa-save"></i>
-                        Ver Pagos $
-                    </a>
-
-                    <div class="button-group">
-                        <a href="{{ route('dashboard.abogado') }}" class="btn btn-secondary">
-                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Lado izquierdo: Info -->
+                    <div class="info-section">
+                        <div class="info-text">
+                            <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            Volver al Dashboard
-                        </a>
+                            <span>Administre sus procesos judiciales desde esta vista</span>
+                        </div>
+                    </div>
 
-                        @if (Auth::user()->role_id == 2)
-                            <a href="{{ route('procesos.create') }}" class="btn btn-primary">
+                    <!-- Lado derecho: Todos los botones -->
+                    <div class="button-group">
+                        <div class="export-group">
+                            <a href="{{ route('procesos.export.excel') }}" class="btn btn-success">EXPORTAR EXCEL</a>
+                            <a href="{{ route('procesos.export.pdf') }}" class="btn btn-danger">EXPORTAR PDF</a>
+                        </div>
+
+                        <div class="main-actions">
+                            <a href="{{ route('pagos.index') }}" class="btn btn-primary">Ver Pagos</a>
+                            <a href="{{ route('dashboard.abogado') }}" class="btn btn-secondary">
                                 <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                 </svg>
-                                Nuevo Proceso
+                                Volver al Dashboard
                             </a>
-                        @else
-                            <button class="btn btn-primary" disabled style="background: gray; cursor:not-allowed;">
-                                No tienes permisos
-                            </button>
-                        @endif
 
-                        </a>
+                            @if (Auth::user()->role_id == 2)
+                                <a href="{{ route('procesos.create') }}" class="btn btn-primary">
+                                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    Nuevo Proceso
+                                </a>
+                            @else
+                                <button class="btn btn-primary" disabled style="background: gray; cursor:not-allowed;">
+                                    No tienes permisos
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
+                <!-- Barra de búsqueda (debajo de los botones) -->
                 <div class="search-section">
-                    <input type="text" id="searchInput" class="form-control mb-3"
+                    <input type="text" id="searchInput" class="form-control"
                         placeholder="Buscar por nombre, apellido o número de radicado">
                 </div>
-
+            </div>
+            <div id="procesosTableContainer">
+                @include('profile.partials.processes-table', ['procesos' => $procesos])
             </div>
         </div>
-        <div id="procesosTableContainer">
-            @include('profile.partials.processes-table', ['procesos' => $procesos])
-        </div>
-    </div>
 
-    <script>
-        window.routes = {
-            procesosIndex: "{{ route('procesos.index') }}"
-        };
-    </script>
+        <script>
+            window.routes = {
+                procesosIndex: "{{ route('procesos.index') }}"
+            };
+        </script>
 
-    <script src="{{ asset('js/indexPro.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{{ asset('js/indexPro.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

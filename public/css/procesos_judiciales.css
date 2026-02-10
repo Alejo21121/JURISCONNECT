@@ -342,20 +342,6 @@ body {
     transform: translateY(-1px);
 }
 
-.btn-pagos {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
-    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
-    padding: 0.5rem 1.5rem;
-    margin-left: 220px;
-}
-
-.btn-pagos:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    box-shadow: 0 8px 25px -8px rgba(37, 99, 235, 0.5);
-    transform: translateY(-1px);
-}
-
 .btn-icon {
     width: 1rem;
     height: 1rem;
@@ -1310,4 +1296,91 @@ body {
 
 .badge.pago-tramite i {
     color: #f59e0b;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Exportaciones un poco separadas */
+.export-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Empuja los botones principales a la derecha */
+.export-group {
+    margin-right: auto;
+}
+
+@media (max-width: 768px) {
+    .button-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .export-group {
+        margin-right: 0; /* reset */
+        justify-content: center;
+        width: 100%;
+    }
+
+    .export-group a {
+        flex: 1; /* Excel y PDF mismo tamaño */
+        text-align: center;
+    }
+
+    .button-group > a,
+    .button-group > button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Excel y PDF bien a la izquierda */
+.export-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Empuja las acciones principales a la derecha */
+.main-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto; /* CLAVE */
+}
+
+@media (max-width: 768px) {
+    .button-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .export-group,
+    .main-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .export-group a,
+    .main-actions a {
+        flex: 1;
+        text-align: center;
+    }
+}
+.search-section {
+    margin-top: 16px;
+}
+
+.search-section input {
+    width: 100%;
 }

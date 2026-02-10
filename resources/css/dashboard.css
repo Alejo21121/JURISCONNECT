@@ -1636,6 +1636,7 @@ tr:hover td {
     }
 
     .btn-edit,
+    .btn-edit-assistant,
     .btn-delete {
         width: 100%; /* ancho completo en móvil */
         font-size: 0.75rem;
