@@ -19,24 +19,20 @@ class PagoController extends Controller
     {
         $user = Auth::user();
 
-        // Verificar si es abogado
+        $query = Proceso::with([
+            'cuotas.pago.documentos'
+        ]);
+
         $lawyer = Lawyer::where('user_id', $user->id)->first();
+
         if ($lawyer) {
-            $procesos = Proceso::where('lawyer_id', $lawyer->id)
-                ->with(['pago.documentos', 'cuotas'])
-                ->get();
-        }
-        // Verificar si es asistente
-        elseif ($assistant = Assistant::where('user_id', $user->id)->first()) {
+            $query->where('lawyer_id', $lawyer->id);
+        } elseif ($assistant = Assistant::where('user_id', $user->id)->first()) {
             $lawyerIds = $assistant->lawyers()->pluck('lawyers.id');
-            $procesos = Proceso::whereIn('lawyer_id', $lawyerIds)
-                ->with(['pago.documentos', 'cuotas'])
-                ->get();
+            $query->whereIn('lawyer_id', $lawyerIds);
         }
-        // Usuario admin o sin rol específico
-        else {
-            $procesos = Proceso::with(['pago.documentos', 'cuotas'])->get();
-        }
+
+        $procesos = $query->get();
 
         // Transformar datos para la vista
         $procesosData = $procesos->map(function ($proceso) {
@@ -64,9 +60,12 @@ class PagoController extends Controller
                 'cuotas' => $proceso->cuotas->map(function ($cuota) {
                     return [
                         'id' => $cuota->id,
+                        'pago_id' => $cuota->pago?->id,
                         'valor_pagado' => $cuota->valor,
                         'fecha_pago' => $cuota->fecha_pago,
                         'estado' => $cuota->estado,
+                        'pago_estado' => $cuota->pago?->estado,
+                        'motivo_rechazo' => $cuota->pago?->motivo_rechazo,
                         'observaciones' => $cuota->pago?->observaciones,
                         'comprobante' => $cuota->pago?->documentos->first()?->ruta,
                     ];
@@ -74,12 +73,15 @@ class PagoController extends Controller
             ];
         });
 
-        return view('pagos', compact('procesosData'));
+        // 👇 AGREGAR ESTO
+        $esAbogado = $lawyer !== null; // true si es abogado, false si es asistente
+
+        return view('pagos', compact('procesosData', 'esAbogado'));
     }
 
     public function store(Request $request)
     {
-        // 🔑 LIMPIAR EL VALOR ANTES DE VALIDAR
+        // 🔑 Limpiar el valor
         if ($request->valor_pagado) {
             $request->merge([
                 'valor_pagado' => preg_replace('/\D/', '', $request->valor_pagado)
@@ -95,10 +97,8 @@ class PagoController extends Controller
             'comprobante' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        // Buscar proceso
         $proceso = Proceso::with('cuotas')->findOrFail($validated['proceso_id']);
 
-        // si ya está archivado, no permitir pago
         if ($proceso->estado === 'Archivado') {
             return response()->json([
                 'success' => false,
@@ -106,24 +106,45 @@ class PagoController extends Controller
             ], 403);
         }
 
-        // Verificar que no exceda el valor estimado
-        $totalPagado = $proceso->cuotas->where('estado', 'Pagada')->sum('valor');
-        $faltaPagar = $proceso->valor_estimado - $totalPagado;
+        // 🔥 NUEVA VALIDACIÓN: Sumar pagos APROBADOS + PENDIENTES
+        $totalPagado = $proceso->cuotas
+            ->where('estado', 'Pagada')
+            ->sum('valor');
+
+        $totalPendiente = $proceso->cuotas()
+            ->whereHas('pago', function ($q) {
+                $q->where('estado', 'Pendiente');
+            })
+            ->sum('valor');
+
+        $totalComprometido = $totalPagado + $totalPendiente;
+        $faltaPagar = $proceso->valor_estimado - $totalComprometido;
 
         if ($validated['valor_pagado'] > $faltaPagar) {
             return response()->json([
                 'success' => false,
-                'message' => 'El valor excede el monto pendiente de pago'
+                'message' => "El valor excede el monto pendiente. Disponible para pago: " . number_format($faltaPagar, 0, ',', '.') . " COP (incluyendo pagos en revisión)"
             ], 422);
         }
 
-        // Crear el registro de pago
+        // 🔥 VERIFICAR SI ES ABOGADO
+        $user = Auth::user();
+        $lawyer = Lawyer::where('user_id', $user->id)->first();
+        $esAbogado = $lawyer !== null;
+
+        $estadoPago = $esAbogado ? 'Aprobado' : 'Pendiente';
+        $estadoCuota = $esAbogado ? 'Pagada' : 'Pendiente';
+
+        // Crear pago
         $pago = Pago::create([
             'proceso_id' => $validated['proceso_id'],
             'valor_pagado' => $validated['valor_pagado'],
             'forma_pago' => $validated['forma_pago'],
             'fecha_pago' => $validated['fecha_pago'],
             'observaciones' => $validated['observaciones'] ?? null,
+            'estado' => $estadoPago,
+            'validado_por' => $esAbogado ? $user->id : null,
+            'fecha_validacion' => $esAbogado ? now() : null,
         ]);
 
         // Guardar comprobante
@@ -140,24 +161,93 @@ class PagoController extends Controller
             ]);
         }
 
-        // Crear la cuota asociada
+        // Crear cuota
         $cuota = \App\Models\Cuota::create([
             'proceso_id' => $proceso->id,
             'pago_id' => $pago->id,
             'numero_cuota' => $proceso->cuotas->count() + 1,
             'valor' => $validated['valor_pagado'],
             'fecha_vencimiento' => $validated['fecha_pago'],
-            'estado' => 'Pagada',
+            'estado' => $estadoCuota,
             'fecha_pago' => $validated['fecha_pago'],
         ]);
 
-        // Verificar si se completó el pago total
-        $nuevoTotalPagado = $totalPagado + $validated['valor_pagado'];
+        // 🔥 VERIFICAR SI SE COMPLETÓ EL TOTAL (solo si es abogado)
+        if ($esAbogado) {
+            $proceso->load('cuotas');
 
-        if ($nuevoTotalPagado >= $proceso->valor_estimado) {
-            // Pago completado -> Archivar
-            $proceso->estado = 'Archivado';
-            $proceso->save();
+            $nuevoTotalPagado = $proceso->cuotas
+                ->where('estado', 'Pagada')
+                ->sum('valor');
+
+            if ($nuevoTotalPagado >= $proceso->valor_estimado) {
+                $proceso->update(['estado' => 'Archivado']);
+
+                HistorialEstadoProceso::create([
+                    'proceso_id' => $proceso->id,
+                    'estado' => 'Archivado',
+                    'observacion' => 'Pago completado automáticamente - Proceso archivado',
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pago registrado correctamente'
+        ]);
+    }
+
+    public function rechazar(Request $request, Pago $pago)
+    {
+        $request->validate([
+            'motivo' => 'required|string|min:5'
+        ]);
+
+        $pago->update([
+            'estado' => 'Rechazado',
+            'motivo_rechazo' => $request->motivo,
+            'validado_por' => Auth::id(),
+            'fecha_validacion' => now(),
+        ]);
+
+        if ($pago->cuota) {
+            $pago->cuota->update([
+                'estado' => 'Pendiente'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pago rechazado correctamente'
+        ]);
+    }
+
+    public function aprobar(Pago $pago)
+    {
+        $pago->update([
+            'estado' => 'Aprobado',
+            'validado_por' => Auth::id(),
+            'fecha_validacion' => now(),
+        ]);
+
+        if ($pago->cuota) {
+            $pago->cuota->update([
+                'estado' => 'Pagada'
+            ]);
+        }
+
+        $proceso = $pago->proceso()->with('cuotas')->first();
+
+        $totalPagado = $proceso->cuotas
+            ->where('estado', 'Pagada')
+            ->sum('valor');
+
+        if ($totalPagado >= $proceso->valor_estimado) {
+
+            $proceso->update([
+                'estado' => 'Archivado'
+            ]);
 
             HistorialEstadoProceso::create([
                 'proceso_id' => $proceso->id,
@@ -165,28 +255,11 @@ class PagoController extends Controller
                 'observacion' => 'Pago completado - Proceso archivado',
                 'user_id' => Auth::id(),
             ]);
-
-            $mensaje = 'Pago registrado. El proceso ha sido ARCHIVADO porque se completó el pago total.';
-        } else {
-            // Pago parcial -> Cambiar a "Pago en trámite"
-            if ($proceso->estado !== 'Pago en trámite') {
-                $proceso->estado = 'Pago en trámite';
-                $proceso->save();
-
-                HistorialEstadoProceso::create([
-                    'proceso_id' => $proceso->id,
-                    'estado' => 'Pago en trámite',
-                    'observacion' => 'Pago parcial registrado',
-                    'user_id' => Auth::id(),
-                ]);
-            }
-
-            $mensaje = 'Pago parcial registrado correctamente';
         }
 
         return response()->json([
             'success' => true,
-            'message' => $mensaje
+            'message' => 'Pago aprobado correctamente'
         ]);
     }
 }

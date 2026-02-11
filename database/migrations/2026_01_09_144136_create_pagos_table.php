@@ -34,7 +34,9 @@ return new class extends Migration {
                 'Rechazado'
             ])->default('Pendiente');
 
-            $table->unsignedBigInteger('validado_por')->nullable(); // abogado
+            $table->text('motivo_rechazo')->nullable(); // 👈 NUEVO
+
+            $table->unsignedBigInteger('validado_por')->nullable();
             $table->timestamp('fecha_validacion')->nullable();
 
             // Relaciones

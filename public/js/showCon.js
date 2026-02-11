@@ -1,3 +1,4 @@
+let paginaAntesDeBuscar = null;
 
 function closeAlert(alertId) {
     document.getElementById(alertId).classList.add("hidden");
@@ -12,13 +13,25 @@ function showSuccessAlert() {
 let searchTimeout;
 
 function performSearch(searchTerm) {
-    const params = new URLSearchParams();
-    if (searchTerm) params.append("search", searchTerm);
-    params.append("ajax", "1");
+    const currentUrl = new URL(window.location);
 
-    // Usar la ruta actual (o reemplaza por route('procesos.index'))
+    // Guardar página actual SOLO la primera vez que se empieza a buscar
+    if (searchTerm && !paginaAntesDeBuscar) {
+        paginaAntesDeBuscar = currentUrl.searchParams.get("page") || "1";
+    }
+
+    const params = new URLSearchParams();
+
+    if (searchTerm) {
+        params.set("search", searchTerm);
+        params.set("page", 1);
+    } else {
+        if (paginaAntesDeBuscar) {
+            params.set("page", paginaAntesDeBuscar);
+        }
+    }
+
     fetch(`${window.location.pathname}?${params.toString()}`, {
-        method: "GET",
         headers: {
             "X-Requested-With": "XMLHttpRequest",
             Accept: "application/json",
@@ -26,27 +39,26 @@ function performSearch(searchTerm) {
     })
         .then((res) => res.json())
         .then((data) => {
-            if (data.success && data.html) {
-                // Reemplaza el grid de tarjetas con el HTML devuelto
-                const grid = document.querySelector(".process-grid");
-                if (grid) {
-                    grid.innerHTML = data.html;
-                }
+            if (data.success) {
+                document.getElementById("processContainer").innerHTML =
+                    data.html;
 
-                // Si el backend devuelve un total, actualiza el contador si existe
-                if (data.total !== undefined) {
-                    const totalEl = document.getElementById("totalCount");
-                    if (totalEl) totalEl.textContent = data.total;
-                }
-
-                // Actualizar URL sin recargar
+                // Actualizar URL real
                 const newUrl = new URL(window.location);
-                if (searchTerm) newUrl.searchParams.set("search", searchTerm);
-                else newUrl.searchParams.delete("search");
-                newUrl.searchParams.delete("page");
-                window.history.replaceState({}, "", newUrl.toString());
-            } else {
-                console.error("Respuesta inválida de búsqueda", data);
+
+                if (searchTerm) {
+                    newUrl.searchParams.set("search", searchTerm);
+                    newUrl.searchParams.set("page", 1);
+                } else {
+                    newUrl.searchParams.delete("search");
+
+                    if (paginaAntesDeBuscar) {
+                        newUrl.searchParams.set("page", paginaAntesDeBuscar);
+                        paginaAntesDeBuscar = null;
+                    }
+                }
+
+                window.history.replaceState({}, "", newUrl);
             }
         })
         .catch((err) => console.error("Error en búsqueda:", err));
@@ -114,72 +126,45 @@ function confirmDelete(id, nombre) {
     });
 }
 
-function renderizarProcesos() {
-    const container = document.querySelector(".process-grid");
+document.addEventListener("click", function (e) {
+    const link = e.target.closest(".pagination a");
 
-    let procesosFiltrados = procesos.filter((p) => {
-        if (!terminoBusqueda) return true;
-        return (
-            p.radicado.toString().includes(terminoBusqueda) ||
-            p.numero.toString().includes(terminoBusqueda) ||
-            p.fecha.includes(terminoBusqueda)
-        );
+    if (!link) return;
+
+    e.preventDefault();
+
+    const url = new URL(link.href);
+
+    fetch(url.toString(), {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            Accept: "application/json",
+        },
+    })
+        .then((response) => {
+            if (!response.ok) throw new Error("Respuesta no válida");
+            return response.json();
+        })
+        .then((data) => {
+            if (data.success) {
+                document.getElementById("processContainer").innerHTML =
+                    data.html;
+
+                url.searchParams.delete("ajax");
+                window.history.replaceState({}, "", url);
+            }
+        })
+        .catch((error) => console.error("Error:", error));
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+
+    searchInput.addEventListener("input", function () {
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(() => {
+            performSearch(this.value.trim());
+        }, 400);
     });
-
-    const inicio = (paginaActual - 1) * itemsPorPagina;
-    const fin = inicio + itemsPorPagina;
-    const procesosPagina = procesosFiltrados.slice(inicio, fin);
-
-    if (procesosPagina.length === 0) {
-        container.innerHTML = "<p>No se encontraron procesos.</p>";
-        return;
-    }
-
-    container.innerHTML = procesosPagina
-        .map(
-            (p) => `
-        <div class="process-card">
-            <h3>${p.nombre}</h3>
-            <p>Radicado: ${p.radicado}</p>
-            <p>Fecha: ${p.fecha}</p>
-            <button onclick="verDetalle(${p.id})">Ver detalle</button>
-        </div>
-    `,
-        )
-        .join("");
-
-    renderizarPaginacion(procesosFiltrados.length);
-}
-
-function renderizarPaginacion(totalItems) {
-    const totalPaginas = Math.ceil(totalItems / itemsPorPagina);
-    let pagContainer = document.getElementById("paginacion");
-
-    if (!pagContainer) {
-        pagContainer = document.createElement("div");
-        pagContainer.id = "paginacion";
-        pagContainer.style.display = "flex";
-        pagContainer.style.justifyContent = "center";
-        pagContainer.style.gap = "0.5rem";
-        document.querySelector(".process-grid").after(pagContainer);
-    }
-
-    pagContainer.innerHTML = "";
-
-    for (let i = 1; i <= totalPaginas; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        btn.className = i === paginaActual ? "active-page" : "";
-        btn.addEventListener("click", () => {
-            paginaActual = i;
-            renderizarProcesos();
-        });
-        pagContainer.appendChild(btn);
-    }
-}
-
-document.getElementById("searchInput").addEventListener("input", function () {
-    terminoBusqueda = this.value.trim();
-    paginaActual = 1;
-    renderizarProcesos();
 });

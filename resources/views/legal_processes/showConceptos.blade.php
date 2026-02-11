@@ -19,7 +19,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <i class="fas fa-balance-scale"></i>
+                <i class="fas fa-balance-scale" style="color: #28a745;"></i>
                 <span>Sistema Jurídico</span>
             </div>
         </div>
@@ -34,15 +34,17 @@
             </div>
             <!-- busqueda -->
             <!-- Buscador moderno -->
-            <div class="search-wrapper">
-                <div class="search-group">
-                    <input type="text" id="searchInput" class="search-input-modern"
-                        placeholder="Buscar por #, radicado o fecha...">
-                    <button id="searchBtn" class="search-button-modern">
-                        <i class="fas fa-search"></i>
-                    </button>
+            <form onsubmit="return false;">
+                <div class="search-wrapper">
+                    <div class="search-group">
+                        <input type="text" id="searchInput" name="search" class="search-input-modern"
+                            placeholder="Buscar por #, radicado o fecha..." value="{{ request('search') }}">
+                        <button type="submit" class="search-button-modern">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </form>
 
             <a class="cancel-btn" href="{{ route('dashboard.abogado') }}">
                 <i class="fas fa-arrow-left"></i>
@@ -70,8 +72,8 @@
         </div>
 
         <!-- Lista de Procesos -->
-        <div class="process-grid">
-            @include('profile.partials.process-card', ['proceso' => $procesos])
+        <div id="processContainer">
+            @include('profile.partials.process-card', ['procesos' => $procesos])
         </div>
 
         <!-- Recordatorio -->
@@ -107,14 +109,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        const procesos = @json($procesos);
-        let terminoBusqueda = '';
-        let paginaActual = 1;
-        const itemsPorPagina = 10;
-    </script>
-
 </body>
 
 </html>

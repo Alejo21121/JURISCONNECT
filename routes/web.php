@@ -209,3 +209,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::post('/procesos/{id}/reabrir', [LegalProcessController::class, 'reabrir'])
     ->middleware('auth');
+
+Route::post('/pagos/{pago}/aprobar', [PagoController::class, 'aprobar'])
+    ->name('pagos.aprobar');
+
+Route::post('/pagos/{pago}/rechazar', [PagoController::class, 'rechazar'])
+    ->name('pagos.rechazar');

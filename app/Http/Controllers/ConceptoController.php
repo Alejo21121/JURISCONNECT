@@ -142,10 +142,12 @@ class ConceptoController extends Controller
         }
 
         // Obtener procesos filtrados
-        $procesos = $query->orderBy('id', 'asc')->paginate(10); // 10 por página
+        $procesos = $query->orderBy('id', 'asc')
+            ->paginate(10)
+            ->withQueryString(); // 10 por página
 
         // --- AJAX ---
-        if ($request->ajax() || $request->get('ajax')) {
+        if ($request->ajax()) {
             $html = view('profile.partials.process-card', ['procesos' => $procesos])->render();
             return response()->json([
                 'success' => true,
