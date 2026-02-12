@@ -177,11 +177,12 @@
                     </div>
 
                     <div class="field-group">
-                        <label for="documento" class="field-label" style="color: #1d4ed8;">
+                        <label for="documento" class="field-label" style="color: #15803d;">
+
                             Documento inicial del proceso
                         </label>
                         <div class="file-input">
-                            <input type="file" name="documentos[]" id="documento" class="form-input" multiple>
+                            <input type="file" name="documentos[]" id="documento" multiple>
                         </div>
 
                         <div id="filePreview" class="file-preview"></div>

@@ -136,6 +136,14 @@ body {
 .header-left {
     display: flex;
     align-items: center;
+    flex: 1; /* 👈 Añade esto */
+}
+
+/* 👇 NUEVO: Contenedor derecho */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Espacio entre notificación y logo */
 }
 
 .hamburger {
@@ -625,4 +633,208 @@ body {
 .cards-container {
     max-height: calc(100vh - 200px);
     overflow-y: auto;
+}
+
+/* ===== NOTIFICACIONES ===== */
+.notification-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-btn {
+    position: relative;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-btn:hover {
+    background: #f1f5f9;
+}
+
+.notification-btn i {
+    font-size: 1.5rem;
+    color: #64748b;
+}
+
+.notification-btn:hover i {
+    color: #16a34a;
+}
+
+/* Badge de contador */
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #dc2626;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Dropdown de notificaciones */
+.notification-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    min-width: 350px;
+    max-width: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+.notification-dropdown.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header del dropdown */
+.notification-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-count {
+    background: #16a34a;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+/* Items de notificación */
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background: #f8fafc;
+}
+
+.notification-icon {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-content strong {
+    color: #16a34a;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.notification-content small {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* Estado vacío */
+.notification-empty {
+    padding: 2rem 1.25rem;
+    text-align: center;
+    color: #64748b;
+}
+
+.notification-empty i {
+    font-size: 3rem;
+    color: #cbd5e1;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .notification-dropdown {
+        min-width: 320px;
+        max-width: calc(100vw - 40px);
+        right: -20px;
+    }
+}
+
+/* Responsive para header */
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .header h1 {
+        font-size: 1.2rem;
+    }
+
+    .header-right {
+        gap: 0.5rem;
+    }
+
+    .header img {
+        height: 35px;
+    }
+
+    .notification-dropdown {
+        min-width: 300px;
+        right: -10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1rem;
+    }
+
+    .header img {
+        height: 30px;
+    }
+
+    .notification-btn i {
+        font-size: 1.25rem;
+    }
 }

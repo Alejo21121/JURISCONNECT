@@ -171,7 +171,45 @@
         let filtroActual = 'todos';
         let procesoSeleccionado = null;
         let terminoBusqueda = '';
-        const esAbogado = @json($esAbogado); // 👈 AGREGAR ESTA LÍNEA
+        const esAbogado = @json($esAbogado);
+
+        // 👇 NUEVO: Detectar si viene de notificación
+        const urlParams = new URLSearchParams(window.location.search);
+        const procesoIdNotificacion = urlParams.get('proceso');
+
+        if (procesoIdNotificacion) {
+            // Filtrar por radicado automáticamente
+            const procesoEncontrado = procesos.find(p => p.id == procesoIdNotificacion);
+
+            if (procesoEncontrado) {
+                terminoBusqueda = procesoEncontrado.radicado;
+                document.getElementById('searchRadicado').value = procesoEncontrado.radicado;
+
+                // Mostrar solo pendientes
+                filtroActual = 'pendientes';
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.filter-btn[data-filtro="pendientes"]').classList.add('active');
+
+                // Resaltar el proceso
+                setTimeout(() => {
+                    const card = document.querySelector('.proceso-card');
+                    if (card) {
+                        card.style.border = '3px solid #facc15';
+                        card.style.boxShadow = '0 0 20px rgba(250, 204, 21, 0.5)';
+                        card.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+
+                        // Quitar resaltado después de 3 segundos
+                        setTimeout(() => {
+                            card.style.border = '';
+                            card.style.boxShadow = '';
+                        }, 3000);
+                    }
+                }, 100);
+            }
+        }
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -250,131 +288,151 @@
                     </div>
                 </div>
 
-                ${proceso.requiere_pago ? `
-                                                            <div class="pago-section">
-                                                                <div class="pago-realizado">
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Valor Estimado</div>
-                                                                        <div class="value">${formatearPeso(proceso.valor_estimado)}</div>
-                                                                    </div>
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Total Pagado</div>
-                                                                        <div class="value">${formatearPeso(proceso.total_pagado)}</div>
-                                                                    </div>
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Falta por Pagar</div>
-                                                                        <div class="value">${formatearPeso(proceso.falta_pagar)}</div>
-                                                                    </div>
-                                                                    <div class="pago-item">
-                                                                        <div class="label">Progreso</div>
-                                                                        <div class="value">${proceso.porcentaje}%</div>
-                                                                    </div>
-                                                                </div>
-
-                                                                ${proceso.porcentaje > 0 ? `
-                            <div style="margin: 1rem 0;">
-                                <div style="background: #e2e8f0; border-radius: 999px; height: 12px; overflow: hidden;">
-                                    <div style="background: linear-gradient(90deg, #16a34a, #22c55e); height: 100%; width: ${proceso.porcentaje}%; transition: width 0.3s ease;"></div>
-                                </div>
-                            </div>
-                        ` : ''}
-
-                                                                ${proceso.cuotas && proceso.cuotas.length > 0 ? `
-                            <div class="historial-pagos">
-                                <button class="btn-toggle-historial" onclick="toggleHistorial(${proceso.id})">
-                                    <i class="fas fa-chevron-down"></i>
-                                    Ver historial de pagos (${proceso.cuotas.length})
-                                </button>
-                                <div class="historial-contenido" id="historial-${proceso.id}" style="display:none;">
-${proceso.cuotas.map((pago, index) => `
-                                    <div style="margin-top: 0.5rem; padding: 0.75rem; background: #f8fafc; border-radius: 8px; border-left: 3px solid #16a34a;">
-                                        
-                                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
-                                            <div>
-                                                <div style="font-weight:600;">
-                                                    Pago #${index + 1} - ${formatearPeso(pago.valor_pagado)}
-                                                </div>
-                                                <div style="font-size:0.85rem; color:#64748b;">
-                                                    <i class="fas fa-calendar"></i> ${formatearFecha(pago.fecha_pago)}
-                                                </div>
-                                            </div>
-
-                                            <div style="display:flex; align-items:center; gap:0.5rem;">
-                                                
-                                                ${pago.pago_estado === 'Pendiente'
-                                                    ? `<span style="background:#facc15; color:#000; padding:4px 8px; border-radius:6px; font-size:0.8rem;">
-                        <i class="fas fa-clock"></i> Pendiente
-                       </span>`
-                                                    : pago.pago_estado === 'Aprobado'
-                                                        ? `<span style="background:#16a34a; color:white; padding:4px 8px; border-radius:6px; font-size:0.8rem;">
-                            <i class="fas fa-check-circle"></i> Aprobado
-                           </span>`
-                                                        : pago.pago_estado === 'Rechazado'
-                                                            ? `<span style="background:#dc2626; color:white; padding:4px 8px; border-radius:6px; font-size:0.8rem;">
-                                <i class="fas fa-times-circle"></i> Rechazado
-                               </span>`
-                                                            : ''
-                                                }
-
-                                                ${pago.comprobante ? `
-                    <a href="/storage/${pago.comprobante}" target="_blank"
-                        style="padding: 0.4rem 0.75rem; background: white; border: 1px solid #e2e8f0;
-                               border-radius: 6px; color: #3b82f6; text-decoration: none;
-                               font-size: 0.8rem; display: flex; align-items: center;
-                               gap: 0.4rem; white-space: nowrap;">
-                        <i class="fas fa-file-pdf"></i> Ver comprobante
-                    </a>
-                ` : ''}
-                                            </div>
-                                        </div>
-
-                                        ${pago.observaciones ? `
-            <div style="margin-top:0.5rem; padding:0.5rem; background:white;
-                        border-radius:6px; border-left:2px solid #3b82f6; font-size:0.85rem;">
-                <strong>Observaciones:</strong>
-                <div>${pago.observaciones}</div>
-            </div>
-        ` : ''}
-
-                                        ${pago.pago_estado === 'Rechazado' && pago.motivo_rechazo ? `
-            <div style="margin-top:0.5rem; padding:0.5rem; background:#fee2e2;
-                        border-radius:6px; border-left:2px solid #dc2626; font-size:0.85rem;">
-                <strong>Motivo del rechazo:</strong>
-                <div>${pago.motivo_rechazo}</div>
-            </div>
-        ` : ''}
-
-                        ${pago.pago_estado === 'Pendiente' && esAbogado ? `
-                <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
-                    <button onclick="aprobarPago(${pago.pago_id})"
-                            style="background:#16a34a; color:white; border:none;
-                                padding:6px 10px; border-radius:6px; cursor:pointer;">
-                        <i class="fas fa-check"></i> Aprobar
-                    </button>
-
-                    <button onclick="rechazarPago(${pago.pago_id})"
-                            style="background:#dc2626; color:white; border:none;
-                                padding:6px 10px; border-radius:6px; cursor:pointer;">
-                        <i class="fas fa-times"></i> Rechazar
-                    </button>
+${proceso.requiere_pago ? `
+        <div class="pago-section">
+            <div class="pago-realizado">
+                <div class="pago-item">
+                    <div class="label">Valor Estimado</div>
+                    <div class="value">${formatearPeso(proceso.valor_estimado)}</div>
+                </div>
+                <div class="pago-item">
+                    <div class="label">Total Pagado</div>
+                    <div class="value">${formatearPeso(proceso.total_pagado)}</div>
+                </div>
+                
+                ${proceso.total_pendiente > 0 ? `
+                <div class="pago-item">
+                    <div class="label">En Revisión</div>
+                    <div class="value" style="color: #f59e0b;">${formatearPeso(proceso.total_pendiente)}</div>
                 </div>
             ` : ''}
+                
+                <div class="pago-item">
+                    <div class="label">Falta por Pagar</div>
+                    <div class="value">${formatearPeso(proceso.falta_pagar)}</div>
+                </div>
+                <div class="pago-item">
+                    <div class="label">Progreso</div>
+                    <div class="value">${proceso.porcentaje}%</div>
+                </div>
+            </div>
 
+            ${proceso.porcentaje > 0 ? `
+            <div style="margin: 1rem 0;">
+                <div style="background: #e2e8f0; border-radius: 999px; height: 12px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #16a34a, #22c55e); height: 100%; width: ${proceso.porcentaje}%; transition: width 0.3s ease;"></div>
+                </div>
+            </div>
+        ` : ''}
+
+            ${proceso.cuotas && proceso.cuotas.length > 0 ? `
+            <div class="historial-pagos">
+                <button class="btn-toggle-historial" onclick="toggleHistorial(${proceso.id})">
+                    <i class="fas fa-chevron-down"></i>
+                    Ver historial de pagos (${proceso.cuotas.length})
+                </button>
+                <div class="historial-contenido" id="historial-${proceso.id}" style="display:none;">
+                    ${proceso.cuotas
+                        .sort((a, b) => new Date(a.fecha_pago) - new Date(b.fecha_pago)) 
+                        .map((pago, index) => `
+                                <div style="margin-top: 0.5rem; padding: 0.75rem; background: #f8fafc; border-radius: 8px; border-left: 3px solid #16a34a;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                                        <div>
+                                            <div style="font-weight:600;">
+                                                Pago #${index + 1} - ${formatearPeso(pago.valor_pagado)}
+                                            </div>
+                                    <div style="font-size:0.85rem; color:#64748b; display:flex; gap:1rem; flex-wrap:wrap;">
+                                        <span>
+                                            <i class="fas fa-calendar"></i> ${formatearFecha(pago.fecha_pago)}
+                                        </span>
+                                        <span>
+                                            <i class="fas fa-credit-card"></i> ${pago.forma_pago}
+                                        </span>
                                     </div>
-                                `).join('')}
 
+                                        </div>
+
+                                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                                            ${pago.pago_estado === 'Pendiente'
+                                                ? `<span style="background:#facc15; color:#000; padding:4px 8px; border-radius:6px; font-size:0.8rem;">
+                                                <i class="fas fa-clock"></i> Pendiente
+                                               </span>`
+                                                : pago.pago_estado === 'Aprobado'
+                                                    ? `<span style="background:#16a34a; color:white; padding:4px 8px; border-radius:6px; font-size:0.8rem;">
+                                                    <i class="fas fa-check-circle"></i> Aprobado
+                                                   </span>`
+                                                    : pago.pago_estado === 'Rechazado'
+                                                        ? `<span style="background:#dc2626; color:white; padding:4px 8px; border-radius:6px; font-size:0.8rem;">
+                                                        <i class="fas fa-times-circle"></i> Rechazado
+                                                       </span>`
+                                                        : ''
+                                            }
+
+                                            ${pago.comprobante ? `
+                                            <a href="/storage/${pago.comprobante}" target="_blank"
+                                                style="padding: 0.4rem 0.75rem; background: white; border: 1px solid #e2e8f0;
+                                                       border-radius: 6px; color: #3b82f6; text-decoration: none;
+                                                       font-size: 0.8rem; display: flex; align-items: center;
+                                                       gap: 0.4rem; white-space: nowrap;">
+                                                <i class="fas fa-file-pdf"></i> Ver comprobante
+                                            </a>
+                                        ` : ''}
+                                        </div>
+                                    </div>
+
+                                    ${pago.observaciones ? `
+                                    <div style="margin-top:0.5rem; padding:0.5rem; background:white;
+                                                border-radius:6px; border-left:2px solid #3b82f6; font-size:0.85rem;">
+                                        <strong>Observaciones:</strong>
+                                        <div>${pago.observaciones}</div>
+                                    </div>
+                                ` : ''}
+
+                                    ${pago.pago_estado === 'Rechazado' && pago.motivo_rechazo ? `
+                                    <div style="margin-top:0.5rem; padding:0.5rem; background:#fee2e2;
+                                                border-radius:6px; border-left:2px solid #dc2626; font-size:0.85rem;">
+                                        <strong>Motivo del rechazo:</strong>
+                                        <div>${pago.motivo_rechazo}</div>
+                                    </div>
+                                ` : ''}
+
+                                    ${pago.pago_estado === 'Pendiente' && esAbogado ? `
+                                    <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
+                                        <button onclick="aprobarPago(${pago.pago_id})"
+                                                style="background:#16a34a; color:white; border:none;
+                                                    padding:6px 10px; border-radius:6px; cursor:pointer;">
+                                            <i class="fas fa-check"></i> Aprobar
+                                        </button>
+
+                                        <button onclick="rechazarPago(${pago.pago_id})"
+                                                style="background:#dc2626; color:white; border:none;
+                                                    padding:6px 10px; border-radius:6px; cursor:pointer;">
+                                            <i class="fas fa-times"></i> Rechazar
+                                        </button>
+                                    </div>
+                                ` : ''}
                                 </div>
-                            </div>
-                        ` : ''}
+                            `).join('')}
+                </div>
+            </div>
+        ` : ''}
 
-                                                                ${proceso.porcentaje < 100 ? `
-                            <button class="btn-registrar" onclick="abrirModal(${proceso.id})">
-                                <i class="fas fa-dollar-sign"></i>
-                                Registrar nuevo pago
-                            </button>
-                        ` : ''}
-                                                            </div>
-                                                        ` : ''}
+            ${/* 👇 LÓGICA ACTUALIZADA DEL BOTÓN */ ''}
+            ${proceso.falta_pagar > 0 || proceso.hay_pagos_rechazados ? `
+            <button class="btn-registrar" onclick="abrirModal(${proceso.id})">
+                <i class="fas fa-dollar-sign"></i>
+                Registrar nuevo pago
+            </button>
+        ` : `
+            <div style="margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-left: 3px solid #16a34a; border-radius: 8px;">
+                <div style="color: #16a34a; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-check-circle"></i>
+                    Todos los pagos están completos o en revisión
+                </div>
+            </div>
+        `}
+        </div>
+    ` : ''}
             </div>
         `).join('');
 
@@ -457,8 +515,16 @@ ${proceso.cuotas.map((pago, index) => `
                 return;
             }
 
-            // 👇 VERIFICAR SI ES EL ÚLTIMO PAGO
-            const esUltimoPago = valor >= procesoSeleccionado.falta_pagar;
+            // 👇 CALCULAR SI COMPLETARÁ EL TOTAL - CONVERTIR A NÚMERO
+            const totalPendiente = procesoSeleccionado.cuotas
+                .filter(c => c.pago_estado === 'Pendiente')
+                .reduce((sum, c) => sum + parseFloat(c.valor_pagado || 0), 0);
+
+            const totalPagadoNum = parseFloat(procesoSeleccionado.total_pagado || 0);
+            const valorEstimadoNum = parseFloat(procesoSeleccionado.valor_estimado || 0);
+
+            const totalSiSeAprueban = totalPagadoNum + totalPendiente + valor;
+            const esUltimoPago = totalSiSeAprueban >= valorEstimadoNum;
 
             // 👇 MENSAJE DE CONFIRMACIÓN (ANTES DE REGISTRAR)
             const confirmacion = await Swal.fire({
@@ -470,7 +536,7 @@ ${proceso.cuotas.map((pago, index) => `
                     ? '<p style="color: #dc2626; font-weight: 600;">⚠️ <strong>IMPORTANTE:</strong> Este pago completará el total y el proceso será <strong>ARCHIVADO AUTOMÁTICAMENTE</strong>.</p>'
                     : '<p style="color: #16a34a;">✅ Este pago se aprobará automáticamente.</p>')
                 : (esUltimoPago
-                    ? '<p style="color: #dc2626; font-weight: 600;">⚠️ <strong>IMPORTANTE:</strong> El pago quedará en revisión. Una vez aprobado por el abogado, <strong>el proceso será ARCHIVADO automáticamente y no podria ser modificado</strong>.</p>'
+                    ? '<p style="color: #dc2626; font-weight: 600;">⚠️ <strong>IMPORTANTE:</strong> El pago quedará en revisión. Una vez aprobado por el abogado, <strong>el proceso será ARCHIVADO automáticamente y no podrá ser modificado</strong>.</p>'
                     : '<p style="color: #f59e0b;">⏳ El pago quedará en <strong>REVISIÓN</strong> y deberá ser aprobado por el abogado.</p>')
             }
         `,
@@ -505,7 +571,6 @@ ${proceso.cuotas.map((pago, index) => `
                 const data = await response.json();
 
                 if (data.success) {
-                    // 👇 MENSAJE DE ÉXITO (DESPUÉS DE REGISTRAR) - MÁS SIMPLE
                     Swal.fire({
                         icon: 'success',
                         title: esAbogado ? '¡Pago Aprobado!' : '¡Pago Registrado!',
@@ -671,6 +736,30 @@ ${proceso.cuotas.map((pago, index) => `
         }
 
         async function aprobarPago(id) {
+            // 👇 PRIMERO: Verificar si hay pagos anteriores pendientes
+            const proceso = procesos.find(p => p.cuotas.some(c => c.pago_id === id));
+
+            if (proceso) {
+                const pagoActual = proceso.cuotas.find(c => c.pago_id === id);
+                const indexActual = proceso.cuotas.indexOf(pagoActual);
+
+                // Verificar si hay pagos anteriores pendientes
+                const hayPendientesAnteriores = proceso.cuotas
+                    .slice(0, indexActual)
+                    .some(c => c.pago_estado === 'Pendiente');
+
+                if (hayPendientesAnteriores) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No se puede aprobar',
+                        html: '<p>Debes aprobar los pagos anteriores primero.</p><p style="color: #dc2626;">Los pagos deben aprobarse en orden cronológico.</p>',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#f59e0b'
+                    });
+                    return;
+                }
+            }
+
             const confirmacion = await Swal.fire({
                 title: '¿Aprobar este pago?',
                 icon: 'question',
@@ -682,19 +771,26 @@ ${proceso.cuotas.map((pago, index) => `
 
             if (!confirmacion.isConfirmed) return;
 
-            const response = await fetch(`/pagos/${id}/aprobar`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
+            try {
+                const response = await fetch(`/pagos/${id}/aprobar`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire('Éxito', data.message, 'success');
+                    location.reload();
+                } else {
+                    Swal.fire('Error', data.message, 'error');
                 }
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                Swal.fire('Éxito', data.message, 'success')
-                    .then(() => location.reload());
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Error de conexión al aprobar el pago', 'error');
             }
         }
 
@@ -719,23 +815,30 @@ ${proceso.cuotas.map((pago, index) => `
 
             if (!motivo) return;
 
-            const response = await fetch(`/pagos/${id}/rechazar`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    motivo
-                })
-            });
+            try {
+                const response = await fetch(`/pagos/${id}/rechazar`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        motivo
+                    })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (data.success) {
-                Swal.fire('Rechazado', data.message, 'success')
-                    .then(() => location.reload());
+                if (data.success) {
+                    await Swal.fire('Rechazado', data.message, 'success');
+                    location.reload();
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Error de conexión al rechazar el pago', 'error');
             }
         }
     </script>

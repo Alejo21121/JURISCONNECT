@@ -105,7 +105,7 @@ document.addEventListener("keydown", function (event) {
 function confirmDelete(id, nombre) {
     Swal.fire({
         title: "Confirmar Eliminación",
-        html: `¿Estás seguro de eliminar el proceso de <b>${nombre}</b>?<br>Esta acción no se puede deshacer.`,
+        html: `o de <b>${nombre}</b>?<br>Esta acción no se puede deshacer.`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Eliminar",

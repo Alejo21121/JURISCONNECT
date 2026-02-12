@@ -11,6 +11,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
             rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     </x-slot>
 
     <div class="dashboard-wrapper">
@@ -66,8 +68,6 @@
             <header class="header">
                 <div class="header-left">
                     <button class="hamburger" id="hamburgerBtn">☰</button>
-
-                    <!-- TÍTULO CAMBIANTE -->
                     <h1>
                         @if ($isAbogado)
                             Panel del Abogado
@@ -79,7 +79,55 @@
                     </h1>
                 </div>
 
-                <img src="{{ asset('img/LogoSena_Verde.png') }}" alt="Logo Sena Verde">
+                <!-- 👇 NUEVO CONTENEDOR DERECHO -->
+                <div class="header-right">
+                    <!-- Notificaciones -->
+                    @php
+                        $notificaciones = auth()->user()->unreadNotifications;
+                    @endphp
+
+                    <div class="notification-wrapper">
+                        <button class="notification-btn" id="notificationBtn">
+                            <i class="fas fa-bell"></i>
+                            @if ($notificaciones->count() > 0)
+                                <span class="notification-badge">
+                                    {{ $notificaciones->count() }}
+                                </span>
+                            @endif
+                        </button>
+
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            @if ($notificaciones->count() > 0)
+                                <div class="notification-header">
+                                    <span>Notificaciones</span>
+                                    <span class="notification-count">
+                                        {{ $notificaciones->count() }}
+                                    </span>
+                                </div>
+
+                                @foreach ($notificaciones as $noti)
+                                    <a href="{{ route('pagos.index') }}?proceso={{ $noti->data['proceso_id'] }}&mark_read={{ $noti->id }}"
+                                        class="notification-item">
+                                        <div class="notification-content">
+                                            <strong>{{ $noti->data['titulo'] }}</strong>
+                                            <br>
+                                            <small>{{ $noti->data['mensaje'] }}</small>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            @else
+                                <div class="notification-empty">
+                                    <i class="fas fa-bell-slash"></i>
+                                    <p>No tienes notificaciones</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+
+                    <!-- Logo SENA -->
+                    <img src="{{ asset('img/LogoSena_Verde.png') }}" alt="Logo Sena Verde">
+                </div>
             </header>
 
             <!-- MENSAJE DE BIENVENIDA DINÁMICO -->
@@ -132,5 +180,31 @@
         </main>
 
     </div>
+
+    <script>
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+
+        // Toggle dropdown
+        notificationBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('show');
+        });
+
+        // Cerrar al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!notificationBtn.contains(e.target) && !notificationDropdown.contains(e.target)) {
+                notificationDropdown.classList.remove('show');
+            }
+        });
+
+        // Cerrar al hacer clic en una notificación
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                notificationDropdown.classList.remove('show');
+            });
+        });
+    </script>
+
 
 </x-app-layout>

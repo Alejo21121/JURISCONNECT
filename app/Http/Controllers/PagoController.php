@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use App\Models\HistorialEstadoProceso;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\PagoAprobado;
+use App\Notifications\PagoRechazado;
 
 class PagoController extends Controller
 {
@@ -19,7 +21,18 @@ class PagoController extends Controller
     {
         $user = Auth::user();
 
+        // 👇 MARCAR NOTIFICACIÓN COMO LEÍDA
+        if (request()->has('mark_read')) {
+            $notification = $user->notifications()->find(request('mark_read'));
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
         $query = Proceso::with([
+            'cuotas' => function ($q) {
+                $q->orderBy('id', 'asc');
+            },
             'cuotas.pago.documentos'
         ]);
 
@@ -36,11 +49,30 @@ class PagoController extends Controller
 
         // Transformar datos para la vista
         $procesosData = $procesos->map(function ($proceso) {
-            // Calcular totales de cuotas
-            $totalPagado = $proceso->cuotas->where('estado', 'Pagada')->sum('valor');
+            // 👇 CALCULAR TOTALES CONSIDERANDO APROBADOS Y PENDIENTES
+            $totalPagadoAprobado = $proceso->cuotas
+                ->where('estado', 'Pagada')
+                ->sum('valor');
+
+            $totalPendiente = $proceso->cuotas()
+                ->whereHas('pago', function ($q) {
+                    $q->where('estado', 'Pendiente');
+                })
+                ->sum('valor');
+
             $valorTotal = $proceso->valor_estimado ?? 0;
-            $faltaPagar = max(0, $valorTotal - $totalPagado);
-            $porcentaje = $valorTotal > 0 ? round(($totalPagado / $valorTotal) * 100, 2) : 0;
+
+            // 👇 FALTA POR PAGAR = Total - (Aprobados + Pendientes)
+            $faltaPagar = max(0, $valorTotal - ($totalPagadoAprobado + $totalPendiente));
+
+            $porcentaje = $valorTotal > 0 ? round(($totalPagadoAprobado / $valorTotal) * 100, 2) : 0;
+
+            // 👇 VERIFICAR SI HAY PAGOS RECHAZADOS
+            $hayPagosRechazados = $proceso->cuotas()
+                ->whereHas('pago', function ($q) {
+                    $q->where('estado', 'Rechazado');
+                })
+                ->exists();
 
             return [
                 'id' => $proceso->id,
@@ -52,17 +84,20 @@ class PagoController extends Controller
 
                 // Datos de cuotas
                 'valor_estimado' => $proceso->valor_estimado,
-                'total_pagado' => $totalPagado,
+                'total_pagado' => $totalPagadoAprobado,
+                'total_pendiente' => $totalPendiente, // 👈 NUEVO
                 'falta_pagar' => $faltaPagar,
                 'porcentaje' => $porcentaje,
+                'hay_pagos_rechazados' => $hayPagosRechazados, // 👈 NUEVO
 
                 // Historial de pagos (cuotas)
-                'cuotas' => $proceso->cuotas->map(function ($cuota) {
+                'cuotas' => $proceso->cuotas->sortBy('id')->values()->map(function ($cuota) {
                     return [
                         'id' => $cuota->id,
                         'pago_id' => $cuota->pago?->id,
                         'valor_pagado' => $cuota->valor,
                         'fecha_pago' => $cuota->fecha_pago,
+                        'forma_pago' => $cuota->pago?->forma_pago, // 👈 AGREGA ESTO
                         'estado' => $cuota->estado,
                         'pago_estado' => $cuota->pago?->estado,
                         'motivo_rechazo' => $cuota->pago?->motivo_rechazo,
@@ -73,8 +108,7 @@ class PagoController extends Controller
             ];
         });
 
-        // 👇 AGREGAR ESTO
-        $esAbogado = $lawyer !== null; // true si es abogado, false si es asistente
+        $esAbogado = $lawyer !== null;
 
         return view('pagos', compact('procesosData', 'esAbogado'));
     }
@@ -192,9 +226,107 @@ class PagoController extends Controller
             }
         }
 
+        // 🔔 NOTIFICAR AL ABOGADO SI EL PAGO QUEDÓ PENDIENTE
+        if (!$esAbogado) {
+            // 👇 CORREGIDO: Obtener el User del Lawyer
+            $abogadoLawyer = Lawyer::find($proceso->lawyer_id);
+
+            if ($abogadoLawyer && $abogadoLawyer->user) {
+                $abogadoLawyer->user->notify(
+                    new \App\Notifications\PagoPendienteNotificacion($pago)
+                );
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Pago registrado correctamente'
+        ]);
+    }
+    public function aprobar(Pago $pago)
+    {
+        // 🔥 VALIDAR QUE NO HAYA PAGOS ANTERIORES PENDIENTES
+        $proceso = $pago->proceso()->with('cuotas.pago')->first();
+
+        $pagosPendientesAnteriores = $proceso->cuotas()
+            ->whereHas('pago', function ($q) use ($pago) {
+                $q->where('estado', 'Pendiente')
+                    ->where('id', '<', $pago->id);
+            })
+            ->exists();
+
+        if ($pagosPendientesAnteriores) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debes aprobar los pagos anteriores primero. Los pagos deben aprobarse en orden cronológico.'
+            ], 422);
+        }
+
+        $pago->update([
+            'estado' => 'Aprobado',
+            'validado_por' => Auth::id(),
+            'fecha_validacion' => now(),
+        ]);
+
+        if ($pago->cuota) {
+            $pago->cuota->update([
+                'estado' => 'Pagada'
+            ]);
+        }
+
+        $proceso->load('cuotas');
+
+        $totalPagado = $proceso->cuotas
+            ->where('estado', 'Pagada')
+            ->sum('valor');
+
+        if ($totalPagado >= $proceso->valor_estimado) {
+            $proceso->update([
+                'estado' => 'Archivado'
+            ]);
+
+            HistorialEstadoProceso::create([
+                'proceso_id' => $proceso->id,
+                'estado' => 'Archivado',
+                'observacion' => 'Pago completado - Proceso archivado',
+                'user_id' => Auth::id(),
+            ]);
+        }
+
+        // 🔔 Notificar al asistente
+        $assistant = Assistant::whereHas('lawyers', function ($q) use ($proceso) {
+            $q->where('lawyers.id', $proceso->lawyer_id);
+        })->first();
+
+        if ($assistant && $assistant->user) {
+            $assistant->user->notify(new PagoAprobado($pago));
+        }
+
+        // 🔔 Marcar notificación como leída (Con manejo de errores silencioso)
+        try {
+            $user = Auth::user();
+
+            $notificaciones = $user->notifications()
+                ->whereNull('read_at')
+                ->get()
+                ->filter(function ($notification) use ($pago) {
+                    $data = is_string($notification->data)
+                        ? json_decode($notification->data, true)
+                        : $notification->data;
+                    return isset($data['pago_id']) && $data['pago_id'] == $pago->id;
+                });
+
+            foreach ($notificaciones as $notificacion) {
+                $notificacion->markAsRead();
+            }
+        } catch (\Exception $e) {
+            // Silenciosamente capturar el error sin afectar la respuesta
+            \Log::info('Error al marcar notificación como leída: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pago aprobado correctamente'
         ]);
     }
 
@@ -217,49 +349,44 @@ class PagoController extends Controller
             ]);
         }
 
+        $proceso = $pago->proceso;
+
+        // 🔔 Notificar al asistente
+        $assistant = Assistant::whereHas('lawyers', function ($q) use ($proceso) {
+            $q->where('lawyers.id', $proceso->lawyer_id);
+        })->first();
+
+        if ($assistant && $assistant->user) {
+            $assistant->user->notify(
+                new PagoRechazado($pago, $request->motivo)
+            );
+        }
+
+        // 🔔 Marcar notificación como leída (Con manejo de errores silencioso)
+        try {
+            $user = Auth::user();
+
+            $notificaciones = $user->notifications()
+                ->whereNull('read_at')
+                ->get()
+                ->filter(function ($notification) use ($pago) {
+                    $data = is_string($notification->data)
+                        ? json_decode($notification->data, true)
+                        : $notification->data;
+                    return isset($data['pago_id']) && $data['pago_id'] == $pago->id;
+                });
+
+            foreach ($notificaciones as $notificacion) {
+                $notificacion->markAsRead();
+            }
+        } catch (\Exception $e) {
+            // Silenciosamente capturar el error sin afectar la respuesta
+            \Log::info('Error al marcar notificación como leída: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Pago rechazado correctamente'
-        ]);
-    }
-
-    public function aprobar(Pago $pago)
-    {
-        $pago->update([
-            'estado' => 'Aprobado',
-            'validado_por' => Auth::id(),
-            'fecha_validacion' => now(),
-        ]);
-
-        if ($pago->cuota) {
-            $pago->cuota->update([
-                'estado' => 'Pagada'
-            ]);
-        }
-
-        $proceso = $pago->proceso()->with('cuotas')->first();
-
-        $totalPagado = $proceso->cuotas
-            ->where('estado', 'Pagada')
-            ->sum('valor');
-
-        if ($totalPagado >= $proceso->valor_estimado) {
-
-            $proceso->update([
-                'estado' => 'Archivado'
-            ]);
-
-            HistorialEstadoProceso::create([
-                'proceso_id' => $proceso->id,
-                'estado' => 'Archivado',
-                'observacion' => 'Pago completado - Proceso archivado',
-                'user_id' => Auth::id(),
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pago aprobado correctamente'
         ]);
     }
 }

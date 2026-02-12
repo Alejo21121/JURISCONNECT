@@ -56,4 +56,5 @@ class User extends Authenticatable
     {
         return $this->hasOne(Assistant::class, 'user_id');
     }
+
 }

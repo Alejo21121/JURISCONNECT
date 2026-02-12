@@ -2,6 +2,10 @@
     --color-surface: #ffffff;
     --color-text-primary: #1f2937;
     --color-text-secondary: #6b7280;
+    --primary-color: #16a34a; /* Verde principal */
+    --primary-light: #dcfce7; /* Verde claro fondo */
+    --primary-border: #86efac; /* Borde verde suave */
+    --primary-dark: #15803d; /* Verde oscuro hover */
 }
 
 * {
@@ -131,7 +135,7 @@ body {
     width: 1.25rem;
     height: 1.25rem;
     margin-right: 0.5rem;
-    color: #2563eb;
+    color: #28a745;
 }
 
 .form-input,
@@ -139,7 +143,7 @@ body {
 .form-textarea {
     width: 100%;
     padding: 1rem;
-    border: 2px solid #d1d5db;
+    border: 1.5px solid var(--primary-color);
     border-radius: 12px;
     font-size: 1rem;
     color: #374151;
@@ -158,13 +162,26 @@ body {
 .form-select:focus,
 .form-textarea:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
 }
 
 .form-input::placeholder,
 .form-textarea::placeholder {
     color: #9ca3af;
+}
+
+.custom-file {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.custom-file input {
+    display: none;
 }
 
 .form-textarea {
@@ -219,10 +236,11 @@ body {
 }
 
 .document-section {
-    background: #eff6ff;
+    background: var(--primary-light);
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
+    border: 1px solid var(--primary-border);
 }
 
 .document-header {
@@ -234,14 +252,14 @@ body {
 .document-icon {
     width: 1.5rem;
     height: 1.5rem;
-    color: #2563eb;
+    color: var(--primary-dark);
     margin-right: 0.75rem;
 }
 
 .document-title {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #1e40af;
+    color: var(--primary-dark);
 }
 
 .file-input {
@@ -249,35 +267,42 @@ body {
 }
 
 .file-input input[type="file"] {
-    border-color: #bfdbfe;
-    background: white;
+    width: 100%;
+    padding: 0.8rem;
+    border: 1.5px solid #16a34a;
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
 }
 
 .file-input input[type="file"]:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+    border-color: #15803d;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
-.file-input input[type="file"]::-webkit-file-upload-button {
+/* Botón interno */
+.file-input input[type="file"]::file-selector-button {
     margin-right: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.55rem 1rem;
     border-radius: 50px;
     border: none;
-    background: #eff6ff;
-    color: #1d4ed8;
+    background: #dcfce7;
+    color: #166534;
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.file-input input[type="file"]::-webkit-file-upload-button:hover {
-    background: #dbeafe;
+.file-input input[type="file"]::file-selector-button:hover {
+    background: #bbf7d0;
 }
 
 .file-help {
     font-size: 0.75rem;
-    color: #2563eb;
+    color: var(--primary-dark);
     margin-top: 0.5rem;
 }
 
@@ -380,15 +405,14 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: var(--primary-color);
     color: white;
-    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
     padding: 0.75rem 2rem;
+    border: 1px solid var(--primary-color);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    box-shadow: 0 8px 25px -8px rgba(37, 99, 235, 0.5);
+    background: var(--primary-dark);
     transform: translateY(-1px);
 }
 
@@ -432,7 +456,9 @@ body {
     z-index: 20000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s ease;
+    transition:
+        opacity 0.35s ease,
+        visibility 0.35s ease;
 }
 
 .alert-overlay.show {
@@ -520,7 +546,9 @@ body {
     border: none;
     cursor: pointer;
     font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
     color: #fff;
     min-width: 130px;
 }

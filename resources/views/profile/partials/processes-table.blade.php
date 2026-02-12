@@ -1,6 +1,39 @@
 <!-- Tabla -->
 <link rel="stylesheet" href="{{ asset('css/pro-table.css') }}">
 <div class="table-container">
+
+    @if (session('success'))
+        <div id="successOverlay" class="alert-overlay"></div>
+
+        <div id="successModal" class="alert-modal">
+            <div class="alert-icon" style="color: #28a745;">
+                ✅
+            </div>
+
+            <h2>Operación exitosa</h2>
+
+            <p>
+                {{ session('success') }}
+            </p>
+
+            <div class="alert-buttons">
+                <button class="btn-confirm" onclick="cerrarSuccessModal()">Aceptar</button>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById('successOverlay').classList.remove('hidden');
+                document.getElementById('successModal').classList.remove('hidden');
+            });
+
+            function cerrarSuccessModal() {
+                document.getElementById('successOverlay').classList.add('hidden');
+                document.getElementById('successModal').classList.add('hidden');
+            }
+        </script>
+    @endif
+
     <div class="table-wrapper">
         <table class="process-table">
             <!-- titulos de la tabla -->
@@ -150,8 +183,8 @@
                                         </svg>
                                     </button>
                                 @else
-                                    <a href="{{ route('procesos.edit', $proceso->id) }}" class="action-btn action-edit"
-                                        title="Editar">
+                                    <a href="{{ route('procesos.edit', $proceso->id) }}"
+                                        class="action-btn action-edit" title="Editar">
                                         <svg class="action-icon" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
