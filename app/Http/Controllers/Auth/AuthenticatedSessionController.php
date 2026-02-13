@@ -29,6 +29,19 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
+        // 👇 NOTIFICACIÓN DE BIENVENIDA - SOLO SI NO EXISTE
+        if (!$user->password_changed) {
+            // Verificar si ya tiene una notificación de bienvenida (leída o no)
+            $tieneNotificacion = $user->notifications()
+                ->where('type', 'App\\Notifications\\BienvenidaCambioPassword')
+                ->exists();
+
+            // Solo crear si no existe
+            if (!$tieneNotificacion) {
+                $user->notify(new \App\Notifications\BienvenidaCambioPassword());
+            }
+        }
+
         // Redirección basada en el rol (por ID)
         switch ($user->role_id) {
             case 1: // Administrador
@@ -38,7 +51,6 @@ class AuthenticatedSessionController extends Controller
             case 3: // Asistente Jurídico
                 return redirect()->route('dashboard.asistente');
             default:
-                // return redirect('/home');  lo conservo por si acaso
                 return redirect()->route('dashboard');
         }
     }

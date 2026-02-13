@@ -52,9 +52,10 @@ document.getElementById("documento").addEventListener("change", function (e) {
     const label = document.querySelector(".file-input-label span");
     if (e.target.files.length > 0) {
         label.textContent = `Archivo seleccionado: ${e.target.files[0].name}`;
-        label.parentElement.style.borderColor = "#3b82f6";
-        label.parentElement.style.background = "#eff6ff";
-        label.parentElement.style.color = "#3b82f6";
+        // Cuando selecciona archivo
+        label.parentElement.style.borderColor = "#28a745";
+        label.parentElement.style.background = "#e9f9ee";
+        label.parentElement.style.color = "#28a745";
     } else {
         label.textContent = "Seleccionar nuevo archivo o arrastra aquí";
     }
@@ -85,9 +86,9 @@ function preventDefaults(e) {
 }
 
 function highlight(e) {
-    fileInputLabel.style.borderColor = "#3b82f6";
-    fileInputLabel.style.background = "#eff6ff";
-    fileInputLabel.style.color = "#3b82f6";
+    fileInputLabel.style.borderColor = "#28a745";
+    fileInputLabel.style.background = "#e9f9ee";
+    fileInputLabel.style.color = "#28a745";
 }
 
 function unhighlight(e) {
@@ -216,19 +217,30 @@ if (estadoSelect) {
                 icon: "warning",
                 title: "¿Archivar proceso?",
                 html: `
-                    <p><strong>⚠️ Advertencia</strong></p>
-                    <p>Al archivar este proceso:</p>
-                    <ul style="text-align:left;">
-                        <li>❌ No podrá volver a editarse</li>
-                        <li>❌ No se podrán modificar pagos ni documentos</li>
-                        <li>✔️ El proceso quedará cerrado definitivamente</li>
-                    </ul>
-                `,
+        <div style="text-align:center;">
+            <p style="margin-bottom:10px; font-weight:600;">
+                ⚠️ Esta acción es irreversible
+            </p>
+
+            <div style="
+                text-align:left;
+                display:inline-block;
+                margin-top:10px;
+            ">
+                <p>Al archivar este proceso:</p>
+                <ul style="margin-top:8px;">
+                    <li>❌ No podrá volver a editarse</li>
+                    <li>❌ No se podrán modificar pagos ni documentos</li>
+                    <li>✔️ El proceso quedará cerrado definitivamente</li>
+                </ul>
+            </div>
+        </div>
+    `,
                 showCancelButton: true,
                 confirmButtonText: "Sí, archivar",
                 cancelButtonText: "Cancelar",
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
+                confirmButtonColor: "#28a745", // ahora verde 👌
+                cancelButtonColor: "#6b7280",
             }).then((result) => {
                 if (result.isConfirmed) {
                     archivadoConfirmado = true;

@@ -15,21 +15,18 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('type');
-            $table->morphs('notifiable'); // 👈 Ya crea el índice automáticamente
+            $table->morphs('notifiable');
             $table->json('data');
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
-
-            // ❌ NO AGREGAR: $table->index(['notifiable_type', 'notifiable_id']);
-            // Ya lo crea morphs()
         });
 
-        // 👇 TRIGGER PARA AUTO-ELIMINAR CUANDO read_at NO SEA NULL
+        // 👇 TRIGGER MEJORADO: NO eliminar notificación de bienvenida
         DB::unprepared("
             CREATE OR REPLACE FUNCTION delete_read_notifications()
             RETURNS TRIGGER AS $$
             BEGIN
-                IF NEW.read_at IS NOT NULL THEN
+                IF NEW.read_at IS NOT NULL AND NEW.type != 'App\\Notifications\\BienvenidaCambioPassword' THEN
                     DELETE FROM notifications WHERE id = NEW.id;
                     RETURN NULL;
                 END IF;

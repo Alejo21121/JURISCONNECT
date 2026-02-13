@@ -33,7 +33,7 @@
 
                 <div class="profile-pic profile-pic-clickable" onclick="document.getElementById('fileInput').click();"
                     title="Haz clic para cambiar tu foto">
-                    <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('img/silueta-atardecer-foto-perfil.webp') }}"
+                    <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('img/sena-servicio-nacional-de-aprendizaje_1747692754.jpeg') }}"
                         id="profileImage" alt="Foto de perfil">
                 </div>
 
@@ -79,51 +79,9 @@
                     </h1>
                 </div>
 
-                <!-- 👇 NUEVO CONTENEDOR DERECHO -->
                 <div class="header-right">
-                    <!-- Notificaciones -->
-                    @php
-                        $notificaciones = auth()->user()->unreadNotifications;
-                    @endphp
-
-                    <div class="notification-wrapper">
-                        <button class="notification-btn" id="notificationBtn">
-                            <i class="fas fa-bell"></i>
-                            @if ($notificaciones->count() > 0)
-                                <span class="notification-badge">
-                                    {{ $notificaciones->count() }}
-                                </span>
-                            @endif
-                        </button>
-
-                        <div class="notification-dropdown" id="notificationDropdown">
-                            @if ($notificaciones->count() > 0)
-                                <div class="notification-header">
-                                    <span>Notificaciones</span>
-                                    <span class="notification-count">
-                                        {{ $notificaciones->count() }}
-                                    </span>
-                                </div>
-
-                                @foreach ($notificaciones as $noti)
-                                    <a href="{{ route('pagos.index') }}?proceso={{ $noti->data['proceso_id'] }}&mark_read={{ $noti->id }}"
-                                        class="notification-item">
-                                        <div class="notification-content">
-                                            <strong>{{ $noti->data['titulo'] }}</strong>
-                                            <br>
-                                            <small>{{ $noti->data['mensaje'] }}</small>
-                                        </div>
-                                    </a>
-                                @endforeach
-                            @else
-                                <div class="notification-empty">
-                                    <i class="fas fa-bell-slash"></i>
-                                    <p>No tienes notificaciones</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
+                    {{-- 👇 COMPONENTE DE NOTIFICACIONES --}}
+                    <x-notification-dropdown />
 
                     <!-- Logo SENA -->
                     <img src="{{ asset('img/LogoSena_Verde.png') }}" alt="Logo Sena Verde">

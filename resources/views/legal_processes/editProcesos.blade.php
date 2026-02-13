@@ -14,7 +14,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <i class="fas fa-balance-scale"></i>
+                <i class="fas fa-balance-scale" style="color:#28a745;"></i>
                 <span>Sistema Jurídico</span>
             </div>
         </div>

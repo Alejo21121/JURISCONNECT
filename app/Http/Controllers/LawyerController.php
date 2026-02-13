@@ -203,41 +203,32 @@ class LawyerController extends Controller
      */
     public function store(Request $request)
     {
-
-        // Saber qué tipo de registro viene del modal
-        $tipo = $request->input('tipodeusuario'); // 'lawyer' o 'assistant'
+        $tipo = $request->input('tipodeusuario');
 
         DB::beginTransaction();
 
         try {
-
             /**
              * ================================================
              *  CREAR ABOGADO
              * ================================================
              */
             if ($tipo === 'lawyer') {
-
                 $validated = $request->validate([
                     'nombre' => 'required|string|max:255',
                     'apellido' => 'required|string|max:255',
                     'tipo_documento' => 'required|string|max:50',
-
                     'numero_documento' => 'required|string|max:50'
                         . '|unique:lawyers,numero_documento'
                         . '|unique:assistants,numero_documento',
-
                     'correo' => 'required|email|max:255'
                         . '|unique:lawyers,correo'
                         . '|unique:assistants,correo'
                         . '|unique:users,email',
-
                     'telefono' => 'nullable|string|max:20',
                     'especialidad' => 'nullable|string|max:255',
                 ]);
 
-
-                // Crear usuario
                 $user = User::create([
                     'name' => trim($validated['nombre']) . ' ' . trim($validated['apellido']),
                     'email' => trim(strtolower($validated['correo'])),
@@ -246,8 +237,6 @@ class LawyerController extends Controller
                     'numero_documento' => trim($validated['numero_documento']),
                 ]);
 
-
-                // Crear abogado
                 $lawyer = Lawyer::create([
                     'nombre' => trim($validated['nombre']),
                     'apellido' => trim($validated['apellido']),
@@ -262,6 +251,7 @@ class LawyerController extends Controller
                 DB::commit();
 
                 $this->sendCredentials($validated['correo'], $user, $validated['numero_documento'], $lawyer->id);
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Abogado creado correctamente.',
@@ -275,7 +265,6 @@ class LawyerController extends Controller
              * ================================================
              */
             if ($tipo === 'assistant') {
-
                 $validated = $request->validate([
                     'nombre' => 'required|string|max:255',
                     'apellido' => 'required|string|max:255',
@@ -289,16 +278,14 @@ class LawyerController extends Controller
                     'lawyers.*' => 'exists:lawyers,id',
                 ]);
 
-                // Crear usuario
                 $user = User::create([
                     'name' => $validated['nombre'] . ' ' . $validated['apellido'],
                     'email' => strtolower($validated['correo']),
                     'password' => Hash::make($validated['numero_documento']),
-                    'role_id' => 3, // ASISTENTE
+                    'role_id' => 3,
                     'numero_documento' => $validated['numero_documento'],
                 ]);
 
-                // Crear asistente
                 $assistant = Assistant::create([
                     'user_id' => $user->id,
                     'nombre' => $validated['nombre'],
@@ -309,9 +296,29 @@ class LawyerController extends Controller
                     'telefono' => $validated['telefono'] ?? null,
                 ]);
 
-                // Relación pivot: asistente -> abogados
-                if ($request->has('lawyers')) {
+                // 🔔 ASIGNAR ABOGADOS Y NOTIFICAR
+                if ($request->has('lawyers') && count($request->lawyers) > 0) {
                     $assistant->lawyers()->sync($request->lawyers);
+
+                    // Notificar a cada abogado asignado
+                    foreach ($request->lawyers as $lawyerId) {
+                        $lawyer = Lawyer::find($lawyerId);
+                        if ($lawyer && $lawyer->user) {
+                            $lawyer->user->notify(
+                                new \App\Notifications\NuevoAsistenteAsignado($assistant)
+                            );
+                        }
+                    }
+
+                    // Notificar al asistente sobre su primera asignación
+                    if ($assistant->user) {
+                        $primerAbogado = Lawyer::find($request->lawyers[0]);
+                        if ($primerAbogado) {
+                            $assistant->user->notify(
+                                new \App\Notifications\AsistenteAsignado($primerAbogado)
+                            );
+                        }
+                    }
                 }
 
                 DB::commit();
@@ -327,18 +334,14 @@ class LawyerController extends Controller
                 );
             }
 
-            // Si no coincide ningún tipo
             throw new \Exception('Tipo de usuario no válido.');
         } catch (ValidationException $e) {
-
             DB::rollBack();
 
             $messages = [];
-
             if (isset($e->errors()['numero_documento'])) {
                 $messages[] = "• El número de documento {$request->numero_documento} ya está registrado";
             }
-
             if (isset($e->errors()['correo'])) {
                 $messages[] = "• El correo electrónico {$request->correo} ya está registrado";
             }
@@ -542,7 +545,6 @@ class LawyerController extends Controller
                 'correo' => strtolower($validated['correo']),
                 'telefono' => $validated['telefono'] ?? null,
             ]);
-            // ✅ ACTUALIZAR usuario asociado
 
             if ($assistant->user) {
                 $assistant->user->update([
@@ -552,8 +554,41 @@ class LawyerController extends Controller
                 ]);
             }
 
-            // ✅ ACTUALIZAR abogados relacionados
-            $assistant->lawyers()->sync($request->lawyers ?? []);
+            // 🔔 DETECTAR NUEVOS ABOGADOS ASIGNADOS
+            $abogadosAnteriores = $assistant->lawyers->pluck('id')->toArray();
+            $abogadosNuevos = $request->lawyers ?? [];
+            $abogadosAgregados = array_diff($abogadosNuevos, $abogadosAnteriores);
+
+            $assistant->lawyers()->sync($abogadosNuevos);
+
+            // 👇 AGREGAR TRY-CATCH PARA NOTIFICACIONES
+            try {
+                // Notificar solo a los nuevos abogados
+                foreach ($abogadosAgregados as $lawyerId) {
+                    $lawyer = Lawyer::find($lawyerId);
+                    if ($lawyer && $lawyer->user) {
+                        $lawyer->user->notify(
+                            new \App\Notifications\NuevoAsistenteAsignado($assistant)
+                        );
+                    }
+                }
+
+                // Notificar al asistente si se agregaron nuevos abogados
+                if (count($abogadosAgregados) > 0 && $assistant->user) {
+                    $primerNuevoAbogado = Lawyer::find(array_values($abogadosAgregados)[0]); // 👈 array_values
+                    if ($primerNuevoAbogado) {
+                        $assistant->user->notify(
+                            new \App\Notifications\AsistenteAsignado($primerNuevoAbogado)
+                        );
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::warning('Error al enviar notificaciones de asignación', [
+                    'assistant_id' => $assistant->id,
+                    'error' => $e->getMessage()
+                ]);
+                // Continuar sin fallar la actualización
+            }
 
             DB::commit();
 
@@ -563,15 +598,12 @@ class LawyerController extends Controller
                 'assistant' => $assistant->fresh()->load('lawyers')
             ]);
         } catch (ValidationException $e) {
-
             DB::rollBack();
 
             $messages = [];
-
             if (isset($e->errors()['numero_documento'])) {
                 $messages[] = "• El número de documento {$request->numero_documento} ya está registrado";
             }
-
             if (isset($e->errors()['correo'])) {
                 $messages[] = "• El correo electrónico {$request->correo} ya está registrado";
             }
@@ -583,14 +615,18 @@ class LawyerController extends Controller
                 'duplicates' => $messages
             ], 422);
         } catch (\Exception $e) {
-
             DB::rollBack();
 
-            return $this->errorResponse(
-                $request,
-                'Error al crear registro.',
-                $e->getMessage()
-            );
+            Log::error('Error al actualizar asistente', [
+                'assistant_id' => $assistant->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar asistente: ' . $e->getMessage()
+            ], 500);
         }
     }
 

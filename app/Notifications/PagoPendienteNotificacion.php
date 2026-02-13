@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PagoPendienteNotificacion extends Notification
 {
@@ -17,13 +17,15 @@ class PagoPendienteNotificacion extends Notification
     {
         $this->pago = $pago;
 
-        // 👇 OBTENER EL NOMBRE DEL ASISTENTE AUTENTICADO AHORA MISMO
-        $user = auth()->user();
+        // 👇 USAR Auth:: en lugar de auth() + PHPDoc
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         $assistant = \App\Models\Assistant::where('user_id', $user->id)->first();
 
         $this->nombreAsistente = $assistant
             ? $assistant->nombre . ' ' . $assistant->apellido
-            : $user->name; // Fallback al nombre del usuario si no es asistente
+            : $user->name;
     }
 
     public function via($notifiable)
@@ -43,6 +45,7 @@ class PagoPendienteNotificacion extends Notification
             'valor' => $this->pago->valor_pagado,
             'radicado' => $proceso->numero_radicado,
             'asistente' => $this->nombreAsistente,
+            'tipo' => 'pago'
         ];
     }
 }

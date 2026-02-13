@@ -67,7 +67,6 @@
             <i class="fas fa-info-circle"></i>
             <div>
                 <p class="font-bold">Procesos Pendientes</p>
-
             </div>
         </div>
 

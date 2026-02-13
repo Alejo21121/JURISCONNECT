@@ -97,7 +97,6 @@ class LegalProcessController extends Controller
         }
 
         try {
-
             // 🔑 LIMPIAR ANTES DE VALIDAR
             if ($request->requiere_pago == 1 && $request->valor_estimado) {
                 $request->merge([
@@ -108,6 +107,18 @@ class LegalProcessController extends Controller
             // ✅ VALIDAR UNA SOLA VEZ
             $validated = $this->validateProcesoData($request);
 
+            // 🔑 Agregar prefijo automáticamente
+            $numeroRadicado = 'RAD-' . $validated['numero_radicado'];
+
+            // Validar que no exista ya
+            if (Proceso::where('numero_radicado', $numeroRadicado)->exists()) {
+                return back()->withErrors([
+                    'numero_radicado' => 'Este número de radicado ya existe.'
+                ])->withInput();
+            }
+
+            $validated['numero_radicado'] = trim($validated['numero_radicado']);
+            $validated['numero_radicado'] = $numeroRadicado;
             $validated['estado'] = 'Pendiente';
             $validated['user_id'] = Auth::id();
             $validated['requiere_pago'] = (int) $request->requiere_pago;
@@ -127,7 +138,6 @@ class LegalProcessController extends Controller
 
             if ($request->hasFile('documentos')) {
                 foreach ($request->file('documentos') as $file) {
-
                     $path = $file->store('documentos', 'public');
 
                     \App\Models\ProcesoDocumento::create([
@@ -146,6 +156,18 @@ class LegalProcessController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
+            // 🔔 NOTIFICAR A LOS ASISTENTES DEL ABOGADO
+            $nombreAbogado = $lawyer->nombre . ' ' . $lawyer->apellido;
+            $asistentes = $lawyer->assistants; // Relación en el modelo Lawyer
+
+            foreach ($asistentes as $asistente) {
+                if ($asistente->user) {
+                    $asistente->user->notify(
+                        new \App\Notifications\NuevoProcesoRegistrado($proceso, $nombreAbogado)
+                    );
+                }
+            }
+
             // Respuesta AJAX
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
@@ -159,7 +181,6 @@ class LegalProcessController extends Controller
                 ->route('abogado.dashboard')
                 ->with('success', 'Proceso judicial creado con éxito.');
         } catch (\Illuminate\Validation\ValidationException $e) {
-
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -170,7 +191,6 @@ class LegalProcessController extends Controller
 
             throw $e;
         } catch (\Exception $e) {
-
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -319,7 +339,10 @@ class LegalProcessController extends Controller
     {
         return $request->validate([
             'tipo_proceso'    => 'required|string|max:100',
-            'numero_radicado' => 'required|string|max:50|unique:procesos,numero_radicado',
+            'numero_radicado' => [
+                'required',
+                'regex:/^[0-9\-]+$/'
+            ],
             'demandante'      => 'required|string|max:255',
             'demandado'       => 'required|string|max:255',
             'descripcion'     => 'required|string',
@@ -370,7 +393,7 @@ class LegalProcessController extends Controller
             Storage::disk('public')->delete($proceso->documento);
         }
     }
-    
+
     private function deleteAssociatedDocument(Proceso $proceso)
     {
         if ($proceso->documento && Storage::disk('public')->exists($proceso->documento)) {

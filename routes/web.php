@@ -215,3 +215,8 @@ Route::post('/pagos/{pago}/aprobar', [PagoController::class, 'aprobar'])
 
 Route::post('/pagos/{pago}/rechazar', [PagoController::class, 'rechazar'])
     ->name('pagos.rechazar');
+
+Route::post('/notifications/mark-all-read', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return redirect()->back();
+})->name('notifications.mark-all-read')->middleware('auth');
