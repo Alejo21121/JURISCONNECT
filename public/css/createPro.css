@@ -643,7 +643,7 @@ body {
     width: 100%;
     padding: 0.75rem 0.9rem;
     border-radius: 10px;
-    border: 1.5px solid #c7d2fe;
+    border: 1.5px solid #17a34a;
     background: #f8fafc;
     font-size: 0.95rem;
     transition: all 0.25s ease;
@@ -652,9 +652,9 @@ body {
 .pago-group select:focus,
 .pago-group input:focus {
     outline: none;
-    border-color: #2563eb;
+    border-color: #17a34a;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 0 0 3px rgba(23, 163, 74, 0.15);
 }
 
 /* Animación */

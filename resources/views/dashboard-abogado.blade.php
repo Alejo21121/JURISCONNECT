@@ -19,42 +19,9 @@
 
         <div class="overlay" id="overlay"></div>
 
-        <!-- ===== SIDEBAR ===== -->
-        <aside class="sidebar" id="sidebar">
-            <div class="profile">
 
-                <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" style="display: none;">
-
-                <div id="loadingIndicator"
-                    style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                    background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
-                    Subiendo...
-                </div>
-
-                <div class="profile-pic profile-pic-clickable" onclick="document.getElementById('fileInput').click();"
-                    title="Haz clic para cambiar tu foto">
-                    <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('img/sena-servicio-nacional-de-aprendizaje_1747692754.jpeg') }}"
-                        id="profileImage" alt="Foto de perfil">
-                </div>
-
-                <h3>{{ Auth::user()->name }}</h3>
-                <p>{{ Auth::user()->email }}</p>
-            </div>
-
-            <nav class="nav-menu"></nav>
-
-            <div class="sidebar-footer">
-                <div class="sena-logo">
-                    <img src="{{ asset('img/LogoInsti.png') }}" alt="Logo SENA">
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="logout-btn">
-                        Cerrar Sesión
-                    </button>
-                </form>
-            </div>
-        </aside>
+    {{-- 👇 COMPONENTE SIDEBAR --}}
+    <x-sidebar />
 
         <!-- ===== MAIN CONTENT ===== -->
         <main class="main-content" id="mainContent">

@@ -145,6 +145,26 @@
                                 placeholder="Ej: 1.500.000">
                         </div>
 
+                        <div class="field-group">
+                            <label for="fecha_vencimiento" class="field-label">
+                                <span class="label-content">
+                                    <svg class="label-icon" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    Fecha de vencimiento (Probable)
+                                </span>
+                            </label>
+                            <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" class="form-input"
+                                min="{{ date('Y-m-d') }}" value="{{ old('fecha_vencimiento') }}">
+                            <p class="help-text">
+                                Si estableces una fecha, recibirás notificaciones de recordatorio 7, 3 y 1 día antes del
+                                vencimiento.
+                            </p>
+                        </div>
+
                     </div>
                 </div>
                 <!--  -->

@@ -1784,4 +1784,6 @@ if (editAssistantForm) {
     window.checkForDuplicates = checkForDuplicates;
     window.performSearch = performSearch;
     window.clearSearch = clearSearch;
+
+    
 }

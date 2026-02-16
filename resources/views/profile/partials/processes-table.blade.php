@@ -131,27 +131,27 @@
                             <span class="estado-badge estado-{{ Str::slug($proceso->estado) }}">
                                 @switch($proceso->estado)
                                     @case('Conciliado')
-                                        <i class="fas fa-handshake"></i>
+                                        
                                     @break
 
                                     @case('Pendiente')
-                                        <i class="fas fa-handshake"></i>
+                            
                                     @break
 
                                     @case('Archivado')
-                                        <i class="fas fa-archive"></i>
+                                        
                                     @break
 
                                     @case('Suspendido')
-                                        <i class="fas fa-pause-circle"></i>
+                                       
                                     @break
 
                                     @case('Finalizado')
-                                        <i class="fas fa-check-circle"></i>
+                                        
                                     @break
 
                                     @default
-                                        <i class="fas fa-info-circle"></i>
+                                       
                                 @endswitch
                                 {{ $proceso->estado }}
                             </span>

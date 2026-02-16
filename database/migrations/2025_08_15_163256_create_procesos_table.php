@@ -34,8 +34,11 @@ return new class extends Migration
                 'Pago en trámite',
                 'Conciliado',
                 'Archivado',
-                'Reabierto' // 👈 NUEVO ESTADO
+                'Reabierto'
             ])->default('Pendiente');
+
+            /* 📅 FECHA DE VENCIMIENTO */
+            $table->date('fecha_vencimiento')->nullable(); // 👈 NUEVO
 
             /* 💰 PAGOS */
             $table->boolean('requiere_pago')->default(false);

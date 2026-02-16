@@ -270,3 +270,22 @@ document
         let value = e.target.value.replace(/\D/g, "");
         e.target.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
+
+const trasladoBox = document.getElementById("trasladoBox");
+
+if (estadoSelect && trasladoBox) {
+
+    function verificarEstado() {
+        if (estadoSelect.value === "Trasladar") {
+            trasladoBox.style.display = "block";
+        } else {
+            trasladoBox.style.display = "none";
+        }
+    }
+
+    // Ejecutar al cargar
+    verificarEstado();
+
+    // Ejecutar al cambiar
+    estadoSelect.addEventListener("change", verificarEstado);
+}

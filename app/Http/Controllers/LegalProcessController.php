@@ -273,6 +273,55 @@ class LegalProcessController extends Controller
             $validated['valor_estimado'] = null;
         }
 
+        // ===============================
+        // TRASLADO DE PROCESO
+        // ===============================
+        if ($request->filled('nuevo_lawyer_id') && Auth::user()->role_id == 2) {
+
+            // ❌ No permitir traslado si tiene pagos
+            if ($proceso->pago()->exists()) {
+                return back()->with('error', 'No se puede trasladar un proceso que ya tiene pagos registrados.');
+            }
+
+            $nuevoLawyer = \App\Models\Lawyer::find($request->nuevo_lawyer_id);
+
+            if ($nuevoLawyer && $nuevoLawyer->id != $proceso->lawyer_id) {
+
+                $lawyerActual = Auth::user()->lawyer;
+
+                // Cambiar abogado y estado
+                $proceso->lawyer_id = $nuevoLawyer->id;
+                $proceso->estado = 'Traslado';
+                $proceso->save();
+
+                // Guardar historial
+                HistorialEstadoProceso::create([
+                    'proceso_id' => $proceso->id,
+                    'estado' => 'Trasladado',
+                    'observacion' => 'Proceso trasladado al abogado '
+                        . $nuevoLawyer->nombre . ' ' . $nuevoLawyer->apellido,
+                    'user_id' => Auth::id(),
+                ]);
+
+                // 🔔 Notificar nuevo abogado
+                if ($nuevoLawyer->user) {
+
+                    $nombreAbogado = Auth::user()->name;
+
+                    $nuevoLawyer->user->notify(
+                        new \App\Notifications\ProcesoTrasladadoNotification(
+                            $proceso,
+                            $nombreAbogado
+                        )
+                    );
+                }
+
+                return redirect()
+                    ->route('procesos.index')
+                    ->with('success', 'Proceso trasladado correctamente.');
+            }
+        }
+
         $proceso->update($validated);
 
         // ✅ GUARDAR DOCUMENTOS NUEVOS
@@ -346,11 +395,9 @@ class LegalProcessController extends Controller
             'demandante'      => 'required|string|max:255',
             'demandado'       => 'required|string|max:255',
             'descripcion'     => 'required|string',
-
-            // 👇 NUEVO
             'requiere_pago'   => 'required|boolean',
             'valor_estimado'  => 'nullable|required_if:requiere_pago,1|numeric|min:0',
-
+            'fecha_vencimiento' => 'required|date|after_or_equal:today', // 👈 AGREGAR
             'estado'          => 'nullable|string',
             'documentos.*'    => 'file|mimes:pdf,doc,docx|max:10240',
         ]);
@@ -365,11 +412,9 @@ class LegalProcessController extends Controller
             'demandado'       => 'required|string|max:255',
             'descripcion'     => 'required|string',
             'estado'          => 'nullable|string',
-
-            // 👇 AÑADIR
             'requiere_pago'   => 'required|boolean',
             'valor_estimado'  => 'nullable|required_if:requiere_pago,1|numeric|min:0',
-
+            'fecha_vencimiento' => 'required|date|after_or_equal:today', // 👈 AGREGAR
             'documentos.*'    => 'file|mimes:pdf,doc,docx|max:10240',
         ]);
     }

@@ -16,6 +16,11 @@ body {
     line-height: 1.6;
 }
 
+.header img {
+    height: 45px; /* Altura unificada */
+    width: auto;
+}
+
 .container {
     max-width: 1600px;
     margin: 0 auto;
@@ -648,7 +653,7 @@ body {
 
 .pagination-btn.active {
     background-color: #28a745;
-    border-color: #28a745;  
+    border-color: #28a745;
     color: #ffffff;
     font-weight: 600;
 }

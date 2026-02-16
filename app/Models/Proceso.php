@@ -27,6 +27,7 @@ class Proceso extends Model
         'estado',
         'user_id',
         'lawyer_id',
+        'fecha_vencimiento', // 👈 AGREGAR
 
         // 👇 PAGO
         'requiere_pago',
@@ -35,8 +36,8 @@ class Proceso extends Model
 
     protected $casts = [
         'fecha_inicio' => 'date',
-        'fecha_fin' => 'date',
         'created_at' => 'datetime:d-m-Y',
+        'fecha_vencimiento' => 'date', // 👈 AGREGAR
     ];
 
     /**

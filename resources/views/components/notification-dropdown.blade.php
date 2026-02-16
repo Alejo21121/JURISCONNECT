@@ -33,13 +33,17 @@
                                     route('pagos.index') . '?proceso=' . ($noti->data['proceso_id'] ?? '') . $markRead;
                                 break;
                             case 'asignacion':
-                                $url = route('mis.procesos') . '?mark_read=' . $noti->id;
+                                $url = route('dashboard.abogado') . '?mark_read=' . $noti->id;
                                 break;
                             case 'proceso_nuevo':
                                 $url =
                                     route('mis.procesos') . '?proceso=' . ($noti->data['proceso_id'] ?? '') . $markRead;
                                 break;
                             case 'vencimiento':
+                                $url =
+                                    route('mis.procesos') . '?proceso=' . ($noti->data['proceso_id'] ?? '') . $markRead;
+                                break;
+                            case 'traslado':
                                 $url =
                                     route('mis.procesos') . '?proceso=' . ($noti->data['proceso_id'] ?? '') . $markRead;
                                 break;
