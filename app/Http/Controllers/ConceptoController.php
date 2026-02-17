@@ -38,7 +38,9 @@ class ConceptoController extends Controller
         $concepto->descripcion = $validated['concepto'];
         $concepto->save();
 
-        return back()->with('success', 'Concepto jurídico creado correctamente.');
+        // 👇 CAMBIAR ESTA LÍNEA
+        return redirect()->route('procesos.conceptos', $id)
+            ->with('success', 'Concepto jurídico creado correctamente.');
     }
 
     public function index(Request $request)

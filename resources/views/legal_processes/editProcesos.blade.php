@@ -5,107 +5,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Proceso Judicial - CSS Puro</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- 👈 IMPORTANTE --}}
+    <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/editPro.css') }}">
+    @vite(['resources/js/dash.js'])
 </head>
 
 <body>
+    <div class="dashboard-wrapper">
+        <div class="overlay" id="overlay"></div>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <i class="fas fa-balance-scale" style="color:#28a745;"></i>
-                <span>Sistema Jurídico</span>
-            </div>
-        </div>
-    </nav>
+        {{-- 👇 SIDEBAR REUTILIZABLE --}}
+        <x-sidebar />
 
-    <div class="container">
-        <div class="main-card fade-in-up">
+        {{-- 👇 CONTENIDO PRINCIPAL --}}
+        <main class="main-content" id="mainContent">
 
-            <div class="card-header">
-                <h1>
-                    <i class="fas fa-edit"></i>
-                    Editar Proceso Judicial
-                </h1>
-                <a href="{{ route('procesos.index') }}" class="back-btn">
-                    <i class="fas fa-arrow-left"></i>
-                    Volver
-                </a>
-            </div>
+            {{-- Header con hamburguesa y notificaciones --}}
+            <header class="header">
+                <div class="header-left">
+                    <button class="hamburger" id="hamburgerBtn">☰</button>
+                    <i class="fas fa-balance-scale" style="color:#28a745; font-size:30px; margin-right:10px;"></i>
+                    <h1>Sistema Jurídico</h1>
+                </div>
+                <div class="header-right">
+                    {{-- 👇 COMPONENTE DE NOTIFICACIONES --}}
+                    <x-notification-dropdown />
 
-            <div class="card-body">
+                    <!-- Logo SENA -->
+                    <a href="{{ route('dashboard.abogado') }}">
+                        <img src="{{ asset('img/LogoSena_Verde.png') }}" alt="Logo Sena Verde">
+                    </a>
+                </div>
+            </header>
 
-                <form class="form" method="POST" enctype="multipart/form-data"
-                    action="{{ route('procesos.update', $proceso->id) }}">
-                    @csrf
-                    @method('PUT')
+            <div class="container">
+                <div class="main-card fade-in-up">
 
-                    <!-- ESTADO -->
-                    <div class="form-row">
+                    <div class="card-header">
+                        <h1>
+                            <i class="fas fa-edit"></i>
+                            Editar Proceso Judicial
+                        </h1>
+                        <a href="{{ route('procesos.index') }}" class="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            Volver
+                        </a>
+                    </div>
 
-                        @php
-                            $estadosNoSeleccionables = ['Reabierto', 'Pago en trámite', 'Traslado'];
-                        @endphp
+                    <div class="card-body">
 
-                        <div class="form-group">
-                            <label class="form-label">Estado de proceso *</label>
+                        <form class="form" method="POST" enctype="multipart/form-data"
+                            action="{{ route('procesos.update', $proceso->id) }}">
+                            @csrf
+                            @method('PUT')
 
-                            @php
-                                $estados = [
-                                    'Pendiente',
-                                    'Radicado',
-                                    'Admisión',
-                                    'Trasladar', // 👈 este es el disparador
-                                    'Traslado', // 👈 estado real
-                                    'Audiencia',
-                                    'Fallo favorable',
-                                    'Fallo desfavorable',
-                                    'Apelación',
-                                    'Ejecutoria',
-                                    'Conciliado',
-                                    'Archivado',
-                                    'Reabierto',
-                                    'Pago en trámite',
-                                ];
+                            <!-- ESTADO -->
+                            <div class="form-row">
 
-                                $tienePagos = $proceso->pago()->exists();
+                                @php
+                                    $estadosNoSeleccionables = ['Reabierto', 'Pago en trámite', 'Traslado'];
+                                @endphp
 
-                                // Quitar traslado si:
-                                // - No es abogado
-                                // - O el proceso ya tiene pagos
-                                if (Auth::user()->role_id != 2 || $tienePagos) {
-                                    $estados = array_filter($estados, fn($e) => $e !== 'Trasladar');
-                                }
-                            @endphp
+                                <div class="form-group">
+                                    <label class="form-label">Estado de proceso *</label>
 
-                            <select class="form-select" name="estado" id="estadoSelect" required>
-                                @foreach ($estados as $estado)
                                     @php
-                                        $esActual = old('estado', $proceso->estado) === $estado;
-                                        $esBloqueado = in_array($estado, $estadosNoSeleccionables);
+                                        $estados = [
+                                            'Pendiente',
+                                            'Radicado',
+                                            'Admisión',
+                                            'Trasladar', // 👈 este es el disparador
+                                            'Traslado', // 👈 estado real
+                                            'Audiencia',
+                                            'Fallo favorable',
+                                            'Fallo desfavorable',
+                                            'Apelación',
+                                            'Ejecutoria',
+                                            'Conciliado',
+                                            'Archivado',
+                                            'Reabierto',
+                                            'Pago en trámite',
+                                        ];
+
+                                        $tienePagos = $proceso->pago()->exists();
+
+                                        // Quitar traslado si:
+                                        // - No es abogado
+                                        // - O el proceso ya tiene pagos
+                                        if (Auth::user()->role_id != 2 || $tienePagos) {
+                                            $estados = array_filter($estados, fn($e) => $e !== 'Trasladar');
+                                        }
                                     @endphp
 
-                                    @if (!$esBloqueado || $esActual)
-                                        <option value="{{ $estado }}" {{ $esActual ? 'selected' : '' }}
-                                            {{ $esBloqueado && !$esActual ? 'disabled' : '' }}>
-                                            {{ $estado }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </select>
+                                    <select class="form-select" name="estado" id="estadoSelect" required>
+                                        @foreach ($estados as $estado)
+                                            @php
+                                                $esActual = old('estado', $proceso->estado) === $estado;
+                                                $esBloqueado = in_array($estado, $estadosNoSeleccionables);
+                                            @endphp
 
-                        </div>
-                        @php
-                            $esAbogado = Auth::user()->role_id == 2;
-                        @endphp
+                                            @if (!$esBloqueado || $esActual)
+                                                <option value="{{ $estado }}" {{ $esActual ? 'selected' : '' }}
+                                                    {{ $esBloqueado && !$esActual ? 'disabled' : '' }}>
+                                                    {{ $estado }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
 
-                        @if ($esAbogado)
-                            <div class="form-group" id="trasladoBox" style="display:none;">
-                                <label class="form-label">Seleccionar abogado destino *</label>
-                                <select class="form-select" name="nuevo_lawyer_id">
-                                    <option value="">-- Elegir abogado --</option>
-                                    @foreach (\App\Models\Lawyer::where('id', '!=', $proceso->lawyer_id)->get() as $lawyer)
+                                </div>
+                                @php
+                                    $esAbogado = Auth::user()->role_id == 2;
+                                @endphp
+
+                                @if ($esAbogado)
+                                    <div class="form-group" id="trasladoBox" style="display:none;">
+                                        <label class="form-label">Seleccionar abogado destino *</label>
+                                        <select class="form-select" name="nuevo_lawyer_id">
+                                            <option value="">-- Elegir abogado --</option>
+                                            @foreach (\App\Models\Lawyer::where('id', '!=', $proceso->lawyer_id)->get() as $lawyer)
 <option value="{{ $lawyer->id }}">
                                         {{ $lawyer->nombre }} {{ $lawyer->apellido }}
                                     </option>
@@ -127,183 +147,187 @@
                                         {{ $tipo }}
                                     </option>
  @endforeach
-                                        </select>
-                                        </div>
+                                                </select>
+                                                </div>
 
-                                        <div class="form-group">
-                                        <label class="form-label">Número de Radicado *</label>
-                                        <input type="text" class="form-control bg-light"
-                                        value="{{ $proceso->numero_radicado }}"
-                                        readonly>
-                                        <input type="hidden" name="numero_radicado"
-                                        value="{{ $proceso->numero_radicado }}">
-                                        </div>
-                                        </div>
+                                                <div class="form-group">
+                                                <label class="form-label">Número de Radicado *</label>
+                                                <input type="text" class="form-control bg-light"
+                                                value="{{ $proceso->numero_radicado }}"
+                                                readonly>
+                                                <input type="hidden" name="numero_radicado"
+                                                value="{{ $proceso->numero_radicado }}">
+                                                </div>
+                                                </div>
 
-                                        <!-- PARTES -->
-                                        <div class="form-row">
-                                        <div class="form-group">
-                                        <label class="form-label">Demandante *</label>
-                                        <input type="text" class="form-control" name="demandante"
-                                        value="{{ old('demandante', $proceso->demandante) }}" required>
-                                        </div>
+                                                <!-- PARTES -->
+                                                <div class="form-row">
+                                                <div class="form-group">
+                                                <label class="form-label">Demandante *</label>
+                                                <input type="text" class="form-control" name="demandante"
+                                                value="{{ old('demandante', $proceso->demandante) }}" required>
+                                                </div>
 
-                                        <div class="form-group">
-                                        <label class="form-label">Demandado *</label>
-                                        <input type="text" class="form-control" name="demandado"
-                                        value="{{ old('demandado', $proceso->demandado) }}" required>
-                                        </div>
-                                        </div>
+                                                <div class="form-group">
+                                                <label class="form-label">Demandado *</label>
+                                                <input type="text" class="form-control" name="demandado"
+                                                value="{{ old('demandado', $proceso->demandado) }}" required>
+                                                </div>
+                                                </div>
 
-                                        @if ($procesoPagado)
-                                        <div class="alert alert-warning" style="margin-bottom:20px;">
-                                        <i class="fas fa-lock"></i>
-                                        Este proceso ya cuenta con pagos registrados.
-                                        <strong>Los datos de pago no pueden ser modificados.</strong>
-                                        </div>
-                                    @endif
+                                                @if ($procesoPagado)
+                                                <div class="alert alert-warning" style="margin-bottom:20px;">
+                                                <i class="fas fa-lock"></i>
+                                                Este proceso ya cuenta con pagos registrados.
+                                                <strong>Los datos de pago no pueden ser
+                                                modificados.</strong>
+                                                </div>
+                                            @endif
 
-                                    <div class="form-row">
-                                    <div class="form-group">
-                                    <label class="form-label">¿Requiere pago? *</label>
+                                            <div class="form-row">
+                                            <div class="form-group">
+                                            <label class="form-label">¿Requiere pago? *</label>
 
-                                    @if ($procesoPagado)
-                                    <!-- SOLO TEXTO -->
-                                    <div class="form-control bg-light" style="pointer-events:none;">
-                                    {{ $proceso->requiere_pago ? 'Sí' : 'No' }}
-                                    </div>
+                                            @if ($procesoPagado)
+                                            <!-- SOLO TEXTO -->
+                                            <div class="form-control bg-light" style="pointer-events:none;">
+                                            {{ $proceso->requiere_pago ? 'Sí' : 'No' }}
+                                            </div>
 
-                                    <!-- Mantener valor para el backend -->
-                                    <input type="hidden" name="requiere_pago"
-                                    value="{{ $proceso->requiere_pago }}">
-                                @else
-                                    <!-- SELECT NORMAL -->
-                                    <select class="form-select" name="requiere_pago" id="requiere_pago">
-                                    <option value="0"
-                                    {{ $proceso->requiere_pago == 0 ? 'selected' : '' }}>No
-                                    </option>
-                                    <option value="1"
-                                    {{ $proceso->requiere_pago == 1 ? 'selected' : '' }}>Sí
-                                    </option>
-                                    </select>
-                        @endif
-                        </div>
+                                            <!-- Mantener valor para el backend -->
+                                            <input type="hidden" name="requiere_pago"
+                                            value="{{ $proceso->requiere_pago }}">
+                                        @else
+                                            <!-- SELECT NORMAL -->
+                                            <select class="form-select" name="requiere_pago" id="requiere_pago">
+                                            <option value="0"
+                                            {{ $proceso->requiere_pago == 0 ? 'selected' : '' }}>No
+                                            </option>
+                                            <option value="1"
+                                            {{ $proceso->requiere_pago == 1 ? 'selected' : '' }}>Sí
+                                            </option>
+                                            </select>
+                                @endif
+                                </div>
 
-                        <div class="form-group" id="valor_pago_box" style="display:none;">
-                        <label class="form-label">Valor estimado *</label>
-                        <input type="text" class="form-control" name="valor_estimado" id="valor_estimado"
-                        value="{{ old('valor_estimado', number_format($proceso->valor_estimado, 0, ',', '.')) }}"
-                        {{ $procesoPagado ? 'readonly' : '' }}>
-                        </div>
+                                <div class="form-group" id="valor_pago_box" style="display:none;">
+                                <label class="form-label">Valor estimado *</label>
+                                <input type="text" class="form-control" name="valor_estimado"
+                                id="valor_estimado"
+                                value="{{ old('valor_estimado', number_format($proceso->valor_estimado, 0, ',', '.')) }}"
+                                {{ $procesoPagado ? 'readonly' : '' }}>
+                                </div>
 
-                        <!-- FECHA DE VENCIMIENTO -->
-                        <div class="form-group">
-                        <label class="form-label">
-                        <i class="fas fa-calendar-alt"></i>
-                        Fecha de Vencimiento
-                        </label>
-                        <input
-                        type="date"
-                        name="fecha_vencimiento"
-                        id="fecha_vencimiento"
-                        class="form-control"
-                        min="{{ date('Y-m-d') }}"
-                        value="{{ old('fecha_vencimiento', $proceso->fecha_vencimiento ? $proceso->fecha_vencimiento->format('Y-m-d') : '') }}"
-                        >
-                        <small class="form-text text-muted">
-                        Recibirás notificaciones 7, 3 y 1 día antes del vencimiento.
-                        </small>
-                        </div>
-                        </div>
+                                <!-- FECHA DE VENCIMIENTO -->
+                                <div class="form-group">
+                                <label class="form-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Fecha de Vencimiento
+                                </label>
+                                <input
+                                type="date"
+                                name="fecha_vencimiento"
+                                id="fecha_vencimiento"
+                                class="form-control"
+                                min="{{ date('Y-m-d') }}"
+                                value="{{ old('fecha_vencimiento', $proceso->fecha_vencimiento ? $proceso->fecha_vencimiento->format('Y-m-d') : '') }}"
+                                >
+                                <small class="form-text text-muted">
+                                Recibirás notificaciones 7, 3 y 1 día antes del vencimiento.
+                                </small>
+                                </div>
+                                </div>
 
-                        <!-- DESCRIPCIÓN -->
-                        <div class="form-group full-width">
-                        <label class="form-label">Detalle del caso *</label>
-                        <textarea class="form-textarea" name="descripcion" rows="4" required>{{ old('descripcion', $proceso->descripcion) }}</textarea>
-                        </div>
+                                <!-- DESCRIPCIÓN -->
+                                <div class="form-group full-width">
+                                <label class="form-label">Detalle del caso *</label>
+                                <textarea class="form-textarea" name="descripcion" rows="4" required>{{ old('descripcion', $proceso->descripcion) }}</textarea>
+                                </div>
 
-                        <!-- DOCUMENTOS EXISTENTES -->
-                        @if ($proceso->documentos->count())
-                        <hr>
-                        <h3 style="margin-bottom:15px;">📎 Documentos del proceso</h3>
+                                <!-- DOCUMENTOS EXISTENTES -->
+                                @if ($proceso->documentos->count())
+                                <hr>
+                                <h3 style="margin-bottom:15px;">📎 Documentos del proceso</h3>
 
-                        <div class="documents-list">
-                        @foreach ($proceso->documentos as $doc)
-                        <div class="doc-item">
-                        <div class="doc-info">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>{{ $doc->nombre }}</span>
-                        </div>
+                                <div class="documents-list">
+                                @foreach ($proceso->documentos as $doc)
+                                <div class="doc-item">
+                                <div class="doc-info">
+                                <i class="fas fa-file-pdf"></i>
+                                <span>{{ $doc->nombre }}</span>
+                                </div>
 
-                        <div class="doc-actions">
-                        <a href="{{ Storage::url($doc->ruta) }}" target="_blank" class="btn-view">
-                        <i class="fas fa-eye"></i>
-                        </a>
+                                <div class="doc-actions">
+                                <a href="{{ Storage::url($doc->ruta) }}" target="_blank" class="btn-view">
+                                <i class="fas fa-eye"></i>
+                                </a>
 
-                        <button type="button" class="btn-delete"
-                        onclick="eliminarDocumento({{ $doc->id }})">
-                        <i class="fas fa-trash"></i>
-                        </button>
+                                <button type="button" class="btn-delete"
+                                onclick="eliminarDocumento({{ $doc->id }})">
+                                <i class="fas fa-trash"></i>
+                                </button>
 
-                        </div>
-                        </div>
-                        @endforeach
-                        </div>
-                        @endif
+                                </div>
+                                </div>
+                                @endforeach
+                                </div>
+                                @endif
 
-                        <!-- SUBIR NUEVOS DOCUMENTOS -->
-                        <div class="form-group full-width">
-                        <label class="form-label">
-                        <i class="fas fa-file-upload"></i> Subir nuevos documentos
-                        </label>
+                                <!-- SUBIR NUEVOS DOCUMENTOS -->
+                                <div class="form-group full-width">
+                                <label class="form-label">
+                                <i class="fas fa-file-upload"></i> Subir nuevos documentos
+                                </label>
 
-                        <div class="file-input">
-                        <input type="file" id="documento" multiple>
-                        <label for="documento" class="file-input-label">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>Seleccionar archivo</span>
-                        </label>
-                        </div>
+                                <div class="file-input">
+                                <input type="file" id="documento" name="documentos[]" multiple>
+                                <label for="documento" class="file-input-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Seleccionar archivo</span>
+                                </label>
+                                </div>
 
-                        <div id="filePreview" class="file-preview"></div>
-                        </div>
+                                <div id="filePreview" class="file-preview"></div>
+                                </div>
 
-                        <!-- BOTÓN FINAL -->
-                        <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Actualizar Proceso
-                        </button>
-                        </div>
+                                <!-- BOTÓN FINAL -->
+                                <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Actualizar Proceso
+                                </button>
+                                </div>
 
-                        </form>
-                        </div>
-                        </div>
-                        </div>
+                                </form>
+                                </div>
+                                </div>
+                                </div>
 
-                        <!-- Modal eliminar documento -->
-                        <div id="modalEliminar" class="modal-overlay">
-                        <div class="modal-box">
-                        <div class="modal-icon">
-                        <i class="fas fa-triangle-exclamation"></i>
-                        </div>
+                                <!-- Modal eliminar documento -->
+                                <div id="modalEliminar" class="modal-overlay">
+                                <div class="modal-box">
+                                <div class="modal-icon">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                </div>
 
-                        <h3>¿Eliminar este documento?</h3>
-                        <p>Este documento se eliminara de forma inmediata,<br>
-                        incluso si no guarda el proceso.</p>
+                                <h3>¿Eliminar este documento?</h3>
+                                <p>Este documento se eliminara de forma inmediata,<br>
+                                incluso si no guarda el proceso.</p>
 
-                        <div class="modal-actions">
-                        <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-                        <button class="btn-confirm" onclick="confirmarEliminar()">Eliminar</button>
-                        </div>
-                        </div>
-                        </div>
+                                <div class="modal-actions">
+                                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                                <button class="btn-confirm"
+                                onclick="confirmarEliminar()">Eliminar</button>
+                                </div>
+                                </div>
+                                </div>
 
-                        <script>
-                            window.procesoEstado = "{{ $proceso->estado }}";
-                        </script>
+                                <script>
+                                    window.procesoEstado = "{{ $proceso->estado }}";
+                                </script>
 
-                        <script src="{{ asset('js/editPro.js') }}"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                        </body>
+                                <script src="{{ asset('js/editPro.js') }}"></script>
+                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                </body>
 
-                        </html>)
+                                </html>
+                                

@@ -20,8 +20,8 @@
         <div class="overlay" id="overlay"></div>
 
 
-    {{-- 👇 COMPONENTE SIDEBAR --}}
-    <x-sidebar />
+        {{-- 👇 COMPONENTE SIDEBAR --}}
+        <x-sidebar />
 
         <!-- ===== MAIN CONTENT ===== -->
         <main class="main-content" id="mainContent">
@@ -51,7 +51,9 @@
                     <x-notification-dropdown />
 
                     <!-- Logo SENA -->
-                    <img src="{{ asset('img/LogoSena_Verde.png') }}" alt="Logo Sena Verde">
+                    <a href="{{ route('dashboard.abogado') }}">
+                        <img src="{{ asset('img/LogoSena_Verde.png') }}" alt="Logo Sena Verde">
+                    </a>
                 </div>
             </header>
 
@@ -130,6 +132,5 @@
             });
         });
     </script>
-
 
 </x-app-layout>

@@ -18,16 +18,6 @@
     --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-body {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        sans-serif;
-    background: linear-gradient(135deg, #2891e7 0%, #1818b4 100%);
-    min-height: 100vh;
-    color: var(--dark);
-    line-height: 1.6;
-    position: relative;
-}
-
 .detail-actions {
     margin-bottom: 20px;
 }
@@ -64,8 +54,6 @@ body {
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
-
-
 }
 
 .btn-back-modern i {
@@ -76,18 +64,6 @@ body {
     background: #f3f4f6;
     border-color: #d1d5db;
     color: #111827;
-}
-
-
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
 }
 
 .btn-secondary {
@@ -104,48 +80,6 @@ body::before {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-}
-
-/* Navbar */
-.navbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 70px;
-}
-
-.nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.nav-brand i {
-    font-size: 1.5rem;
-}
-
-/* Container */
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem;
-    position: relative;
-    z-index: 1;
 }
 
 /* Header */
@@ -212,13 +146,6 @@ body::before {
     transform: translateY(-2px);
 }
 
-/* Concepts Container */
-.concepts-container {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 2rem;
-}
-
 .concepts-list {
     display: grid;
     gap: 1.5rem;
@@ -240,7 +167,7 @@ body::before {
 }
 
 .list-header .process-number {
-    color: var(--primary);
+    color: #28a745;
     font-weight: 700;
     font-size: 1.1rem;
 }
@@ -264,7 +191,7 @@ body::before {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+    background: linear-gradient(135deg, rgb(33, 136, 56) 0%, rgb(30, 126, 52) 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -309,7 +236,6 @@ body::before {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
-
 }
 
 .btn-sm {
@@ -421,12 +347,6 @@ body::before {
     gap: 0.5rem;
 }
 
-.detail-body {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 2rem;
-}
-
 .detail-section {
     background: #f8fafc;
     border: 1px solid var(--border);
@@ -508,15 +428,6 @@ body::before {
     margin-bottom: 2rem;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-    .concepts-container,
-    .detail-body {
-        grid-template-columns: 1fr;
-    }
-
-}
-
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -575,8 +486,14 @@ body::before {
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: linear-gradient(135deg, #0e89c288 0%, #1854af6b 100%);
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        sans-serif;
+    background: linear-gradient(135deg, #059669aa 0%, #047857cc 100%);
     min-height: 100vh;
     color: var(--dark);
     line-height: 1.6;
@@ -584,7 +501,7 @@ body {
 }
 
 body::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
@@ -593,39 +510,6 @@ body::before {
     background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
     z-index: 0;
     pointer-events: none;
-}
-
-/* ===== NAVBAR ===== */
-.navbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 70px;
-}
-
-.nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.nav-brand i {
-    font-size: 1.5rem;
 }
 
 /* ===== CONTAINER ===== */
@@ -690,7 +574,7 @@ body::before {
 /* Botón Primario */
 .btn-primary {
     background: white;
-    color: var(--primary);
+    color: #28a745;
 }
 
 .btn-primary:hover {
@@ -720,7 +604,7 @@ body::before {
 
 /* Botón Ver */
 .btn-view {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: linear-gradient(135deg, rgb(33, 136, 56) 0%, rgb(30, 126, 52) 100%);
     color: white;
 }
 
@@ -765,7 +649,6 @@ body::before {
     transition: all 0.3s ease;
 }
 
-
 /* ===== CONCEPTS CONTAINER ===== */
 .concepts-container {
     display: grid;
@@ -794,51 +677,12 @@ body::before {
 }
 
 .process-number {
-    color: var(--primary);
+    color: #28a745;
     font-weight: 700;
     font-size: 1.1rem;
 }
 
 /* ===== CONCEPT CARD ===== */
-.concept-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.75rem;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.concept-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--primary), var(--primary-dark));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.concept-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
-}
-
-.concept-card:hover::before {
-    opacity: 1;
-}
-
-.concept-card h5 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 0.75rem;
-}
-
 .concept-meta {
     display: flex;
     align-items: center;
@@ -847,12 +691,6 @@ body::before {
     font-size: 0.9rem;
     margin-bottom: 1rem;
     flex-wrap: wrap;
-}
-
-.concept-card p {
-    color: #475569;
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
 }
 
 .concept-actions {
@@ -1228,4 +1066,29 @@ body::before {
     .modal-content {
         padding: 1.5rem;
     }
+}
+
+/* Alert */
+.alert {
+    background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+    border: 1px solid #bbf7d0;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    color: #166534;
+    display: none;
+}
+
+.alert.show {
+    display: flex;
+    align-items: center;
+}
+
+.alert button {
+    background: none;
+    border: none;
+    color: #16a34a;
+    cursor: pointer;
+    margin-left: auto;
+    padding: 0.25rem;
 }

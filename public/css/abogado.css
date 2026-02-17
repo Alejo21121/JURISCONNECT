@@ -92,7 +92,6 @@ body {
     width: 70px;
     opacity: 0.7;
     margin-bottom: 20px;
-    margin-left: 75px;
 }
 
 .logout-btn {
@@ -258,7 +257,6 @@ body {
 
 .overlay.active {
     display: block;
-    opacity: 1;
 }
 
 /* ------------------------- */
@@ -880,3 +878,17 @@ body {
     font-size: 0.95rem;
 }
 
+/* Quitar líneas entre filas */
+tbody tr {
+    border: none !important;
+}
+
+tbody td {
+    border: none !important;
+    border-bottom: none !important;
+}
+
+table {
+    border-collapse: collapse;
+    border: none;
+}

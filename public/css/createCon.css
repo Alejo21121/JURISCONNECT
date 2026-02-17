@@ -56,31 +56,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Alert */
-.alert {
-    background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
-    border: 1px solid #bbf7d0;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    margin-bottom: 2rem;
-    color: #166534;
-    display: none;
-}
-
-.alert.show {
-    display: flex;
-    align-items: center;
-}
-
-.alert button {
-    background: none;
-    border: none;
-    color: #16a34a;
-    cursor: pointer;
-    margin-left: auto;
-    padding: 0.25rem;
-}
-
 /* Card Base */
 .card {
     background: white;
@@ -101,7 +76,11 @@ body {
 }
 
 .card-header.primary {
-    background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+    background: linear-gradient(
+        135deg,
+        rgb(33, 136, 56) 0%,
+        rgb(30, 126, 52) 100%
+    );
 }
 
 .card-header h5 {
@@ -113,12 +92,13 @@ body {
 }
 
 .badge {
-    background: #fbbf24;
-    color: #92400e;
+    background: #f0fdf4;
+    color: #166534;
     padding: 0.5rem 1rem;
     border-radius: 9999px;
     font-size: 0.875rem;
     font-weight: 600;
+    border-color: #22c55e;
 }
 
 /* Card Body */
@@ -158,7 +138,7 @@ body {
 }
 
 .info-value.primary {
-    color: #3b82f6;
+    color: #10b981;
     font-weight: 700;
     font-size: 1.125rem;
 }
@@ -190,13 +170,13 @@ body {
 }
 
 .form-help {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    border-left: 4px solid #3b82f6;
+    background: linear-gradient(135deg, #e9f9ee 0%, #dcfce7 100%);
+    border-left: 4px solid #28a745;
     padding: 0.75rem;
     margin-bottom: 0.75rem;
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    color: #1e40af;
+    color: #166534;
 }
 
 .form-help.warning {
@@ -220,7 +200,7 @@ body {
 
 .form-textarea:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #28a745;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -494,7 +474,7 @@ body {
 
 /* CAJA DEL INPUT */
 .input-wrapper-modern {
-    background: #e6eeff;
+    background: #e9f9ee;
     /* azul suave */
     border-radius: 10px;
     padding: 12px 14px;

@@ -2,20 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lawyer; // Asegúrate de importar el modelo
+use App\Models\Lawyer;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\Proceso;
 use App\Models\Assistant;
-
+use Illuminate\Support\Facades\Auth; // 👈 AGREGAR ESTE IMPORT
 
 class AdminController extends Controller
 {
     public function index(Request $request)
     {
+        // ============================
+        // 👇 REDIRECCIÓN POR ROL
+        // ============================
+        $user = Auth::user();
+
+        if ($user->role_id == 2) {
+            return redirect()->route('dashboard.abogado');
+        }
+
+        if ($user->role_id == 3) {
+            return redirect()->route('dashboard.asistente');
+        }
+
+        // Solo role_id == 1 (Admin) continúa aquí ↓
+
         try {
             $searchTerm = $request->get('search');
-            $radicado = $request->get('radicado'); // 👈 Obtener término de búsqueda
+            $radicado = $request->get('radicado');
 
             // ============================
             // BUSCAR ABOGADOS
@@ -63,6 +78,7 @@ class AdminController extends Controller
                     }
                 });
             }
+
             // ============================
             // BUSCAR PROCESOS
             // ============================
@@ -83,24 +99,22 @@ class AdminController extends Controller
                 });
             }
 
-            $procesosSimple = $procesosQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'procesosSimplePage');
-
             // ============================
             // PAGINACIONES
             // ============================
-            $lawyers = $query->orderBy('id', 'asc')->paginate(10, ['*'], 'lawyersPage');
-            $lawyersSimple = Lawyer::orderBy('id', 'asc')->paginate(10, ['*'], 'lawyersSimplePage');
-            $assistants = $assistantQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'assistantsPage');
+            $lawyers         = $query->orderBy('id', 'asc')->paginate(10, ['*'], 'lawyersPage');
+            $lawyersSimple   = Lawyer::orderBy('id', 'asc')->paginate(10, ['*'], 'lawyersSimplePage');
+            $assistants      = $assistantQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'assistantsPage');
             $assistantsSimple = Assistant::with('lawyers')->orderBy('id', 'asc')->paginate(10, ['*'], 'assistantsSimplePage');
-            $procesosSimple = $procesosQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'procesosSimplePage');
+            $procesosSimple  = $procesosQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'procesosSimplePage');
 
             $abogados = Lawyer::all();
 
             // Mantener búsqueda en paginación
             foreach ([$lawyers, $assistants, $lawyersSimple, $assistantsSimple, $procesosSimple] as $p) {
                 $p->appends([
-                    'search' => $searchTerm,
-                    'radicado' => $radicado // 👈 Agregar radicado a la paginación
+                    'search'   => $searchTerm,
+                    'radicado' => $radicado
                 ]);
             }
 
@@ -108,33 +122,29 @@ class AdminController extends Controller
             // PETICIONES AJAX
             // ============================
             if ($request->ajax()) {
-                // Búsqueda de abogados
                 if ($request->has('search') && $request->get('section') === 'lawyers') {
                     return response()->json([
                         'success' => true,
-                        'html' => view('profile.partials.lawyers-table', ['lawyers' => $lawyers])->render()
+                        'html'    => view('profile.partials.lawyers-table', ['lawyers' => $lawyers])->render()
                     ]);
                 }
 
-                // Búsqueda de asistentes
                 if ($request->has('search') && $request->get('section') === 'assistants') {
                     return response()->json([
                         'success' => true,
-                        'html' => view('profile.partials.assistants-table', ['assistants' => $assistants])->render()
+                        'html'    => view('profile.partials.assistants-table', ['assistants' => $assistants])->render()
                     ]);
                 }
 
-                // 👇 BÚSQUEDA DE PROCESOS POR RADICADO
                 if ($request->has('radicado') || $request->has('procesosSimplePage')) {
                     return response()->json([
                         'success' => true,
-                        'html' => view('profile.partials.procesos-table-simple', [
+                        'html'    => view('profile.partials.procesos-table-simple', [
                             'procesosSimple' => $procesosSimple
                         ])->render()
                     ]);
                 }
 
-                // Paginación
                 if ($request->has('lawyersPage')) {
                     $html = view('profile.partials.lawyers-table', ['lawyers' => $lawyers])->render();
                 } elseif ($request->has('lawyersSimplePage')) {
@@ -151,8 +161,8 @@ class AdminController extends Controller
             // ============================
             // CONTADORES PARA DASHBOARD
             // ============================
-            $totalLawyers = Lawyer::count();
-            $cases_count = Proceso::count();
+            $totalLawyers    = Lawyer::count();
+            $cases_count     = Proceso::count();
             $totalAsistentes = Assistant::count();
 
             return view('dashboard', compact(

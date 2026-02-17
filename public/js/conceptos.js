@@ -32,3 +32,29 @@ document.addEventListener("keydown", function (e) {
         closeDeleteModal();
     }
 });
+
+const notificationBtn = document.getElementById("notificationBtn");
+const notificationDropdown = document.getElementById("notificationDropdown");
+
+// Toggle dropdown
+notificationBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    notificationDropdown.classList.toggle("show");
+});
+
+// Cerrar al hacer clic fuera
+document.addEventListener("click", function (e) {
+    if (
+        !notificationBtn.contains(e.target) &&
+        !notificationDropdown.contains(e.target)
+    ) {
+        notificationDropdown.classList.remove("show");
+    }
+});
+
+// Cerrar al hacer clic en una notificación
+document.querySelectorAll(".notification-item").forEach((item) => {
+    item.addEventListener("click", function () {
+        notificationDropdown.classList.remove("show");
+    });
+});
