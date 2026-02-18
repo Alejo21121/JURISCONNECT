@@ -26,7 +26,7 @@
                     if (isset($noti->data['tipo'])) {
                         switch ($noti->data['tipo']) {
                             case 'bienvenida':
-                                $url = route('profile.edit') . '?mark_read=' . $noti->id;
+                                $url = route('profile.password.edit') . '?mark_read=' . $noti->id;
                                 break;
                             case 'pago':
                                 $url =

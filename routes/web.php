@@ -220,3 +220,10 @@ Route::post('/notifications/mark-all-read', function () {
     auth()->user()->unreadNotifications->markAsRead();
     return redirect()->back();
 })->name('notifications.mark-all-read')->middleware('auth');
+
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/perfil', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/perfil/cambiar-contrasena', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+    Route::put('/perfil/cambiar-contrasena', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+});

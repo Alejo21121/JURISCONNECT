@@ -280,7 +280,7 @@
                                 </label>
 
                                 <div class="file-input">
-                                <input type="file" id="documento" name="documentos[]" multiple>
+                               <input type="file" id="documento" name="documentos[]" multiple>
                                 <label for="documento" class="file-input-label">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <span>Seleccionar archivo</span>

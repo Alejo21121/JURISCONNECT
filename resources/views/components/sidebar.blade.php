@@ -25,6 +25,13 @@
             $isAbogado = $role == 2;
         @endphp
 
+
+        {{-- 👇 NUEVO: Mi Perfil --}}
+        <a href="{{ route('profile.show') }}" class="nav-item {{ request()->routeIs('profile.show') ? 'active' : '' }}">
+            <i class="fas fa-user-circle"></i>
+            <span>Mi Perfil</span>
+        </a>
+
         {{-- Registrar Proceso (solo abogados) --}}
         @if ($isAbogado)
             <a href="{{ route('legal_processes.create') }}"
@@ -52,6 +59,7 @@
             <i class="fas fa-dollar-sign"></i>
             <span>Pagos</span>
         </a>
+
     </nav>
 
     <div class="sidebar-footer">
