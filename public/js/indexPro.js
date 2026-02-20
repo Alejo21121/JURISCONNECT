@@ -107,6 +107,11 @@ window.openProcessModal = function (id) {
     </div>
 
     <div class="detail-row">
+        <span class="label">📅 Fecha vencimiento</span>
+        <span class="value">${data.fecha_vencimiento}</span>
+    </div>
+
+    <div class="detail-row">
         <span class="label">📊 Estado</span>
         <span class="value">
             <span class="badge estado-${data.estado.toLowerCase().replace(/ /g, "-")}">
@@ -164,7 +169,7 @@ ${
                 </span>
             </div>
 
-            <div class="detail-row">
+<div class="detail-row">
                 <span class="label">Estado del pago</span>
                 <span class="value">
                     ${
@@ -174,6 +179,13 @@ ${
                               ? '<span class="badge pago-tramite"><i class="fas fa-spinner"></i> Pago en trámite</span>'
                               : '<span class="badge pago-pendiente"><i class="fas fa-clock"></i> Pago pendiente</span>'
                     }
+                    <button 
+                        class="badge pago-btn"
+                        onclick="irAPago(${data.id})"
+                        style="margin-left:8px; cursor:pointer; border:none;"
+                    >
+                        💳 Ir a pagos
+                    </button>
                 </span>
             </div>
 
@@ -214,14 +226,21 @@ ${
                     : ""
             }
         `
-        : `
-            <div class="detail-row">
-                <span class="label">Estado del pago</span>
-                <span class="value">
-                    <span class="badge pago-no-aplica">— No aplica</span>
-                </span>
-            </div>
-        `
+: `
+    <div class="detail-row">
+        <span class="label">Estado del pago</span>
+        <span class="value">
+            <span class="badge pago-no-aplica">— No aplica</span>
+            <button 
+                class="badge pago-btn"
+                onclick="irAPago(${data.id})"
+                style="margin-left:8px; cursor:pointer; border:none;"
+            >
+                💳 Ir a pagos
+            </button>
+        </span>
+    </div>
+`
 }
 
     <div class="section-divider"></div>
@@ -387,3 +406,7 @@ document.addEventListener("click", function (e) {
         })
         .catch((err) => console.error("Error paginación AJAX:", err));
 });
+
+function irAPago(procesoId) {
+    window.location.href = `/pagos?proceso=${procesoId}`;
+}

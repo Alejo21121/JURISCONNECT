@@ -10,9 +10,6 @@ body {
         Cantarell, sans-serif;
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     min-height: 100vh;
-    height: 100vh; /* ← AGREGAR */
-    overflow: hidden; /* ← AGREGAR: bloquea scroll del body */
-    padding: 0; /* ← QUITAR el padding: 24px */
     margin: 0;
 }
 

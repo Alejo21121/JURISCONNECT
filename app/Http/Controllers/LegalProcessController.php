@@ -226,6 +226,7 @@ class LegalProcessController extends Controller
             'estado' => $proceso->estado,
             'requiere_pago' => $proceso->requiere_pago,
             'valor_estimado' => $proceso->valor_estimado,
+            'fecha_vencimiento' => $proceso->fecha_vencimiento->format('d-m-Y'), // 👈 AGREGAR
             'created_at' => $proceso->created_at->format('d-m-Y'),
             'pago_realizado' => $proceso->pago !== null,
             'porcentaje' => $porcentaje, // 👈 AGREGAR ESTO

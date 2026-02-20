@@ -46,6 +46,8 @@ body {
     transform: translateX(-100%);
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+    overflow-y: auto; /* Scroll si el contenido es muy largo */
+    -webkit-overflow-scrolling: touch; /* 👈 Para iPhone */
 }
 
 .sidebar.active {
@@ -57,7 +59,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 20px;
 }
 
 /* Placeholder para futuros botones de navegación */
@@ -527,7 +528,8 @@ body {
         width: 280px;
         z-index: 1000;
         transition: left 0.3s ease;
-        padding-bottom: 250px; /* espacio para el botón */
+        overflow-y: auto; /* 👈 Esto permite hacer scroll dentro del sidebar */
+        -webkit-overflow-scrolling: touch; /* 👈 Scroll suave en iOS */
     }
 
     .sidebar.active {
@@ -621,13 +623,7 @@ body {
     }
 }
 
-
-
 /* Asegurar que las cards sean scrolleables en móvil */
-.cards-container {
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
-}
 
 /* ===== NOTIFICACIONES ===== */
 .notification-wrapper {

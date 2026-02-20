@@ -64,7 +64,9 @@
 
     <div class="sidebar-footer">
         <div class="sena-logo">
-            <img src="{{ asset('img/LogoInsti.png') }}" alt="Logo SENA">
+            <a href="{{ route('dashboard.abogado') }}">
+                <img src="{{ asset('img/LogoSena_Verde.png') }}" alt="Logo Sena Verde">
+            </a>
         </div>
         <form method="POST" action="{{ route('logout') }}">
             @csrf

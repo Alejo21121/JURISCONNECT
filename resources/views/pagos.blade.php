@@ -206,9 +206,9 @@
             if (procesoEncontrado) {
                 terminoBusqueda = procesoEncontrado.radicado;
                 document.getElementById('searchRadicado').value = procesoEncontrado.radicado;
-                filtroActual = 'pendientes';
+                filtroActual = 'todos';
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                document.querySelector('.filter-btn[data-filtro="pendientes"]').classList.add('active');
+                document.querySelector('.filter-btn[data-filtro="todos"]').classList.add('active');
                 setTimeout(() => {
                     const card = document.querySelector('.proceso-card');
                     if (card) {

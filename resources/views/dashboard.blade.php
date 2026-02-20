@@ -314,6 +314,9 @@
             </div>
 
             <div class="nav-menu">
+
+                <button class="nav-btn" data-section="perfil">Mi Perfil</button>
+
                 <button class="nav-btn active" data-section="dashboard">
                     Dashboard
                 </button>
@@ -471,6 +474,102 @@
 
                 </div>
 
+                <!-- SECCIÓN MI PERFIL -->
+                <div class="section-content" id="perfil-section">
+                    <div class="section-header">
+                        <h2>Mi Perfil</h2>
+                        <p>Información personal del administrador</p>
+                    </div>
+
+                    <div class="profile-card">
+                        <div class="profile-info">
+                            <div class="profile-image">
+                                <img src="{{ Auth::user()->foto_perfil
+                                    ? asset('storage/' . Auth::user()->foto_perfil)
+                                    : asset('img/sena-servicio-nacional-de-aprendizaje_1747692754.jpeg') }}"
+                                    alt="Foto de perfil">
+                            </div>
+
+                            <div class="profile-details">
+                                <div class="info-item">
+                                    <label>Nombre</label>
+                                    <input type="text" value="{{ Auth::user()->name }}" disabled>
+                                </div>
+
+                                <div class="info-item">
+                                    <label>Correo</label>
+                                    <input type="email" value="{{ Auth::user()->email }}" disabled>
+                                </div>
+
+                                <div class="info-item">
+                                    <label>Rol</label>
+                                    <input type="text" value="Administrador" disabled>
+                                </div>
+
+                                <div style="margin-top:20px;">
+                                    <button class="btn-primary nav-btn" data-section="password">
+                                        Cambiar Contraseña
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN CAMBIAR CONTRASEÑA -->
+                <div class="section-content" id="password-section">
+                    <div class="section-header">
+                        <h2>Cambiar Contraseña</h2>
+                        <p>Actualiza tu contraseña de administrador</p>
+                    </div>
+
+                    <div class="profile-card">
+                        <form method="POST" action="{{ route('profile.password.update') }}">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Contraseña Actual -->
+                            <div class="form-group password-group">
+                                <label>Contraseña Actual</label>
+                                <div class="password-wrapper">
+                                    <input type="password" name="current_password" required>
+                                    <span class="toggle-password">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Nueva Contraseña -->
+                            <div class="form-group password-group">
+                                <label>Nueva Contraseña</label>
+                                <div class="password-wrapper">
+                                    <input type="password" name="password" required>
+                                    <span class="toggle-password">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Confirmar -->
+                            <div class="form-group password-group">
+                                <label>Confirmar Nueva Contraseña</label>
+                                <div class="password-wrapper">
+                                    <input type="password" name="password_confirmation" required>
+                                    <span class="toggle-password">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:20px;">
+                                <button type="submit" class="btn-primary">
+                                    Guardar Contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -478,5 +577,64 @@
     </div>
 
     <script src="{{ asset('js/proTable.js') }}"></script>
+
+    @if (session('password_updated'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Contraseña Actualizada!',
+                html: `
+            <p>Tu contraseña fue cambiada correctamente.</p>
+            <p style="color:#2563eb;font-weight:600;">
+                Debes volver a iniciar sesión.
+            </p>
+        `,
+                confirmButtonText: 'Aceptar e Iniciar Sesión',
+                confirmButtonColor: '#2563eb',
+                allowOutsideClick: false
+            }).then(() => {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('logout') }}";
+
+                const csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = '_token';
+                csrf.value = "{{ csrf_token() }}";
+
+                form.appendChild(csrf);
+                document.body.appendChild(form);
+                form.submit();
+            });
+        </script>
+    @endif
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.querySelectorAll(".toggle-password").forEach(function(toggle) {
+
+                toggle.addEventListener("click", function() {
+
+                    const input = this.parentElement.querySelector("input");
+                    const icon = this.querySelector("i");
+
+                    if (input.type === "password") {
+                        input.type = "text";
+                        icon.classList.remove("fa-eye-slash");
+                        icon.classList.add("fa-eye");
+                    } else {
+                        input.type = "password";
+                        icon.classList.remove("fa-eye");
+                        icon.classList.add("fa-eye-slash");
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
+
 
 </x-app-layout>

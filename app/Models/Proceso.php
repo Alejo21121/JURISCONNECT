@@ -28,7 +28,6 @@ class Proceso extends Model
         'user_id',
         'lawyer_id',
         'fecha_vencimiento', // 👈 AGREGAR
-
         // 👇 PAGO
         'requiere_pago',
         'valor_estimado',

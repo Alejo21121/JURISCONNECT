@@ -85,8 +85,21 @@ class ProfileController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // NO cerrar sesión aquí, solo enviar mensaje de éxito
-        return redirect()->route('profile.password.edit')
-            ->with('password_updated', true);
+        switch ($user->role_id) {
+            case 1: // Admin
+                return redirect()->route('dashboard')
+                    ->with('password_updated', true);
+
+            case 2: // Abogado
+                return redirect()->route('dashboard.abogado')
+                    ->with('password_updated', true);
+
+            case 3: // Asistente
+                return redirect()->route('dashboard.asistente')
+                    ->with('password_updated', true);
+
+            default:
+                return back()->with('password_updated', true);
+        }
     }
 }
