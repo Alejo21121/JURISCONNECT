@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Proceso Judicial - CSS Puro</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- 👈 IMPORTANTE --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/editPro.css') }}">
@@ -16,10 +16,10 @@
     <div class="dashboard-wrapper">
         <div class="overlay" id="overlay"></div>
 
-        {{-- 👇 SIDEBAR REUTILIZABLE --}}
+        {{-- SIDEBAR REUTILIZABLE --}}
         <x-sidebar />
 
-        {{-- 👇 CONTENIDO PRINCIPAL --}}
+        {{-- CONTENIDO PRINCIPAL --}}
         <main class="main-content" id="mainContent">
 
             {{-- Header con hamburguesa y notificaciones --}}
@@ -30,7 +30,7 @@
                     <h1>Sistema Jurídico</h1>
                 </div>
                 <div class="header-right">
-                    {{-- 👇 COMPONENTE DE NOTIFICACIONES --}}
+                    {{-- COMPONENTE DE NOTIFICACIONES --}}
                     <x-notification-dropdown />
 
                     <!-- Logo SENA -->
@@ -76,8 +76,8 @@
                                             'Pendiente',
                                             'Radicado',
                                             'Admisión',
-                                            'Trasladar', // 👈 este es el disparador
-                                            'Traslado', // 👈 estado real
+                                            'Trasladar', // este es el disparador
+                                            'Traslado', // estado real
                                             'Audiencia',
                                             'Fallo favorable',
                                             'Fallo desfavorable',
@@ -91,9 +91,6 @@
 
                                         $tienePagos = $proceso->pago()->exists();
 
-                                        // Quitar traslado si:
-                                        // - No es abogado
-                                        // - O el proceso ya tiene pagos
                                         if (Auth::user()->role_id != 2 || $tienePagos) {
                                             $estados = array_filter($estados, fn($e) => $e !== 'Trasladar');
                                         }

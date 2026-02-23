@@ -16,12 +16,12 @@ class VerificarProcesosVencimiento extends Command
     {
         $hoy = Carbon::now()->startOfDay();
 
-        // Buscar procesos activos con fecha de vencimiento
+        // Buscar procesos activos
         $procesos = Proceso::whereIn('estado', [
             'Pendiente',
             'Radicado',
             'Admisión',
-            'Traslado',        // 👈 AGREGAR
+            'Traslado',      
             'Audiencia',
             'Fallo favorable',
             'Fallo desfavorable',

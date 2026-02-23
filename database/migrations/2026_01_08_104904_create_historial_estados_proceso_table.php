@@ -24,7 +24,7 @@ return new class extends Migration
 
             // Usuario que hizo el cambio (abogado / asistente)
             $table->foreignId('user_id')
-                ->nullable() // 👈 ESTO ES CLAVE
+                ->nullable()
                 ->constrained('users')
                 ->nullOnDelete(); // equivalente a set null
 

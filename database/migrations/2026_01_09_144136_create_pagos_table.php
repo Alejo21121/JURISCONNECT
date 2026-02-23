@@ -27,14 +27,14 @@ return new class extends Migration {
 
             $table->text('observaciones')->nullable();
 
-            // 🔐 Validación del abogado
+            // Validación del abogado
             $table->enum('estado', [
                 'Pendiente',
                 'Aprobado',
                 'Rechazado'
             ])->default('Pendiente');
 
-            $table->text('motivo_rechazo')->nullable(); // 👈 NUEVO
+            $table->text('motivo_rechazo')->nullable();
 
             $table->unsignedBigInteger('validado_por')->nullable();
             $table->timestamp('fecha_validacion')->nullable();

@@ -1,4 +1,3 @@
-/* CSS Variables para un manejo de tema más sencillo */
 :root {
     --primary-color: #28a745;
     --primary-dark-color: #218838;
@@ -46,8 +45,8 @@ body {
     transform: translateX(-100%);
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
-    overflow-y: auto; /* Scroll si el contenido es muy largo */
-    -webkit-overflow-scrolling: touch; /* 👈 Para iPhone */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .sidebar.active {
@@ -136,14 +135,14 @@ body {
 .header-left {
     display: flex;
     align-items: center;
-    flex: 1; /* 👈 Añade esto */
+    flex: 1;
 }
 
-/* 👇 NUEVO: Contenedor derecho */
+/* NUEVO: Contenedor derecho */
 .header-right {
     display: flex;
     align-items: center;
-    gap: 1rem; /* Espacio entre notificación y logo */
+    gap: 1rem;
 }
 
 .hamburger {
@@ -163,7 +162,7 @@ body {
 }
 
 .header img {
-    height: 45px; /* Altura unificada */
+    height: 45px;
     width: auto;
 }
 
@@ -181,16 +180,16 @@ body {
 
 .cards-container {
     display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: stretch; /* Asegura altura uniforme */
-    gap: 200px; /* Más separación entre tarjetas */
-    flex-wrap: wrap; /* Permite que se acomoden en móviles */
+    justify-content: center; 
+    align-items: stretch; 
+    gap: 200px; 
+    flex-wrap: wrap; 
     margin-top: 50px;
 }
 
 .dashboard-card {
-    flex: 1 1 300px; /* Ocupan mínimo 300px y se adaptan */
-    max-width: 350px; /* No se hacen demasiado grandes */
+    flex: 1 1 300px; 
+    max-width: 350px; 
     background: #ffffff;
     padding: 55px;
     border-radius: 12px;
@@ -220,7 +219,7 @@ body {
 }
 
 .dashboard-card p {
-    min-height: auto; /* Quita la altura forzada */
+    min-height: auto; 
     margin-bottom: 20px;
 }
 
@@ -251,7 +250,7 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
     display: none;
-    z-index: 999; /* Debajo del sidebar */
+    z-index: 999; 
     opacity: 0;
     transition: opacity var(--transition-speed) ease;
 }
@@ -272,7 +271,6 @@ body {
     }
 }
 
-/* Estilos para la foto de perfil clickeable */
 /* Estilos para la foto de perfil clickeable */
 .profile-pic-clickable {
     cursor: pointer;
@@ -331,10 +329,10 @@ body {
     color: #6c757d;
     font-weight: 500;
 
-    /* ⭐ SOLUCIÓN PARA EL CORREO LARGO */
+    /* SOLUCIÓN PARA EL CORREO LARGO */
     word-wrap: break-word;
     overflow-wrap: break-word;
-    word-break: break-all; /* Rompe palabras largas si es necesario */
+    word-break: break-all; 
     max-width: 100%;
     line-height: 1.4;
 }
@@ -510,11 +508,9 @@ body {
     }
 }
 
-/* Añade o modifica estos estilos en tu archivo abogado.css */
-
 /* ===== RESPONSIVE DESIGN ===== */
 
-/* Para tablets y pantallas menores */
+
 @media (max-width: 1024px) {
     .dashboard-wrapper {
         flex-direction: column;
@@ -528,8 +524,8 @@ body {
         width: 280px;
         z-index: 1000;
         transition: left 0.3s ease;
-        overflow-y: auto; /* 👈 Esto permite hacer scroll dentro del sidebar */
-        -webkit-overflow-scrolling: touch; /* 👈 Scroll suave en iOS */
+        overflow-y: auto; 
+        -webkit-overflow-scrolling: touch;
     }
 
     .sidebar.active {
@@ -622,8 +618,6 @@ body {
         font-size: 0.9rem;
     }
 }
-
-/* Asegurar que las cards sean scrolleables en móvil */
 
 /* ===== NOTIFICACIONES ===== */
 .notification-wrapper {

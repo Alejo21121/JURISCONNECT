@@ -20,7 +20,7 @@
         <div class="overlay" id="overlay"></div>
 
 
-        {{-- 👇 COMPONENTE SIDEBAR --}}
+        {{-- COMPONENTE SIDEBAR --}}
         <x-sidebar />
 
         <!-- ===== MAIN CONTENT ===== -->
@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="header-right">
-                    {{-- 👇 COMPONENTE DE NOTIFICACIONES --}}
+                    {{-- COMPONENTE DE NOTIFICACIONES --}}
                     <x-notification-dropdown />
 
                     <!-- Logo SENA -->

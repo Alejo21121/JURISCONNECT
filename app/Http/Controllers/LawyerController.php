@@ -199,7 +199,7 @@ class LawyerController extends Controller
     }
 
     /**
-     * Crear nuevo abogado
+     * Crear nuevo uruiario (abogado o asistente) según el tipo enviado desde el frontend
      */
     public function store(Request $request)
     {
@@ -296,7 +296,7 @@ class LawyerController extends Controller
                     'telefono' => $validated['telefono'] ?? null,
                 ]);
 
-                // 🔔 ASIGNAR ABOGADOS Y NOTIFICAR
+                // ASIGNAR ABOGADOS Y NOTIFICAR
                 if ($request->has('lawyers') && count($request->lawyers) > 0) {
                     $assistant->lawyers()->sync($request->lawyers);
 
@@ -488,8 +488,8 @@ class LawyerController extends Controller
                 $user?->delete();
             }
 
-            // Si tiene relación con abogados y solo quieres quitar la relación:
-            $assistant->lawyers()->detach(); // opcional pero recomendado
+            // Si tiene relación con abogados
+            $assistant->lawyers()->detach(); 
 
             $assistant->delete();
             DB::commit();
@@ -554,14 +554,13 @@ class LawyerController extends Controller
                 ]);
             }
 
-            // 🔔 DETECTAR NUEVOS ABOGADOS ASIGNADOS
+            // DETECTAR NUEVOS ABOGADOS ASIGNADOS
             $abogadosAnteriores = $assistant->lawyers->pluck('id')->toArray();
             $abogadosNuevos = $request->lawyers ?? [];
             $abogadosAgregados = array_diff($abogadosNuevos, $abogadosAnteriores);
 
             $assistant->lawyers()->sync($abogadosNuevos);
 
-            // 👇 AGREGAR TRY-CATCH PARA NOTIFICACIONES
             try {
                 // Notificar solo a los nuevos abogados
                 foreach ($abogadosAgregados as $lawyerId) {
@@ -575,7 +574,7 @@ class LawyerController extends Controller
 
                 // Notificar al asistente si se agregaron nuevos abogados
                 if (count($abogadosAgregados) > 0 && $assistant->user) {
-                    $primerNuevoAbogado = Lawyer::find(array_values($abogadosAgregados)[0]); // 👈 array_values
+                    $primerNuevoAbogado = Lawyer::find(array_values($abogadosAgregados)[0]); 
                     if ($primerNuevoAbogado) {
                         $assistant->user->notify(
                             new \App\Notifications\AsistenteAsignado($primerNuevoAbogado)
@@ -587,7 +586,7 @@ class LawyerController extends Controller
                     'assistant_id' => $assistant->id,
                     'error' => $e->getMessage()
                 ]);
-                // Continuar sin fallar la actualización
+                
             }
 
             DB::commit();

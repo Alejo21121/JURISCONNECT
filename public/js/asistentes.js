@@ -30,6 +30,6 @@ if (searchInputAjax) {
                 .catch((err) =>
                     console.error("Error AJAX búsqueda asistentes:", err)
                 );
-        }, 250); // para que no dispare 50 peticiones por segundo
+        }, 250); 
     });
 }

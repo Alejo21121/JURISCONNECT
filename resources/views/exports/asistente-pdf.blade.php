@@ -14,12 +14,9 @@
         .watermark {
             position: fixed;
             top: 45%;
-            /* baja un poco */
             left: 45%;
             width: 400px;
-            /* tamaño controlado */
             opacity: 0.07;
-            /* bien clarita */
             transform: translate(-50%, -50%);
             z-index: -1;
         }

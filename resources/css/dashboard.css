@@ -7,28 +7,26 @@
 */
 :root {
     /* Paleta de colores principal - Tonos Azules */
-    --color-primary: #007bff; /* Azul vibrante y profesional */
-    --color-primary-dark: #0056b3; /* Azul más oscuro para hovers */
-    --color-primary-light: #e6f2ff; /* Azul muy pálido para fondos sutiles */
+    --color-primary: #007bff;
+    --color-primary-dark: #0056b3; 
+    --color-primary-light: #e6f2ff;
 
-    /* Colores de acento y estado */
-    --color-accent: #1d2a4c; /* Azul marino profundo para acentos */
-    --color-success: #198754; /* Verde estándar para éxito */
-    --color-danger: #dc3545; /* Rojo estándar para peligro */
+    --color-accent: #1d2a4c;
+    --color-success: #198754; 
+    --color-danger: #dc3545; 
     --color-danger-dark: #c41c12;
-    --color-warning: #ffc107; /* Amarillo estándar para advertencia */
+    --color-warning: #ffc107;
 
     /* Paleta de grises y texto */
-    --color-text-primary: #212529; /* Gris oscuro, casi negro */
-    --color-text-secondary: #6c757d; /* Gris secundario estándar */
-    --color-background: #f8f9fa; /* Fondo general - Gris muy claro */
-    --color-surface: #ffffff; /* Color para paneles, modales, etc. */
-    --color-border: #dee2e6; /* Borde gris claro */
+    --color-text-primary: #212529; 
+    --color-text-secondary: #6c757d; 
+    --color-background: #f8f9fa; 
+    --color-surface: #ffffff; 
+    --color-border: #dee2e6; 
 
     /* Tipografía */
     --font-family-sans: "Poppins", sans-serif;
 
-    /* Espaciado */
     --spacing-1: 4px;
     --spacing-2: 8px;
     --spacing-3: 16px;
@@ -53,7 +51,6 @@
 /* ==============================================
    ===        ESTILOS GLOBALES Y RESET        ===
    ==============================================
-   == Estos estilos aseguran una base consistente para ===
    
 */
 * {
@@ -292,11 +289,11 @@ body {
     border-right: 1px solid var(--color-border);
     position: relative;
     flex-shrink: 0;
-    margin-left: -280px; /* Oculto por defecto */
+    margin-left: -280px; 
 }
 
 .sidebar.active {
-    margin-left: 0; /* Visible cuando está activo */
+    margin-left: 0; 
 }
 
 .profile {
@@ -334,7 +331,7 @@ body {
     /* ⭐ SOLUCIÓN PARA EL CORREO LARGO */
     word-wrap: break-word;
     overflow-wrap: break-word;
-    word-break: break-all; /* Rompe palabras largas si es necesario */
+    word-break: break-all; 
     max-width: 100%;
     line-height: 1.4;
 }
@@ -552,7 +549,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px; /* Espacio entre ícono y texto */
+    gap: 8px; 
     position: relative;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -979,8 +976,8 @@ tr:hover td {
     @media (max-width: 768px) {
         .sidebar {
             height: 100vh;
-            overflow-y: auto; /* 👈 ESTO ES CLAVE */
-            padding-bottom: 250px; /* espacio para el botón */
+            overflow-y: auto; 
+            padding-bottom: 250px;
         }
     }
 
@@ -1515,80 +1512,67 @@ tr:hover td {
 
 .estado-pendiente {
     background: #fef3c7;
-    /* amarillo suave */
     color: #92400e;
 }
 
 .estado-radicado {
     background: #e0f2fe;
-    /* azul claro */
     color: #075985;
 }
 
 .estado-admision {
     background: #dcfce7;
-    /* verde suave */
     color: #166534;
 }
 
 .estado-traslado {
     background: #ede9fe;
-    /* morado claro */
     color: #5b21b6;
 }
 
 .estado-audiencia {
     background: #cffafe;
-    /* cian */
     color: #155e75;
 }
 
 .estado-reabierto {
     background: #dcfce7;
-    /* verde suave */
     color: #166534;
     border: 1px solid #86efac;
 }
 
 .estado-fallo-favorable {
     background: #22c55e;
-    /* verde fuerte */
     color: #ffffff;
 }
 
 .estado-fallo-desfavorable {
     background: #ef4444;
-    /* rojo */
     color: #ffffff;
 }
 
 .estado-apelacion {
     background: #f97316;
-    /* naranja */
     color: #ffffff;
 }
 
 .estado-ejecutoria {
     background: #3b82f6;
-    /* azul sólido */
     color: #ffffff;
 }
 
 .estado-pago-en-tramite {
     background: #fde68a;
-    /* amarillo intenso */
     color: #78350f;
 }
 
 .estado-conciliado {
     background: #2563eb;
-    /* azul fuerte */
     color: #ffffff;
 }
 
 .estado-archivado {
     background: #e5e7eb;
-    /* gris */
     color: #374151;
 }
 
@@ -1617,13 +1601,13 @@ tr:hover td {
 
 .action-buttons {
     display: flex;
-    gap: 8px; /* espacio entre botones */
+    gap: 8px;
 }
 
 .btn-edit,
 .btn-edit-assistant,
 .btn-delete {
-    min-width: 80px; /* mismos ancho mínimo */
+    min-width: 80px;
     text-align: center;
     padding: 6px 12px;
 }
@@ -1631,14 +1615,14 @@ tr:hover td {
 /* MOBILE */
 @media (max-width: 480px) {
     .action-buttons {
-        flex-direction: column; /* apila los botones */
+        flex-direction: column;
         gap: 6px;
     }
 
     .btn-edit,
     .btn-edit-assistant,
     .btn-delete {
-        width: 100%; /* ancho completo en móvil */
+        width: 100%;
         font-size: 0.75rem;
     }
 }

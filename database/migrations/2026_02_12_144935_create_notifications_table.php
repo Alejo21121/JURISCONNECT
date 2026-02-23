@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 👇 TRIGGER MEJORADO: NO eliminar notificación de bienvenida
+        //NO eliminar notificación de bienvenida
         DB::unprepared("
             CREATE OR REPLACE FUNCTION delete_read_notifications()
             RETURNS TRIGGER AS $$

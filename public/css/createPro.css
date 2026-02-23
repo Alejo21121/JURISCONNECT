@@ -2,10 +2,10 @@
     --color-surface: #ffffff;
     --color-text-primary: #1f2937;
     --color-text-secondary: #6b7280;
-    --primary-color: #16a34a; /* Verde principal */
-    --primary-light: #dcfce7; /* Verde claro fondo */
-    --primary-border: #86efac; /* Borde verde suave */
-    --primary-dark: #15803d; /* Verde oscuro hover */
+    --primary-color: #16a34a;
+    --primary-light: #dcfce7;
+    --primary-border: #86efac;
+    --primary-dark: #15803d; 
 }
 
 * {

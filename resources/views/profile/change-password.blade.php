@@ -209,7 +209,7 @@
         /* ---- Validación requisitos ---- */
         const pwdInput = document.getElementById('new_password');
 
-        if (pwdInput) { // 👈 VERIFICAR QUE EXISTE
+        if (pwdInput) { // VERIFICAR QUE EXISTE
             const checks = {
                 'req-length': v => v.length >= 8,
                 'req-uppercase': v => /[A-Z]/.test(v),
@@ -253,7 +253,7 @@
         const confirmInput = document.getElementById('confirm_password');
         const matchError = document.getElementById('matchError');
 
-        if (confirmInput && pwdInput) { // 👈 VERIFICAR QUE EXISTEN
+        if (confirmInput && pwdInput) { // VERIFICAR QUE EXISTEN
             confirmInput.addEventListener('input', checkMatch);
             pwdInput.addEventListener('input', checkMatch);
 
@@ -272,7 +272,7 @@
         const notificationBtn = document.getElementById('notificationBtn');
         const notificationDropdown = document.getElementById('notificationDropdown');
 
-        if (notificationBtn && notificationDropdown) { // 👈 VERIFICAR QUE EXISTEN
+        if (notificationBtn && notificationDropdown) { // VERIFICAR QUE EXISTEN
             notificationBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 notificationDropdown.classList.toggle('show');

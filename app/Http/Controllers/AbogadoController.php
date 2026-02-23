@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ConceptoJuridico;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Proceso; 
+use App\Models\Proceso;
 use Illuminate\Routing\Controller;
 
 class AbogadoController extends Controller
@@ -13,13 +13,13 @@ class AbogadoController extends Controller
     // ===============================
     // MÉTODOS PRINCIPALES DE DASHBOARD
     // ===============================
-    
+
     /**
      * Dashboard principal del abogado
      */
     public function index()
     {
-        
+
         return view('dashboard-abogado',);
     }
 
@@ -27,7 +27,7 @@ class AbogadoController extends Controller
      * Mostrar procesos asignados al abogado
      */
     public function misProcesos()
-    { 
+    {
         $procesos = ConceptoJuridico::where('abogado_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
@@ -62,7 +62,7 @@ class AbogadoController extends Controller
 
         try {
             $proceso = ConceptoJuridico::findOrFail($id);
-            
+
             $this->verificarAccesoProceso($proceso);
             $this->verificarEstadoPendiente($proceso);
 
@@ -74,12 +74,10 @@ class AbogadoController extends Controller
 
             return redirect()->route('abogado.crear-concepto')
                 ->with('success', 'Concepto jurídico guardado exitosamente. El proceso ha sido marcado como "en curso".');
-
         } catch (\Exception $e) {
             return redirect()
-    ->route('conceptos.create', $id)
-    ->with('success', 'Concepto jurídico creado correctamente.');
-
+                ->route('conceptos.create', $id)
+                ->with('success', 'Concepto jurídico creado correctamente.');
         }
     }
 
@@ -92,7 +90,7 @@ class AbogadoController extends Controller
 
         try {
             $proceso = ConceptoJuridico::findOrFail($procesoId);
-            
+
             $this->verificarAccesoProceso($proceso);
 
             // Actualizar concepto y recomendaciones
@@ -103,7 +101,6 @@ class AbogadoController extends Controller
 
             return redirect()->route('abogado.crear-concepto')
                 ->with('success', 'Concepto jurídico actualizado correctamente.');
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Error al actualizar el concepto: ' . $e->getMessage())
@@ -131,11 +128,10 @@ class AbogadoController extends Controller
     {
         try {
             $proceso = ConceptoJuridico::findOrFail($id);
-            
+
             $this->verificarAccesoProceso($proceso);
 
             return view('abogado.detalle-proceso', compact('proceso'));
-            
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Proceso no encontrado');
         }
@@ -156,7 +152,6 @@ class AbogadoController extends Controller
 
             return redirect()->route('abogado.mis-procesos')
                 ->with('success', 'Proceso finalizado exitosamente');
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al finalizar el proceso');
         }
@@ -172,7 +167,7 @@ class AbogadoController extends Controller
     private function getEstadisticas()
     {
         $abogadoId = Auth::id();
-        
+
         $totalProcesos = ConceptoJuridico::where('abogado_id', $abogadoId)->count();
         $procesosPendientes = ConceptoJuridico::where('abogado_id', $abogadoId)
             ->where('estado', 'pendiente')
@@ -210,7 +205,7 @@ class AbogadoController extends Controller
     /**
      * Mostrar formulario para concepto específico
      */
-    public function mostrarFormularioConcepto($id) 
+    public function mostrarFormularioConcepto($id)
     {
         try {
             $proceso = Proceso::findOrFail($id);
@@ -270,7 +265,7 @@ class AbogadoController extends Controller
     // ===============================
     // MÉTODO LEGACY (MANTENER POR COMPATIBILIDAD)
     // ===============================
-    
+
     /**
      * @deprecated Use getEstadisticas() instead
      */

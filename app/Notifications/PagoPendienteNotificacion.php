@@ -17,7 +17,7 @@ class PagoPendienteNotificacion extends Notification
     {
         $this->pago = $pago;
 
-        // 👇 USAR Auth:: en lugar de auth() + PHPDoc
+        // USAR Auth:: en lugar de auth() + PHPDoc
         /** @var \App\Models\User $user */
         $user = Auth::user();
 

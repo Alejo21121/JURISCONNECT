@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        // 👇 NOTIFICACIÓN DE BIENVENIDA - SOLO SI NO EXISTE
+        //  NOTIFICACIÓN DE BIENVENIDA - SOLO SI NO EXISTE
         if (!$user->password_changed) {
             // Verificar si ya tiene una notificación de bienvenida (leída o no)
             $tieneNotificacion = $user->notifications()

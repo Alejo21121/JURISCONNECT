@@ -13,7 +13,6 @@ class LawyerSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crea 10 registros falsos
         Lawyer::factory()->count(20)->create();
     }
 }

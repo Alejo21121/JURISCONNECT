@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es"><!-- pagina para crear un nuevo proceso judicial -->
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- 👈 IMPORTANTE --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -15,7 +15,6 @@
 </head>
 
 <body>
-
 
     <!-- Overlay de alertas personalizadas -->
     <div id="alertOverlay" class="alert-overlay">
@@ -31,10 +30,10 @@
 
         <div class="overlay" id="overlay"></div>
 
-        {{-- 👇 SIDEBAR REUTILIZABLE --}}
+        {{-- SIDEBAR REUTILIZABLE --}}
         <x-sidebar />
 
-        {{-- 👇 CONTENIDO PRINCIPAL --}}
+        {{-- CONTENIDO PRINCIPAL --}}
         <main class="main-content" id="mainContent">
 
             {{-- Header con hamburguesa y notificaciones --}}
@@ -44,7 +43,7 @@
                     <h1> Crear Nuevo Proceso Judicial</h1>
                 </div>
                 <div class="header-right">
-                    {{-- 👇 COMPONENTE DE NOTIFICACIONES --}}
+                    {{-- COMPONENTE DE NOTIFICACIONES --}}
                     <x-notification-dropdown />
 
                     <!-- Logo SENA -->

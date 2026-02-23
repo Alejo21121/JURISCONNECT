@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('pago_id')->nullable(); // cuando se pague
 
             // Datos de la cuota
-            $table->integer('numero_cuota'); // 1, 2, 3...
+            $table->integer('numero_cuota');
             $table->decimal('valor', 12, 2);
             $table->date('fecha_vencimiento');
 

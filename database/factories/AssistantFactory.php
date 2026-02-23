@@ -17,7 +17,7 @@ class AssistantFactory extends Factory
 
         // Crear usuario con rol de asistente
         $user = User::factory()->create([
-            'role_id' => 3, // Ajusta si tu rol assistant tiene otro ID
+            'role_id' => 3,
         ]);
 
         return [

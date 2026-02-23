@@ -22,7 +22,7 @@ class PagoController extends Controller
     {
         $user = Auth::user();
 
-        // 👇 MARCAR NOTIFICACIÓN COMO LEÍDA
+        // MARCAR NOTIFICACIÓN COMO LEÍDA
         if (request()->has('mark_read')) {
             $notification = $user->notifications()->find(request('mark_read'));
             if ($notification) {
@@ -50,7 +50,7 @@ class PagoController extends Controller
 
         // Transformar datos para la vista
         $procesosData = $procesos->map(function ($proceso) {
-            // 👇 CALCULAR TOTALES CONSIDERANDO APROBADOS Y PENDIENTES
+            //  CALCULAR TOTALES CONSIDERANDO APROBADOS Y PENDIENTES
             $totalPagadoAprobado = $proceso->cuotas
                 ->where('estado', 'Pagada')
                 ->sum('valor');
@@ -63,12 +63,12 @@ class PagoController extends Controller
 
             $valorTotal = $proceso->valor_estimado ?? 0;
 
-            // 👇 FALTA POR PAGAR = Total - (Aprobados + Pendientes)
+            //  FALTA POR PAGAR = Total - (Aprobados + Pendientes)
             $faltaPagar = max(0, $valorTotal - ($totalPagadoAprobado + $totalPendiente));
 
             $porcentaje = $valorTotal > 0 ? round(($totalPagadoAprobado / $valorTotal) * 100, 2) : 0;
 
-            // 👇 VERIFICAR SI HAY PAGOS RECHAZADOS
+            // VERIFICAR SI HAY PAGOS RECHAZADOS
             $hayPagosRechazados = $proceso->cuotas()
                 ->whereHas('pago', function ($q) {
                     $q->where('estado', 'Rechazado');
@@ -86,10 +86,10 @@ class PagoController extends Controller
                 // Datos de cuotas
                 'valor_estimado' => $proceso->valor_estimado,
                 'total_pagado' => $totalPagadoAprobado,
-                'total_pendiente' => $totalPendiente, // 👈 NUEVO
+                'total_pendiente' => $totalPendiente, 
                 'falta_pagar' => $faltaPagar,
                 'porcentaje' => $porcentaje,
-                'hay_pagos_rechazados' => $hayPagosRechazados, // 👈 NUEVO
+                'hay_pagos_rechazados' => $hayPagosRechazados, 
 
                 // Historial de pagos (cuotas)
                 'cuotas' => $proceso->cuotas->sortBy('id')->values()->map(function ($cuota) {
@@ -98,7 +98,7 @@ class PagoController extends Controller
                         'pago_id' => $cuota->pago?->id,
                         'valor_pagado' => $cuota->valor,
                         'fecha_pago' => $cuota->fecha_pago,
-                        'forma_pago' => $cuota->pago?->forma_pago, // 👈 AGREGA ESTO
+                        'forma_pago' => $cuota->pago?->forma_pago, 
                         'estado' => $cuota->estado,
                         'pago_estado' => $cuota->pago?->estado,
                         'motivo_rechazo' => $cuota->pago?->motivo_rechazo,
@@ -116,7 +116,7 @@ class PagoController extends Controller
 
     public function store(Request $request)
     {
-        // 🔑 Limpiar el valor
+        // Limpiar el valor
         if ($request->valor_pagado) {
             $request->merge([
                 'valor_pagado' => preg_replace('/\D/', '', $request->valor_pagado)
@@ -141,7 +141,7 @@ class PagoController extends Controller
             ], 403);
         }
 
-        // 🔥 Calcular cuánto falta realmente (incluye pagos pendientes)
+        // Calcular cuánto falta realmente (incluye pagos pendientes)
         $totalPagado = $proceso->cuotas
             ->where('estado', 'Pagada')
             ->sum('valor');
@@ -162,7 +162,7 @@ class PagoController extends Controller
             ], 422);
         }
 
-        // 🔥 Verificar rol
+        // Verificar rol
         $user = Auth::user();
         $lawyer = Lawyer::where('user_id', $user->id)->first();
         $esAbogado = $lawyer !== null;
@@ -170,7 +170,7 @@ class PagoController extends Controller
         $estadoPago = $esAbogado ? 'Aprobado' : 'Pendiente';
         $estadoCuota = $esAbogado ? 'Pagada' : 'Pendiente';
 
-        // 💰 Crear pago
+        // Crear pago
         $pago = Pago::create([
             'proceso_id' => $validated['proceso_id'],
             'valor_pagado' => $validated['valor_pagado'],
@@ -182,7 +182,7 @@ class PagoController extends Controller
             'fecha_validacion' => $esAbogado ? now() : null,
         ]);
 
-        // 📎 Guardar comprobante
+        //  Guardar comprobante
         if ($request->hasFile('comprobante')) {
             $file = $request->file('comprobante');
             $ruta = $file->store('pagos/comprobantes', 'public');
@@ -196,7 +196,7 @@ class PagoController extends Controller
             ]);
         }
 
-        // 📅 Crear cuota
+        // Crear cuota
         $cuota = \App\Models\Cuota::create([
             'proceso_id' => $proceso->id,
             'pago_id' => $pago->id,
@@ -208,7 +208,7 @@ class PagoController extends Controller
         ]);
 
         // ==========================================================
-        // 🔥 HISTORIAL CUANDO REGISTRA ASISTENTE
+        //  HISTORIAL CUANDO REGISTRA ASISTENTE
         // ==========================================================
         if (!$esAbogado) {
 
@@ -226,7 +226,7 @@ class PagoController extends Controller
         }
 
         // ==========================================================
-        // 🔥 SI ES ABOGADO → VALIDAR COMPLETITUD
+        //  SI ES ABOGADO → VALIDAR COMPLETITUD
         // ==========================================================
         if ($esAbogado) {
 
@@ -262,7 +262,7 @@ class PagoController extends Controller
             }
         }
 
-        // 🔔 Notificar abogado si quedó pendiente
+        // Notificar abogado si quedó pendiente
         if (!$esAbogado) {
             $abogadoLawyer = Lawyer::find($proceso->lawyer_id);
 
@@ -281,7 +281,7 @@ class PagoController extends Controller
 
     public function aprobar(Pago $pago)
     {
-        // 🔥 VALIDAR QUE NO HAYA PAGOS ANTERIORES PENDIENTES
+        // VALIDAR QUE NO HAYA PAGOS ANTERIORES PENDIENTES
         $proceso = $pago->proceso()->with('cuotas.pago')->first();
 
         $pagosPendientesAnteriores = $proceso->cuotas()
@@ -350,7 +350,7 @@ class PagoController extends Controller
             }
         }
 
-        // 🔔 Notificar al asistente
+        //  Notificar al asistente
         $assistant = Assistant::whereHas('lawyers', function ($q) use ($proceso) {
             $q->where('lawyers.id', $proceso->lawyer_id);
         })->first();
@@ -359,7 +359,7 @@ class PagoController extends Controller
             $assistant->user->notify(new PagoAprobado($pago));
         }
 
-        // 🔔 Marcar notificación como leída (Con manejo de errores silencioso)
+        //  Marcar notificación como leída (Con manejo de errores silencioso)
         try {
             $user = Auth::user();
 
@@ -408,7 +408,7 @@ class PagoController extends Controller
 
         $proceso = $pago->proceso;
 
-        // 🧾 HISTORIAL PAGO RECHAZADO
+        // HISTORIAL PAGO RECHAZADO
         HistorialEstadoProceso::create([
             'proceso_id' => $proceso->id,
             'estado' => 'Pago rechazado',
@@ -416,7 +416,7 @@ class PagoController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        // 🔔 Notificar al asistente
+        // Notificar al asistente
         $assistant = Assistant::whereHas('lawyers', function ($q) use ($proceso) {
             $q->where('lawyers.id', $proceso->lawyer_id);
         })->first();

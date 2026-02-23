@@ -34,7 +34,7 @@ class NewPasswordController extends Controller
             'email' => ['required', 'email'],
             'password' => [
                 'required',
-                'confirmed', // 👈 obliga a coincidir con password_confirmation
+                'confirmed', 
                 PasswordRule::min(8)
                     ->letters()
                     ->mixedCase()
@@ -56,10 +56,10 @@ class NewPasswordController extends Controller
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60), // 👈 asegura que se invaliden sesiones viejas
+                    'remember_token' => Str::random(60), 
                 ])->save();
 
-                event(new PasswordReset($user)); // 👈 dispara el evento
+                event(new PasswordReset($user)); 
             }
         );
 

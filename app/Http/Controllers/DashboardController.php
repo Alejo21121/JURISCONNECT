@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lawyer; // Importa el modelo de abogados
+use App\Models\Lawyer; // modelo de abogados
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
 

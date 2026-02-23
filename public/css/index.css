@@ -662,8 +662,8 @@
         }
 
         .delete-btn {
-    background-color: #fee2e2; /* Rojo claro */
-    color: #dc2626; /* Rojo fuerte para el ícono */
+    background-color: #fee2e2; 
+    color: #dc2626; 
     border: none;
     border-radius: 8px;
     padding: 0.5rem;
@@ -672,5 +672,5 @@
 }
 
 .delete-btn:hover {
-    background-color: #fecaca; /* Rojo más intenso al pasar el mouse */
+    background-color: #fecaca;
 }

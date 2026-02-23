@@ -1,6 +1,6 @@
 :root {
-    --color-success: #198754; /* Verde estándar para éxito */
-    --color-danger: #dc3545; /* Rojo estándar para peligro */
+    --color-success: #198754; 
+    --color-danger: #dc3545;
 }
 
 * {
@@ -17,7 +17,7 @@ body {
 }
 
 .header img {
-    height: 45px; /* Altura unificada */
+    height: 45px;
     width: auto;
 }
 
@@ -276,13 +276,13 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px; /* Espacio entre ícono y texto */
+    gap: 8px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Botón Success (EXPORTAR EXCEL) - Opción 1: Elegante y Profesional */
+/* Botón Success (EXPORTAR EXCEL) */
 .btn-success {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
     color: #155724;
@@ -806,8 +806,8 @@ body {
 }
 
 .delete-btn {
-    background-color: #fee2e2; /* Rojo claro */
-    color: #dc2626; /* Rojo fuerte para el ícono */
+    background-color: #fee2e2; 
+    color: #dc2626; 
     border: none;
     border-radius: 8px;
     padding: 0.5rem;
@@ -816,35 +816,33 @@ body {
 }
 
 .delete-btn:hover {
-    background-color: #fecaca; /* Rojo más intenso al pasar el mouse */
+    background-color: #fecaca; 
 }
 
 .search-section {
     width: 100%;
-    padding: 10px; /* Misma distancia horizontal que el header, y padding inferior */
-    /* Asegúrate de que este contenedor no tenga un color de fondo diferente al de la página */
-    box-sizing: border-box; /* Importante para que el padding no cause un desbordamiento horizontal */
+    padding: 10px; 
+    box-sizing: border-box; 
 }
 
 #searchInput {
-    width: 100%; /* Ocupa todo el ancho de .search-section */
-    padding: 12px 18px; /* Hazlo un poco más alto para que sea fácil de clickear */
+    width: 100%; /* Ocupa todo el ancho */
+    padding: 12px 18px;
     border: 1px solid #ced4da;
     border-radius: 6px;
     font-size: 1rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Sombra muy sutil */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Sombra */
     transition: all 0.2s ease-in-out;
-    box-sizing: border-box; /* Crucial para que padding + border no excedan el 100% */
+    box-sizing: border-box;
 }
 
 #searchInput:focus {
-    border-color: #007bff; /* Color principal al enfocar */
+    border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     outline: none;
 }
 
-/* Remueve el margen inferior (mb-3) si no es necesario,
-   ya que el padding del contenedor .search-section ya maneja el espaciado. */
+
 .search-section .mb-3 {
     margin-bottom: 0 !important;
 }
@@ -899,12 +897,12 @@ body {
 }
 
 .scroll-box {
-    max-height: 120px; /* altura máxima */
-    overflow-y: auto; /* scroll vertical */
+    max-height: 120px; 
+    overflow-y: auto;
     padding-right: 8px;
 }
 
-/* Scroll bonito (opcional pero recomendado) */
+
 .scroll-box::-webkit-scrollbar {
     width: 6px;
 }
@@ -1326,7 +1324,7 @@ body {
     }
 
     .export-group {
-        margin-right: 0; /* reset */
+        margin-right: 0; 
         justify-content: center;
         width: 100%;
     }
@@ -1359,7 +1357,7 @@ body {
 .main-actions {
     display: flex;
     gap: 10px;
-    margin-left: auto; /* CLAVE */
+    margin-left: auto; 
 }
 
 @media (max-width: 768px) {

@@ -272,7 +272,7 @@ window.closeProcessModal = function () {
     document.getElementById("viewProcessModal").style.display = "none";
 };
 
-// 🔥 CERRAR MODAL AL HACER CLIC FUERA
+//  CERRAR MODAL AL HACER CLIC FUERA
 document.addEventListener("click", function (event) {
     const modal = document.getElementById("viewProcessModal");
 
@@ -380,7 +380,7 @@ document.addEventListener("click", function (e) {
 
     e.preventDefault();
 
-    const url = link.getAttribute("href"); // ⭐ Usar el href completo que ya incluye el search
+    const url = link.getAttribute("href");
 
     // Agregar el parámetro ajax
     const separator = url.includes("?") ? "&" : "?";

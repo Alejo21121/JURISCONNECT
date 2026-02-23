@@ -1,5 +1,3 @@
-// editPro.js - Versión segura con verificaciones
-
 let documentoAEliminar = null;
 
 function eliminarDocumento(id) {

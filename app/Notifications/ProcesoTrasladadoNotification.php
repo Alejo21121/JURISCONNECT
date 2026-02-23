@@ -20,7 +20,7 @@ class ProcesoTrasladadoNotification extends Notification
         $this->nombreAbogado = $nombreAbogado;
     }
 
-    // 🔥 ESTE MÉTODO ES OBLIGATORIO
+    // ESTE MÉTODO ES OBLIGATORIO
     public function via($notifiable)
     {
         return ['database'];

@@ -108,7 +108,7 @@ class ConceptoController extends Controller
     {
         $query = Proceso::query();
 
-        // --- Si el usuario es abogado (role_id = 2) ---
+        // --- Si el usuario es abogado ---
         if (Auth::user()->role_id == 2) {
 
             // buscar lawyer por user_id
@@ -119,7 +119,7 @@ class ConceptoController extends Controller
             }
         }
 
-        // --- Si el usuario es asistente (role_id = 3) ---
+        // --- Si el usuario es asistente ---
         if (Auth::user()->role_id == 3) {
 
             $assistant = Auth::user()->assistant;

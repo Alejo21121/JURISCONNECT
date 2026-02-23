@@ -14,17 +14,15 @@ return new class extends Migration
             //$table->string('categoria');
             $table->text('descripcion');
             
-            // Relación con abogado (antes de timestamps)
+            // Relación con abogado 
             $table->foreignId('abogado_id')->constrained('users')->onDelete('cascade');
             
-            // timestamps siempre al final
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        // Corrección: debe coincidir con el nombre de la tabla creada
         Schema::dropIfExists('concepto_juridicos');
     }
 };

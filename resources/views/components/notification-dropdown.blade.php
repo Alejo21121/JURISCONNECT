@@ -19,7 +19,7 @@
 
             @foreach ($notificaciones as $noti)
                 @php
-                    // 👇 Determinar la URL según el tipo de notificación
+                    // Determinar la URL según el tipo de notificación
                     $url = '#';
                     $markRead = '&mark_read=' . $noti->id;
 
@@ -67,7 +67,7 @@
                         <br>
                         <small>{{ $noti->data['mensaje'] }}</small>
 
-                        {{-- 👇 Mostrar tiempo transcurrido --}}
+                        {{-- Mostrar tiempo transcurrido --}}
                         <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem;">
                             {{ $noti->created_at->diffForHumans() }}
                         </div>
@@ -75,7 +75,7 @@
                 </a>
             @endforeach
 
-            {{-- 👇 Botón para marcar todas como leídas --}}
+            {{-- Botón para marcar todas como leídas --}}
             <div style="padding: 0.5rem; border-top: 1px solid #e2e8f0; text-align: center;">
                 <form action="{{ route('notifications.mark-all-read') }}" method="POST" style="display: inline;">
                     @csrf

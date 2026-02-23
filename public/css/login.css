@@ -177,7 +177,7 @@ body {
     height: auto;
 }
 
-/* --- 🔥 Toggle de contraseña con imágenes --- */
+/*  Toggle de contraseña con imágenes */
 .password-container {
     position: relative;
     display: flex;
@@ -186,8 +186,8 @@ body {
 
 .password-toggle {
     position: absolute;
-    width: 30px; /* 🔹 el ancho se ajusta sola */
-    height: 30px; /* 🔹 la altura se ajusta sola */
+    width: 30px; 
+    height: 30px;
     right: 12px;
     top: 45%;
     transform: translateY(-50%);
@@ -394,8 +394,6 @@ body {
         transform: translateX(0);
     }
 }
-
-/* Añade estas media queries al final de tu archivo login.css */
 
 /* Tablets y dispositivos medianos */
 @media screen and (max-width: 1024px) {

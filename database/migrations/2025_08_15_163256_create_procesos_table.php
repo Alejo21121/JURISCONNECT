@@ -37,10 +37,10 @@ return new class extends Migration
                 'Reabierto'
             ])->default('Pendiente');
 
-            /* 📅 FECHA DE VENCIMIENTO */
-            $table->date('fecha_vencimiento')->nullable(); // 👈 NUEVO
+            /* FECHA DE VENCIMIENTO */
+            $table->date('fecha_vencimiento')->nullable(); 
 
-            /* 💰 PAGOS */
+            /* PAGOS */
             $table->boolean('requiere_pago')->default(false);
             $table->decimal('valor_estimado', 12, 2)->nullable();
 

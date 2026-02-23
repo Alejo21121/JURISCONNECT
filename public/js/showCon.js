@@ -4,7 +4,6 @@ function closeAlert(alertId) {
     document.getElementById(alertId).classList.add("hidden");
 }
 
-// Ejemplo para mostrar alerta de éxito
 function showSuccessAlert() {
     document.getElementById("success-alert").classList.remove("hidden");
 }
@@ -43,7 +42,6 @@ function performSearch(searchTerm) {
                 document.getElementById("processContainer").innerHTML =
                     data.html;
 
-                // Actualizar URL real
                 const newUrl = new URL(window.location);
 
                 if (searchTerm) {
@@ -76,7 +74,6 @@ function openProcessModal(id) {
             return res.json();
         })
         .then((data) => {
-            // Ajusta las propiedades según tu modelo (titulo, descripcion, proceso, abogado...)
             const html = `
                 <p><strong>Título:</strong> ${data.titulo ?? "—"}</p>
                 <p><strong>Descripción:</strong> ${data.descripcion ?? data.concepto ?? "—"}</p>

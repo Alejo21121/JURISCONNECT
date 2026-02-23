@@ -29,8 +29,8 @@ class NuevoProcesoRegistrado extends Notification
             'titulo' => 'Nuevo proceso registrado',
             'mensaje' => 'El abogado ' . $this->abogado . ' registró el proceso ' . $this->proceso->numero_radicado . ': ' . $this->proceso->demandante . ' vs ' . $this->proceso->demandado,
             'proceso_id' => $this->proceso->id,
-            'proceso_nombre' => $this->proceso->numero_radicado, // 👈 CAMBIADO
-            'radicado' => $this->proceso->numero_radicado, // 👈 AGREGADO
+            'proceso_nombre' => $this->proceso->numero_radicado,
+            'radicado' => $this->proceso->numero_radicado,
             'abogado_nombre' => $this->abogado,
             'tipo' => 'proceso_nuevo'
         ];

@@ -36,7 +36,7 @@ class LegalProcessController extends Controller
             }
         }
 
-        // --- Si el usuario es asistente (role_id = 3) ---
+        // --- Si el usuario es asistente ---
         if (Auth::user()->role_id == 3) {
             $assistant = Auth::user()->assistant;
             if ($assistant) {
@@ -46,7 +46,7 @@ class LegalProcessController extends Controller
         }
 
         // --- BÚSQUEDA ---
-        $search = $request->get('search', ''); // ⭐ Guardar el término
+        $search = $request->get('search', '');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -63,7 +63,7 @@ class LegalProcessController extends Controller
         $procesos = $query
             ->orderBy('id', 'asc')
             ->paginate(10)
-            ->appends(['search' => $search]); // ⭐ AGREGAR ESTO en lugar de withQueryString()
+            ->appends(['search' => $search]);
 
         // --- AJAX ---
         if ($request->ajax() || $request->get('ajax')) {
@@ -83,7 +83,7 @@ class LegalProcessController extends Controller
      */
     public function create()
     {
-        // ❌ SOLO ABOGADO (role_id = 2) puede crear
+        // SOLO ABOGADO puede crear
         if (Auth::user()->role_id != 2) {
             abort(403, 'No tienes permisos para crear procesos.');
         }
@@ -97,17 +97,17 @@ class LegalProcessController extends Controller
         }
 
         try {
-            // 🔑 LIMPIAR ANTES DE VALIDAR
+            // LIMPIAR ANTES DE VALIDAR
             if ($request->requiere_pago == 1 && $request->valor_estimado) {
                 $request->merge([
                     'valor_estimado' => preg_replace('/\D/', '', $request->valor_estimado)
                 ]);
             }
 
-            // ✅ VALIDAR UNA SOLA VEZ
+            // VALIDAR UNA SOLA VEZ
             $validated = $this->validateProcesoData($request);
 
-            // 🔑 Agregar prefijo automáticamente
+            // Agregar prefijo automáticamente
             $numeroRadicado = 'RAD-' . $validated['numero_radicado'];
 
             // Validar que no exista ya
@@ -148,7 +148,7 @@ class LegalProcessController extends Controller
                 }
             }
 
-            // 👇 HISTORIAL INICIAL
+            //  HISTORIAL INICIAL
             HistorialEstadoProceso::create([
                 'proceso_id' => $proceso->id,
                 'estado' => 'Pendiente',
@@ -156,7 +156,7 @@ class LegalProcessController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            // 🔔 NOTIFICAR A LOS ASISTENTES DEL ABOGADO
+            // NOTIFICAR A LOS ASISTENTES DEL ABOGADO
             $nombreAbogado = $lawyer->nombre . ' ' . $lawyer->apellido;
             $asistentes = $lawyer->assistants; // Relación en el modelo Lawyer
 
@@ -226,10 +226,10 @@ class LegalProcessController extends Controller
             'estado' => $proceso->estado,
             'requiere_pago' => $proceso->requiere_pago,
             'valor_estimado' => $proceso->valor_estimado,
-            'fecha_vencimiento' => $proceso->fecha_vencimiento->format('d-m-Y'), // 👈 AGREGAR
+            'fecha_vencimiento' => $proceso->fecha_vencimiento->format('d-m-Y'), 
             'created_at' => $proceso->created_at->format('d-m-Y'),
             'pago_realizado' => $proceso->pago !== null,
-            'porcentaje' => $porcentaje, // 👈 AGREGAR ESTO
+            'porcentaje' => $porcentaje, 
             'documentos' => $proceso->documentos,
         ]);
     }
@@ -240,7 +240,7 @@ class LegalProcessController extends Controller
     {
         $proceso = Proceso::findOrFail($id);
 
-        // ✅ El proceso se considera pagado si tiene al menos una cuota
+        // El proceso se considera pagado si tiene al menos una cuota
         $procesoPagado = $proceso->cuotas()->exists();
 
         return view('legal_processes.editProcesos', compact(
@@ -257,14 +257,14 @@ class LegalProcessController extends Controller
         $proceso = Proceso::findOrFail($id);
         $estadoAnterior = $proceso->estado;
 
-        // 🔑 LIMPIAR ANTES DE VALIDAR
+        // LIMPIAR ANTES DE VALIDAR
         if ($request->requiere_pago == 1 && $request->valor_estimado) {
             $request->merge([
                 'valor_estimado' => preg_replace('/\D/', '', $request->valor_estimado)
             ]);
         }
 
-        // ✅ VALIDAR UNA SOLA VEZ
+        // VALIDAR UNA SOLA VEZ
         $validated = $this->validateProcesoDataForUpdate($request, $id);
         $this->removeAuxiliaryFields($validated);
 
@@ -279,7 +279,7 @@ class LegalProcessController extends Controller
         // ===============================
         if ($request->filled('nuevo_lawyer_id') && Auth::user()->role_id == 2) {
 
-            // ❌ No permitir traslado si tiene pagos
+            // No permitir traslado si tiene pagos
             if ($proceso->pago()->exists()) {
                 return back()->with('error', 'No se puede trasladar un proceso que ya tiene pagos registrados.');
             }
@@ -304,7 +304,7 @@ class LegalProcessController extends Controller
                     'user_id' => Auth::id(),
                 ]);
 
-                // 🔔 Notificar nuevo abogado
+                //  Notificar nuevo abogado
                 if ($nuevoLawyer->user) {
 
                     $nombreAbogado = Auth::user()->name;
@@ -325,7 +325,7 @@ class LegalProcessController extends Controller
 
         $proceso->update($validated);
 
-        // ✅ GUARDAR DOCUMENTOS NUEVOS
+        // GUARDAR DOCUMENTOS NUEVOS
         if ($request->hasFile('documentos')) {
             foreach ($request->file('documentos') as $file) {
 
@@ -339,7 +339,7 @@ class LegalProcessController extends Controller
             }
         }
 
-        // ✅ HISTORIAL
+        //  HISTORIAL
         if (isset($validated['estado']) && $validated['estado'] !== $estadoAnterior) {
             HistorialEstadoProceso::create([
                 'proceso_id' => $proceso->id,
@@ -360,7 +360,7 @@ class LegalProcessController extends Controller
     public function destroy($id)
     {
         $proceso = Proceso::findOrFail($id);
-        $proceso->delete(); // cascade elimina documentos
+        $proceso->delete(); 
 
         return redirect()
             ->route('mis.procesos')

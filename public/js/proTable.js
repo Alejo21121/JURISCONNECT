@@ -38,7 +38,7 @@ function buscarProcesos(page = 1) {
         .catch(console.error);
 }
 
-// 🔥 Delegación global (una sola vez)
+// Delegación global (una sola vez)
 document.body.addEventListener("input", (e) => {
     if (e.target.id === "buscadorProcesos") {
         clearTimeout(searchTimeout);

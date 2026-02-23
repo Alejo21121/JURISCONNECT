@@ -17,10 +17,10 @@ class Pago extends Model
         'forma_pago',
         'fecha_pago',
         'observaciones',
-        'estado',              // 👈 AGREGADO
-        'motivo_rechazo',      // 👈 AGREGADO
-        'validado_por',        // 👈 AGREGADO
-        'fecha_validacion',    // 👈 AGREGADO
+        'estado',              
+        'motivo_rechazo',     
+        'validado_por',        
+        'fecha_validacion',  
     ];
 
     public function documentos()

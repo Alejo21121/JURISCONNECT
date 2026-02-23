@@ -190,7 +190,7 @@ function validarFormulario(e) {
         descripcion.classList.add("success");
     }
 
-    // Validar documento (opcional pero validar formato si existe)
+    // Validar documento
     const documento = document.getElementById("documento");
     if (documento.files.length > 0) {
         const allowedTypes = [
@@ -337,7 +337,7 @@ function toggleValorEstimado() {
 // Al cambiar el select
 requierePagoSelect.addEventListener("change", toggleValorEstimado);
 
-// 🚨 CLAVE: al cargar la página
+// CLAVE: al cargar la página
 document.addEventListener("DOMContentLoaded", toggleValorEstimado);
 
 document

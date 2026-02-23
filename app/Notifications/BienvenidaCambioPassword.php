@@ -18,7 +18,7 @@ class BienvenidaCambioPassword extends Notification
     {
         return [
             'titulo' => '¡Bienvenido al sistema!',
-            'mensaje' => 'Por seguridad, te recomendamos cambiar tu contraseña.',        // 👈 Asume que tienes esta ruta
+            'mensaje' => 'Por seguridad, te recomendamos cambiar tu contraseña.',    
             'tipo' => 'bienvenida'
         ];
     }

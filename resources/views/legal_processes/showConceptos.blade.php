@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- 👈 IMPORTANTE --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
     @vite(['resources/js/dash.js'])
     <title>Procesos Pendientes - CSS Puro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/showCon.css') }}">
 
-    <!-- 👇 AGREGAR SWEETALERT2 -->
+    <!-- AGREGAR SWEETALERT2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="{{ asset('js/showCon.js') }}" defer></script>
@@ -21,10 +21,10 @@
     <div class="dashboard-wrapper">
         <div class="overlay" id="overlay"></div>
 
-        {{-- 👇 SIDEBAR REUTILIZABLE --}}
+        {{-- SIDEBAR REUTILIZABLE --}}
         <x-sidebar />
 
-        {{-- 👇 CONTENIDO PRINCIPAL --}}
+        {{-- CONTENIDO PRINCIPAL --}}
         <main class="main-content" id="mainContent">
 
             {{-- Header con hamburguesa y notificaciones --}}
@@ -35,7 +35,7 @@
                     <h1>Sistema Jurídico</h1>
                 </div>
                 <div class="header-right">
-                    {{-- 👇 COMPONENTE DE NOTIFICACIONES --}}
+                    {{-- COMPONENTE DE NOTIFICACIONES --}}
                     <x-notification-dropdown />
 
                     <!-- Logo SENA -->
@@ -52,7 +52,6 @@
                         <h1>Procesos Pendientes de Concepto Jurídico</h1>
                         <p>Gestiona los procesos que requieren análisis jurídico</p>
                     </div>
-                    <!-- busqueda -->
                     <!-- Buscador moderno -->
                     <form onsubmit="return false;">
                         <div class="search-wrapper">

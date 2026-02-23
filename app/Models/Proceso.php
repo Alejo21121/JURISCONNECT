@@ -15,7 +15,7 @@ class Proceso extends Model
     protected $table = 'procesos';
 
     protected $attributes = [
-        'estado' => 'pendiente', // Valor por defecto
+        'estado' => 'pendiente', // por defecto
     ];
 
     protected $fillable = [
@@ -27,8 +27,7 @@ class Proceso extends Model
         'estado',
         'user_id',
         'lawyer_id',
-        'fecha_vencimiento', // 👈 AGREGAR
-        // 👇 PAGO
+        'fecha_vencimiento',
         'requiere_pago',
         'valor_estimado',
     ];
@@ -36,7 +35,7 @@ class Proceso extends Model
     protected $casts = [
         'fecha_inicio' => 'date',
         'created_at' => 'datetime:d-m-Y',
-        'fecha_vencimiento' => 'date', // 👈 AGREGAR
+        'fecha_vencimiento' => 'date',
     ];
 
     /**

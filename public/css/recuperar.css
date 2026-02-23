@@ -13,7 +13,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow-x: hidden;
-    background-color: #f8f9fa; /* fallback en caso de no cargar imagen */
+    background-color: #f8f9fa;
 }
 
 /* Imagen de fondo */
@@ -44,7 +44,7 @@ body {
 .main-container {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* mantenemos el logo a la izquierda */
+    justify-content: flex-start;
     width: 100%;
     max-width: 1200px;
     min-height: 100vh;
@@ -414,7 +414,7 @@ body {
     .form-container {
         padding: 45px;
         max-width: 420px;
-        transform: translateX(0); /* Quitar desplazamiento */
+        transform: translateX(0);
     }
 
     .background-image img {
@@ -424,11 +424,10 @@ body {
 }
 
 /* Móviles grandes */
-/* Móviles grandes */
 @media (max-width: 768px) {
     body {
-        align-items: center; /* CAMBIAR de flex-start a center */
-        padding-top: 0; /* QUITAR padding superior */
+        align-items: center;
+        padding-top: 0; 
     }
 
     .background-image img {
@@ -438,9 +437,9 @@ body {
 
     .main-container {
         flex-direction: column;
-        justify-content: center; /* CAMBIAR de flex-start a center */
+        justify-content: center; 
         align-items: center;
-        gap: 40px; /* AUMENTAR el gap de 20px a 40px */
+        gap: 40px;
         padding: 20px;
         min-height: 100vh;
     }
@@ -450,7 +449,7 @@ body {
         flex: none;
         width: 100%;
         justify-content: center;
-        margin-top: 0; /* QUITAR margen superior del logo */
+        margin-top: 0;
     }
 
     .logo-jurisconnect {
@@ -464,7 +463,7 @@ body {
         max-width: 100%;
         width: 100%;
         padding: 35px 25px;
-        margin-top: 0; /* ASEGURAR que no tenga margen superior */
+        margin-top: 0;
         background: rgba(255, 255, 255, 0.25);
         backdrop-filter: blur(20px);
     }

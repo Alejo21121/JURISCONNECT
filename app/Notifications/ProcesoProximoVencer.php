@@ -12,13 +12,13 @@ class ProcesoProximoVencer extends Notification
 
     protected $proceso;
     protected $diasRestantes;
-    public $id; // 👈 NUEVO: ID público
+    public $id;
 
     public function __construct($proceso, $diasRestantes)
     {
         $this->proceso = $proceso;
         $this->diasRestantes = $diasRestantes;
-        $this->id = Str::uuid()->toString(); // 👈 NUEVO: Genera UUID único
+        $this->id = Str::uuid()->toString();
     }
 
     public function via($notifiable)

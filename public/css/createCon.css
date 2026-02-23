@@ -493,7 +493,6 @@ body {
     color: #1f2937;
 }
 
-/* QUE EL PLACEHOLDER SE VEA SUAVE */
 .form-input-modern::placeholder {
     color: #6b7280;
     opacity: 0.8;

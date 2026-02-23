@@ -1,5 +1,4 @@
 <?php
-// app/Models/Cuota.php
 
 namespace App\Models;
 

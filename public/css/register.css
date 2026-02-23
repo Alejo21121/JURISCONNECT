@@ -120,10 +120,10 @@ body {
     color: #ffffff;
     text-decoration: underline;
     font-size: 1rem;
-    font-weight: bold; /* mejor que font-style */
-    display: block; /* hace que el enlace ocupe una línea */
-    text-align: center; /* centrado, opcional */
-    margin-top: 20px; /* separación con el botón */
+    font-weight: bold; 
+    display: block; 
+    text-align: center; 
+    margin-top: 20px; 
 }
 
 .login-box img {
@@ -193,7 +193,7 @@ body {
 
 .password-wrapper input {
     width: 100%;
-    padding-right: 35px; /* espacio para el ojito */
+    padding-right: 35px;
 }
 
 .toggle-password {
@@ -928,13 +928,12 @@ body {
 
 /* Mejora para el scroll en contenedores pequeños */
 .login-box {
-    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Asegurar que los inputs no hagan zoom en iOS */
 @media screen and (max-width: 768px) {
     input[type="email"],
     input[type="password"] {
-        font-size: 16px !important; /* iOS no hace zoom con 16px+ */
+        font-size: 16px !important;
     }
 }

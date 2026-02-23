@@ -18,7 +18,7 @@
         <p>{{ Auth::user()->email }}</p>
     </div>
 
-    {{-- 👇 MENÚ DE NAVEGACIÓN --}}
+    {{-- MENÚ DE NAVEGACIÓN --}}
     <nav class="nav-menu">
         @php
             $role = Auth::user()->role_id;
@@ -26,7 +26,7 @@
         @endphp
 
 
-        {{-- 👇 NUEVO: Mi Perfil --}}
+        {{-- NUEVO: Mi Perfil --}}
         <a href="{{ route('profile.show') }}" class="nav-item {{ request()->routeIs('profile.show') ? 'active' : '' }}">
             <i class="fas fa-user-circle"></i>
             <span>Mi Perfil</span>

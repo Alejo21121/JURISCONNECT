@@ -23,7 +23,7 @@
 }
 
 .action-delete {
-    color: #ffffff; /* Rojo */
+    color: #ffffff; 
     border: none;
     background: #dc3545;
     cursor: pointer;

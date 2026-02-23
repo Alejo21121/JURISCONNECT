@@ -39,7 +39,7 @@ class PagoAprobado extends Notification
             'valor' => $this->pago->valor_pagado,
             'radicado' => $proceso->numero_radicado,
             'abogado' => $nombreAbogado,
-            'tipo' => 'pago' // 👈 AGREGAR ESTO
+            'tipo' => 'pago'
         ];
     }
 }

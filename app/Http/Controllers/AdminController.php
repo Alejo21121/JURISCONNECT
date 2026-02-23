@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\Proceso;
 use App\Models\Assistant;
-use Illuminate\Support\Facades\Auth; // 👈 AGREGAR ESTE IMPORT
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {

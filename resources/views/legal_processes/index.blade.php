@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- 👈 IMPORTANTE --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}"> 
     <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
     <link rel="stylesheet" href="{{ asset('css/procesos_judiciales.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -14,14 +14,14 @@
 </head>
 
 <body>
-    {{-- 👇 WRAPPER PRINCIPAL --}}
+    {{--  WRAPPER PRINCIPAL --}}
     <div class="dashboard-wrapper">
         <div class="overlay" id="overlay"></div>
 
-        {{-- 👇 SIDEBAR REUTILIZABLE --}}
+        {{--  SIDEBAR REUTILIZABLE --}}
         <x-sidebar />
 
-        {{-- 👇 CONTENIDO PRINCIPAL --}}
+        {{--  CONTENIDO PRINCIPAL --}}
         <main class="main-content" id="mainContent">
 
             {{-- Header con hamburguesa y notificaciones --}}
@@ -31,7 +31,7 @@
                     <h1>Procesos Judiciales</h1>
                 </div>
                 <div class="header-right">
-                    {{-- 👇 COMPONENTE DE NOTIFICACIONES --}}
+                    {{--  COMPONENTE DE NOTIFICACIONES --}}
                     <x-notification-dropdown />
 
                     <!-- Logo SENA -->
@@ -158,7 +158,7 @@
             procesosIndex: "{{ route('procesos.index') }}"
         };
 
-        // 👇 DETECTAR SI VIENE DE NOTIFICACIÓN DE PROCESO
+        //  DETECTAR SI VIENE DE NOTIFICACIÓN DE PROCESO
         const urlParams = new URLSearchParams(window.location.search);
         const procesoIdNotificacion = urlParams.get('proceso');
         const markReadId = urlParams.get('mark_read');
