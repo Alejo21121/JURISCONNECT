@@ -47,7 +47,7 @@ class ProfileController extends Controller
         // Obtener datos adicionales según el rol
         $additionalData = null;
 
-        if ($user->role_id == 2) {
+        if ($user->role_id == 2 || $user->role_id == 4) {
             // Abogado
             $additionalData = $user->lawyer;
         } elseif ($user->role_id == 3) {

@@ -22,7 +22,7 @@
     <nav class="nav-menu">
         @php
             $role = Auth::user()->role_id;
-            $isAbogado = $role == 2;
+            $isAbogado = in_array($role, [2, 4]);
         @endphp
 
 

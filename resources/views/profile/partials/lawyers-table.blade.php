@@ -9,6 +9,12 @@
                 <th>Correo</th>
                 <th>Teléfono</th>
                 <th>Especialidad</th>
+                @if (
+                    $lawyers->contains(function ($lawyer) {
+                        return $lawyer->user && $lawyer->user->role_id == 4;
+                    }))
+                    <th>Supervisor</th>
+                @endif
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -22,6 +28,16 @@
                     <td>{{ $lawyer->correo }}</td>
                     <td>{{ $lawyer->telefono }}</td>
                     <td>{{ $lawyer->especialidad }}</td>
+                    @if (
+                        $lawyers->contains(function ($lawyer) {
+                            return $lawyer->user && $lawyer->user->role_id == 4;
+                        }))
+                        <td>
+                            @if ($lawyer->user && $lawyer->user->role_id == 4)
+                                <span class="badge-supervisor">Supervisor</span>
+                            @endif
+                        </td>
+                    @endif
                     <td>
                         <div class="action-buttons">
                             <button class="btn-edit" data-id="{{ $lawyer->id }}" data-nombre="{{ $lawyer->nombre }}"

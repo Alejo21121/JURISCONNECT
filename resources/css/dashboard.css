@@ -1777,3 +1777,12 @@ tr:hover td {
 .toggle-password:hover {
     color: #28a745;
 }
+
+.badge-supervisor{
+    background:#6f42c1;
+    color:white;
+    padding:4px 10px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:bold;
+}

@@ -28,17 +28,22 @@ class LegalProcessController extends Controller
             ->leftJoin('users', 'lawyers.user_id', '=', 'users.id')
             ->select('procesos.*');
 
-        // --- Si el usuario es abogado (role_id = 2) ---
-        if (Auth::user()->role_id == 2) {
-            $lawyer = \App\Models\Lawyer::where('user_id', Auth::id())->first();
+        $user = Auth::user();
+
+        // 🔹 Abogado y Lawyer Manager (solo sus procesos)
+        if (in_array($user->role_id, [2, 4])) {
+
+            $lawyer = \App\Models\Lawyer::where('user_id', $user->id)->first();
+
             if ($lawyer) {
                 $query->where('lawyer_id', $lawyer->id);
             }
         }
 
-        // --- Si el usuario es asistente ---
-        if (Auth::user()->role_id == 3) {
-            $assistant = Auth::user()->assistant;
+        // 🔹 Asistente (procesos de sus abogados)
+        if ($user->role_id == 3) {
+            $assistant = $user->assistant;
+
             if ($assistant) {
                 $lawyerIds = $assistant->lawyers()->pluck('lawyer_id');
                 $query->whereIn('lawyer_id', $lawyerIds);
@@ -84,7 +89,7 @@ class LegalProcessController extends Controller
     public function create()
     {
         // SOLO ABOGADO puede crear
-        if (Auth::user()->role_id != 2) {
+        if (!in_array(Auth::user()->role_id, [2, 4])) {
             abort(403, 'No tienes permisos para crear procesos.');
         }
 
@@ -92,7 +97,7 @@ class LegalProcessController extends Controller
     }
     public function store(Request $request)
     {
-        if (Auth::user()->role_id != 2) {
+        if (!in_array(Auth::user()->role_id, [2, 4])) {
             abort(403, 'No tienes permisos para crear procesos.');
         }
 
@@ -226,10 +231,10 @@ class LegalProcessController extends Controller
             'estado' => $proceso->estado,
             'requiere_pago' => $proceso->requiere_pago,
             'valor_estimado' => $proceso->valor_estimado,
-            'fecha_vencimiento' => $proceso->fecha_vencimiento->format('d-m-Y'), 
+            'fecha_vencimiento' => $proceso->fecha_vencimiento->format('d-m-Y'),
             'created_at' => $proceso->created_at->format('d-m-Y'),
             'pago_realizado' => $proceso->pago !== null,
-            'porcentaje' => $porcentaje, 
+            'porcentaje' => $porcentaje,
             'documentos' => $proceso->documentos,
         ]);
     }
@@ -360,7 +365,7 @@ class LegalProcessController extends Controller
     public function destroy($id)
     {
         $proceso = Proceso::findOrFail($id);
-        $proceso->delete(); 
+        $proceso->delete();
 
         return redirect()
             ->route('mis.procesos')

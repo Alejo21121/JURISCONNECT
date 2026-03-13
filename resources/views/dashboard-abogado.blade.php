@@ -80,7 +80,7 @@
                     <h3>Registrar Proceso</h3>
                     <p>Inicia un nuevo expediente jurídico y asígnale los detalles correspondientes.</p>
 
-                    @if ($isAbogado)
+                    @if (in_array(auth()->user()->role_id, [2, 4]))
                         <a href="{{ route('legal_processes.create') }}">Registrar</a>
                     @else
                         <span style="color: red; font-weight:bold;">No tienes permisos</span>

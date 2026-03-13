@@ -227,13 +227,13 @@ class LawyerController extends Controller
                         . '|unique:users,email',
                     'telefono' => 'nullable|string|max:20',
                     'especialidad' => 'nullable|string|max:255',
+                    'role_id' => 'required|in:2,4'
                 ]);
-
                 $user = User::create([
                     'name' => trim($validated['nombre']) . ' ' . trim($validated['apellido']),
                     'email' => trim(strtolower($validated['correo'])),
                     'password' => Hash::make($validated['numero_documento']),
-                    'role_id' => 2,
+                    'role_id' => $request->role_id,
                     'numero_documento' => trim($validated['numero_documento']),
                 ]);
 
@@ -489,7 +489,7 @@ class LawyerController extends Controller
             }
 
             // Si tiene relación con abogados
-            $assistant->lawyers()->detach(); 
+            $assistant->lawyers()->detach();
 
             $assistant->delete();
             DB::commit();
@@ -574,7 +574,7 @@ class LawyerController extends Controller
 
                 // Notificar al asistente si se agregaron nuevos abogados
                 if (count($abogadosAgregados) > 0 && $assistant->user) {
-                    $primerNuevoAbogado = Lawyer::find(array_values($abogadosAgregados)[0]); 
+                    $primerNuevoAbogado = Lawyer::find(array_values($abogadosAgregados)[0]);
                     if ($primerNuevoAbogado) {
                         $assistant->user->notify(
                             new \App\Notifications\AsistenteAsignado($primerNuevoAbogado)
@@ -586,7 +586,6 @@ class LawyerController extends Controller
                     'assistant_id' => $assistant->id,
                     'error' => $e->getMessage()
                 ]);
-                
             }
 
             DB::commit();

@@ -68,6 +68,14 @@
                             <input type="text" id="especialidad_lawyer" name="especialidad">
                         </div>
 
+                        <div class="form-group">
+                            <label for="rol_lawyer">Tipo de Abogado:</label>
+                            <select id="rol_lawyer" name="role_id" required>
+                                <option value="2">Abogado</option>
+                                <option value="4">Abogado Supervisor</option>
+                            </select>
+                        </div>
+
                         <div class="form-actions">
                             <button type="button" class="btn-cancel" id="cancelBtn">Cancelar</button>
                             <button type="submit" class="btn-submit">Crear Abogado</button>

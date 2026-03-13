@@ -9,7 +9,7 @@
                 <h2 class="titulo-proceso" data-numero="{{ $loop->iteration }}">
                     Proceso Legal {{ $procesos->firstItem() + $loop->index }}
                     @auth
-                        @if (auth()->user()->role_id == 3)
+                        @if (in_array(auth()->user()->role_id, [3, 4]))
                             <span class="abogado-nombre">
                                 – Abogado: {{ $proceso->lawyer->user->name ?? 'Sin asignar' }}
                             </span>
@@ -105,12 +105,15 @@
                         <i class="fas fa-lock"></i>
                         Proceso Archivado
                     </button>
-                @else
+                @elseif(
+                    (auth()->user()->role_id == 2 && auth()->user()->lawyer->id == $proceso->lawyer_id) ||
+                        auth()->user()->role_id == 3 ||
+                        (auth()->user()->role_id == 4 && auth()->user()->lawyer->id == $proceso->lawyer_id))
                     <a href="{{ route('abogado.crear-concepto', $proceso->id) }}" class="action-btn">
                         <i class="fas fa-edit"></i>
                         Redactar Concepto Jurídico
                     </a>
-                @endif
+                @endif  
 
                 @php
                     $conceptosColeccion = collect($proceso->conceptos ?? []);

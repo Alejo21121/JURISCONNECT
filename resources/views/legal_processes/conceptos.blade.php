@@ -82,15 +82,18 @@
                                     </div>
                                     <p>{{ \Illuminate\Support\Str::limit($c->descripcion ?? ($c->concepto ?? ''), 300) }}
                                     </p>
-
                                     <div class="concept-actions">
                                         <a href="{{ route('concepto.show', $c->id) }}" class="btn btn-view btn-sm">
                                             <i class="fas fa-eye"></i>
                                             Ver detalle
                                         </a>
 
-                                        {{-- SOLO MOSTRAR BOTÓN ELIMINAR SI NO ESTÁ ARCHIVADO --}}
-                                        @if ($proceso->estado !== 'Archivado')
+                                        {{-- SOLO MOSTRAR BOTÓN ELIMINAR SI NO ESTÁ ARCHIVADO Y TIENE PERMISO --}}
+                                        @if (
+                                            $proceso->estado !== 'Archivado' &&
+                                                (((auth()->user()->role_id == 2 || auth()->user()->role_id == 4) &&
+                                                    auth()->user()->lawyer->id == $proceso->lawyer_id) ||
+                                                    auth()->user()->role_id == 3))
                                             <button type="button" class="btn btn-delete btn-sm"
                                                 onclick="showDeleteModal({{ $c->id }}, '{{ addslashes($c->titulo) }}')">
                                                 <i class="fas fa-trash"></i>
@@ -103,7 +106,6 @@
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
-                                        @else
                                         @endif
                                     </div>
                                 </div>
