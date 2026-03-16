@@ -58,13 +58,20 @@ body {
 }
 
 /* Header */
-.header {
+.section-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
-    gap: 1rem;
-    flex-wrap: wrap;
+    flex-wrap: wrap;  
+    justify-content: space-between;
+    gap: 8px;
+    background: #fff;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 30px;
+ 
 }
 
 .header-content h1 {
@@ -447,12 +454,6 @@ body {
 @media (max-width: 768px) {
     .container {
         padding: 1rem;
-    }
-
-    .header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
     }
 
     .header-content h1 {

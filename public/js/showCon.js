@@ -192,3 +192,27 @@ document.querySelectorAll(".notification-item").forEach((item) => {
     });
 });
 
+// Filtro por abogado
+const abogadoFilter = document.getElementById('abogadoFilter');
+if (abogadoFilter) {
+    abogadoFilter.addEventListener('change', function () {
+        const url = new URL(window.location.href);
+        const val = this.value;
+
+        if (val) {
+            url.searchParams.set('abogado_id', val);
+        } else {
+            url.searchParams.delete('abogado_id');
+        }
+
+        // Mantener búsqueda de texto si hay una activa
+        const search = document.getElementById('searchInput')?.value;
+        if (search) {
+            url.searchParams.set('search', search);
+        } else {
+            url.searchParams.delete('search');
+        }
+
+        window.location.href = url.toString();
+    });
+}

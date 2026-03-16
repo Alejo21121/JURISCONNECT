@@ -53,8 +53,10 @@
                         <p class="profile-role">
                             @if ($user->role_id == 1)
                                 <span class="profile-role-badge"><i class="fas fa-shield-alt"></i> Administrador</span>
-                            @elseif($user->role_id == 2 || $user->role_id == 4)
+                            @elseif($user->role_id == 2)
                                 <span class="profile-role-badge"><i class="fas fa-briefcase"></i> Abogado</span>
+                            @elseif($user->role_id == 4)
+                                <span class="profile-role-badge"><i class="fas fa-briefcase"></i> Abogado Supervisor</span>
                             @elseif($user->role_id == 3)
                                 <span class="profile-role-badge"><i class="fas fa-balance-scale"></i> Asistente
                                     Jurídico</span>

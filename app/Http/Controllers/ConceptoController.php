@@ -101,39 +101,50 @@ class ConceptoController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource
-     */
     public function create(Request $request)
     {
         $query = Proceso::query();
+        $abogadosList = collect(); // Lista vacía por defecto
 
         // --- Si el usuario es abogado ---
         if (Auth::user()->role_id == 2) {
-
-            // buscar lawyer por user_id
             $lawyer = \App\Models\Lawyer::where('user_id', Auth::id())->first();
-
             if ($lawyer) {
                 $query->where('lawyer_id', $lawyer->id);
             }
         }
 
-        // --- Si el usuario es asistente ---
-        if (Auth::user()->role_id == 3) {
+        // --- Si el usuario es asistente o supervisor (role 3 o el que uses) ---
+        if (Auth::user()->role_id == 3 || Auth::user()->role_id == 4) {
 
-            $assistant = Auth::user()->assistant;
+            $lawyerIds = collect();
 
-            if ($assistant) {
-                $lawyerIds = $assistant->lawyers()->pluck('lawyer_id');
+            if (Auth::user()->role_id == 3) {
+                $assistant = Auth::user()->assistant;
+                if ($assistant) {
+                    $lawyerIds = $assistant->lawyers()->pluck('lawyer_id');
+                }
+            } else {
+                // Admin/supervisor ve todos los abogados
+                $lawyerIds = \App\Models\Lawyer::pluck('id');
+            }
+
+            // Cargar lista de abogados para el select
+            $abogadosList = \App\Models\Lawyer::with('user')
+                ->whereIn('id', $lawyerIds)
+                ->get();
+
+            // Filtrar por abogado seleccionado
+            if ($request->filled('abogado_id')) {
+                $query->where('lawyer_id', $request->abogado_id);
+            } else {
                 $query->whereIn('lawyer_id', $lawyerIds);
             }
         }
 
         // --- BÚSQUEDA ---
-        if ($request->has('search') && $request->get('search')) {
+        if ($request->filled('search')) {
             $search = $request->get('search');
-
             $query->where(function ($q) use ($search) {
                 $q->where('numero_radicado', 'ILIKE', "%$search%")
                     ->orWhere('demandante', 'ILIKE', "%$search%")
@@ -143,10 +154,9 @@ class ConceptoController extends Controller
             });
         }
 
-        // Obtener procesos filtrados
         $procesos = $query->orderBy('id', 'asc')
             ->paginate(10)
-            ->withQueryString(); // 10 por página
+            ->withQueryString();
 
         // --- AJAX ---
         if ($request->ajax()) {
@@ -158,20 +168,7 @@ class ConceptoController extends Controller
             ]);
         }
 
-        return view('legal_processes.showConceptos', compact('procesos'));
-    }
-    /**
-     * Guardar el concepto para un proceso específico
-     */
-    public function store(Request $request, Proceso $proceso)
-    {
-        $this->validateConceptoData($request);
-
-        $this->createConceptoForProceso($request, $proceso);
-        $this->updateProcesoEstado($proceso);
-
-        return redirect()->route('abogado.dashboard')
-            ->with('success', 'Concepto jurídico creado exitosamente.');
+        return view('legal_processes.showConceptos', compact('procesos', 'abogadosList'));
     }
 
     /**

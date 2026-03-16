@@ -121,10 +121,14 @@ body {
     transition: margin-left var(--transition-speed) ease;
 }
 
+/* ── HEADER ── */
 .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    /* ← clave para que no se baje */
+    gap: 8px;
     background: #fff;
     padding: 15px 25px;
     border-radius: 12px;
@@ -135,7 +139,9 @@ body {
 .header-left {
     display: flex;
     align-items: center;
+    gap: 8px;
     flex: 1;
+    min-width: 0;
 }
 
 /* NUEVO: Contenedor derecho */
@@ -151,7 +157,7 @@ body {
     border: none;
     color: var(--primary-color);
     cursor: pointer;
-    margin-right: 20px;
+    margin-right: 15px;
 }
 
 .header h1 {
@@ -180,16 +186,16 @@ body {
 
 .cards-container {
     display: flex;
-    justify-content: center; 
-    align-items: stretch; 
-    gap: 200px; 
-    flex-wrap: wrap; 
+    justify-content: center;
+    align-items: stretch;
+    gap: 200px;
+    flex-wrap: wrap;
     margin-top: 50px;
 }
 
 .dashboard-card {
-    flex: 1 1 300px; 
-    max-width: 350px; 
+    flex: 1 1 300px;
+    max-width: 350px;
     background: #ffffff;
     padding: 55px;
     border-radius: 12px;
@@ -219,7 +225,7 @@ body {
 }
 
 .dashboard-card p {
-    min-height: auto; 
+    min-height: auto;
     margin-bottom: 20px;
 }
 
@@ -250,25 +256,13 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
     display: none;
-    z-index: 999; 
+    z-index: 999;
     opacity: 0;
     transition: opacity var(--transition-speed) ease;
 }
 
 .overlay.active {
     display: block;
-}
-
-/* ------------------------- */
-/* --- RESPONSIVENESS --- */
-/* ------------------------- */
-@media (max-width: 768px) {
-    .sidebar {
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .header h1 {
-        font-size: 1.4rem;
-    }
 }
 
 /* Estilos para la foto de perfil clickeable */
@@ -332,7 +326,7 @@ body {
     /* SOLUCIÓN PARA EL CORREO LARGO */
     word-wrap: break-word;
     overflow-wrap: break-word;
-    word-break: break-all; 
+    word-break: break-all;
     max-width: 100%;
     line-height: 1.4;
 }
@@ -374,10 +368,12 @@ body {
     transition: all 0.3s ease;
     backdrop-filter: blur(5px);
 }
+
 .alert-overlay.show {
     opacity: 1;
     visibility: visible;
 }
+
 .custom-alert {
     background: var(--color-surface);
     border-radius: var(--border-radius-lg);
@@ -389,9 +385,11 @@ body {
     transform: scale(0.7) translateY(50px);
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 .alert-overlay.show .custom-alert {
     transform: scale(1) translateY(0);
 }
+
 .alert-icon {
     width: 70px;
     height: 70px;
@@ -403,26 +401,32 @@ body {
     font-size: 35px;
     font-weight: bold;
 }
+
 .alert-success .alert-icon {
     background: linear-gradient(135deg, #198754, #198754);
     animation: successPulse 0.6s ease-out;
 }
+
 .alert-error .alert-icon {
     background: linear-gradient(135deg, #dc3545, #c82333);
     animation: errorShake 0.6s ease-out;
 }
+
 .alert-warning .alert-icon {
     background: linear-gradient(135deg, #ffc107, #d39e00);
 }
+
 .alert-info .alert-icon {
     background: linear-gradient(135deg, #0dcaf0, #0b93a8);
 }
+
 .alert-buttons {
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 25px;
 }
+
 .alert-button {
     border: none;
     padding: 12px 24px;
@@ -433,75 +437,94 @@ body {
     transition: var(--transition-smooth);
     min-width: 120px;
 }
+
 .alert-button.success {
     background: linear-gradient(135deg, #198754, #198754);
 }
+
 .alert-button.error {
     background: linear-gradient(135deg, #dc3545, #c82333);
 }
+
 .alert-button.warning {
     background: linear-gradient(135deg, #ffc107, #d39e00);
     color: #000;
 }
+
 .alert-button.info {
     background: linear-gradient(135deg, #0dcaf0, #0b93a8);
 }
+
 .alert-button.secondary {
     background: #e9ecef;
     color: var(--color-text-primary);
 }
+
 .alert-button:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
+
 .alert-title {
     font-size: 22px;
     font-weight: 700;
     margin-bottom: 12px;
     color: var(--color-text-primary);
 }
+
 .alert-message {
     color: var(--color-text-secondary);
     margin-bottom: 25px;
     line-height: 1.6;
     font-size: 16px;
 }
+
 @keyframes successPulse {
     0% {
         transform: scale(0.8);
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
     }
 }
+
 @keyframes errorShake {
+
     0%,
     100% {
         transform: translateX(0);
     }
+
     25% {
         transform: translateX(-5px);
     }
+
     75% {
         transform: translateX(5px);
     }
 }
+
 @keyframes fadeIn {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
+
 @keyframes slideIn {
     from {
         transform: translateY(-30px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -524,7 +547,7 @@ body {
         width: 280px;
         z-index: 1000;
         transition: left 0.3s ease;
-        overflow-y: auto; 
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
 
@@ -563,7 +586,6 @@ body {
 @media (max-width: 768px) {
     .header {
         padding: 1rem;
-        flex-wrap: wrap;
     }
 
     .header h1 {
@@ -571,8 +593,21 @@ body {
     }
 
     .header img {
-        max-width: 80px;
-        height: auto;
+        height: 35px;
+    }
+
+    .header-right {
+        gap: 0.5rem;
+    }
+
+    .notification-dropdown {
+        min-width: 300px;
+        right: -10px;
+    }
+
+    .sidebar {
+        width: 260px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .cards-container {
@@ -589,21 +624,26 @@ body {
         width: 80px;
         height: 80px;
     }
-
-    .sidebar {
-        width: 260px;
-    }
 }
 
 /* Para pantallas muy pequeñas */
 @media (max-width: 480px) {
+    .header {
+        padding: 0.75rem;
+    }
+
     .header h1 {
         font-size: 1rem;
+    }
+
+    .header img {
+        height: 30px;
     }
 
     .hamburger {
         font-size: 1.5rem;
         padding: 0.5rem;
+        margin-right: 8px;
     }
 
     .dashboard-card {
@@ -696,6 +736,7 @@ body {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -877,4 +918,114 @@ tbody td {
 table {
     border-collapse: collapse;
     border: none;
+}
+
+/* ── Header principal ── */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    padding: 1.25rem 1.75rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 1.5rem;
+}
+
+.header-content h1 {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0 0 3px;
+}
+
+.header-content p {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* ── Controles derechos ── */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* ── Buscador ── */
+.search-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.search-input-modern {
+    border: none;
+    background: transparent;
+    padding: 7px 11px;
+    font-size: 13px;
+    outline: none;
+    width: 200px;
+}
+
+.search-button-modern {
+    background: #28a745;
+    border: none;
+    padding: 7px 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* ── Select abogado ── */
+.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.select-icon {
+    position: absolute;
+    left: 10px;
+    pointer-events: none;
+    color: #28a745;
+    font-size: 13px;
+    z-index: 1;
+}
+
+.lawyer-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 7px 32px 7px 32px;
+    font-size: 13px;
+    color: #495057;
+    cursor: pointer;
+    outline: none;
+    min-width: 200px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.lawyer-select:hover {
+    border-color: #28a745;
+}
+
+.lawyer-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, .12);
+}
+
+.chevron {
+    position: absolute;
+    right: 9px;
+    pointer-events: none;
+    color: #adb5bd;
+    font-size: 11px;
 }

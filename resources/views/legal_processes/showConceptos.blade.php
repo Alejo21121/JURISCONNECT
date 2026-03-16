@@ -31,7 +31,7 @@
             <header class="header">
                 <div class="header-left">
                     <button class="hamburger" id="hamburgerBtn">☰</button>
-                    <i class="fas fa-balance-scale" style="color:#28a745; font-size:30px; margin-right:10px;"></i>
+                    <i class="fas fa-balance-scale" style="color:#28a745; font-size:25px; margin-right:10px;"></i>
                     <h1>Sistema Jurídico</h1>
                 </div>
                 <div class="header-right">
@@ -47,7 +47,7 @@
 
             <div class="container">
                 <!-- Header -->
-                <div class="header">
+                <div class="section-header">
                     <div class="header-content">
                         <h1>Procesos Pendientes de Concepto Jurídico</h1>
                         <p>Gestiona los procesos que requieren análisis jurídico</p>
@@ -64,6 +64,23 @@
                             </div>
                         </div>
                     </form>
+
+                    {{-- SELECT DE ABOGADO — solo visible para asistentes y supervisores --}}
+                    @if ($abogadosList->isNotEmpty())
+                        <div class="filter-wrapper" style="margin-top: 12px;">
+                            <div class="search-group">
+                                <select id="abogadoFilter" class="search-input-modern" style="cursor:pointer;">
+                                    <option value="">— Todos los abogados —</option>
+                                    @foreach ($abogadosList as $lawyer)
+                                        <option value="{{ $lawyer->id }}"
+                                            {{ request('abogado_id') == $lawyer->id ? 'selected' : '' }}>
+                                            {{ $lawyer->user->name ?? 'Abogado #' . $lawyer->id }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    @endif
 
                     <a class="cancel-btn" href="{{ route('dashboard.abogado') }}">
                         <i class="fas fa-arrow-left"></i>

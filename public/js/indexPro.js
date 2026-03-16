@@ -149,17 +149,15 @@ window.openProcessModal = function (id) {
     <div class="detail-row">
         <span class="label">¿Requiere pago?</span>
         <span class="value">
-            ${
-                data.requiere_pago == 1
+            ${data.requiere_pago == 1
                     ? '<strong style="color:#059669;">✅ Sí</strong>'
                     : '<strong style="color:#6b7280;">❌ No</strong>'
-            }
+                }
         </span>
     </div>
 
-${
-    data.requiere_pago == 1
-        ? `
+${data.requiere_pago == 1
+                    ? `
             <div class="detail-row">
                 <span class="label">Valor estimado</span>
                 <span class="value">
@@ -172,12 +170,11 @@ ${
 <div class="detail-row">
                 <span class="label">Estado del pago</span>
                 <span class="value">
-                    ${
-                        data.porcentaje >= 100
-                            ? '<span class="badge pago-realizado"><i class="fas fa-check-circle"></i> Pago completado</span>'
-                            : data.porcentaje > 0
-                              ? '<span class="badge pago-tramite"><i class="fas fa-spinner"></i> Pago en trámite</span>'
-                              : '<span class="badge pago-pendiente"><i class="fas fa-clock"></i> Pago pendiente</span>'
+                    ${data.porcentaje >= 100
+                        ? '<span class="badge pago-realizado"><i class="fas fa-check-circle"></i> Pago completado</span>'
+                        : data.porcentaje > 0
+                            ? '<span class="badge pago-tramite"><i class="fas fa-spinner"></i> Pago en trámite</span>'
+                            : '<span class="badge pago-pendiente"><i class="fas fa-clock"></i> Pago pendiente</span>'
                     }
                     <button 
                         class="badge pago-btn"
@@ -189,9 +186,8 @@ ${
                 </span>
             </div>
 
-            ${
-                data.porcentaje >= 100 && data.pago
-                    ? `
+            ${data.porcentaje >= 100 && data.pago
+                        ? `
         <div class="pago-card">
             <h5 style="color:#065f46; font-size:1rem; margin:0 0 1rem 0; font-weight:700; display:flex; align-items:center; gap:0.5rem;">
                 <i class="fas fa-money-bill-wave"></i>
@@ -210,23 +206,22 @@ ${
                     <span class="label">Forma de Pago</span>
                     <span class="value">${data.pago.forma_pago || "N/A"}</span>
                 </div>
-                ${
-                    data.pago.observaciones
-                        ? `
+                ${data.pago.observaciones
+                            ? `
                             <div class="pago-item" style="grid-column: 1 / -1;">
                                 <span class="label">Observaciones</span>
                                 <span class="value" style="font-size:0.9rem; font-weight:500; color:#374151;">${data.pago.observaciones}</span>
                             </div>
                         `
-                        : ""
-                }
+                            : ""
+                        }
             </div>
         </div>
     `
-                    : ""
-            }
+                        : ""
+                    }
         `
-: `
+                    : `
     <div class="detail-row">
         <span class="label">Estado del pago</span>
         <span class="value">
@@ -241,7 +236,7 @@ ${
         </span>
     </div>
 `
-}
+                }
 
     <div class="section-divider"></div>
 
@@ -324,8 +319,8 @@ function renderDocuments(documentos) {
     return `
             <ul class="documents-list">
                 ${documentos
-                    .map(
-                        (doc) => `
+            .map(
+                (doc) => `
                                             <li>
                                                 <a href="/storage/${doc.ruta}" target="_blank">
                                                     <i class="fas fa-file-pdf"></i>
@@ -333,8 +328,8 @@ function renderDocuments(documentos) {
                                                 </a>
                                             </li>
                                         `,
-                    )
-                    .join("")}
+            )
+            .join("")}
             </ul>
         `;
 }
@@ -410,3 +405,110 @@ document.addEventListener("click", function (e) {
 function irAPago(procesoId) {
     window.location.href = `/pagos?proceso=${procesoId}`;
 }
+
+// ── Estado global ──
+const state = {
+    search: new URLSearchParams(window.location.search).get('search') || '',
+    sort: new URLSearchParams(window.location.search).get('sort') || 'id',
+    dir: new URLSearchParams(window.location.search).get('dir') || 'asc',
+    page: new URLSearchParams(window.location.search).get('page') || 1,
+};
+
+// ── Cargar tabla vía AJAX ──
+function cargarTabla(pushHistory = true) {
+    const container = document.getElementById('procesosTableContainer');
+    container.style.opacity = '0.5';
+    container.style.pointerEvents = 'none';
+
+    const params = new URLSearchParams({
+        search: state.search,
+        sort: state.sort,
+        dir: state.dir,
+        page: state.page,
+        ajax: 1,
+    });
+
+    fetch(`${window.routes.procesosIndex}?${params}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                container.innerHTML = data.html;
+                container.style.opacity = '1';
+                container.style.pointerEvents = '';
+
+                // Actualizar contador total
+                const totalEl = document.getElementById('totalCount');
+                if (totalEl) totalEl.textContent = data.total;
+
+                // Actualizar URL sin recargar
+                if (pushHistory) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('search', state.search);
+                    url.searchParams.set('sort', state.sort);
+                    url.searchParams.set('dir', state.dir);
+                    url.searchParams.set('page', state.page);
+                    window.history.pushState(state, '', url);
+                }
+
+                // Reasignar eventos después de reemplazar el HTML
+                bindTableEvents();
+            }
+        })
+        .catch(() => {
+            container.style.opacity = '1';
+            container.style.pointerEvents = '';
+        });
+}
+
+// ── Clicks en th (sort) y paginación — delegación de eventos ──
+function bindTableEvents() {
+    // Ordenamiento — interceptar links de los th
+    document.querySelectorAll('#procesosTableContainer .th-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const url = new URL(this.href);
+            state.sort = url.searchParams.get('sort');
+            state.dir = url.searchParams.get('dir');
+            state.page = 1;
+            cargarTabla();
+        });
+    });
+
+    // Paginación — interceptar links de página
+    document.querySelectorAll('#procesosTableContainer .pagination-btn[href]').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const url = new URL(this.href);
+            state.page = url.searchParams.get('page') || 1;
+            cargarTabla();
+        });
+    });
+
+    // Re-bind modales de eliminar (se pierden al reemplazar HTML)
+    document.querySelectorAll('.form-delete-proceso').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const nombre = form.dataset.nombre || 'este proceso';
+            showDeleteConfirm(nombre, () => form.submit());
+        });
+    });
+}
+
+// ── Inicializar al cargar ──
+document.addEventListener('DOMContentLoaded', () => {
+    // Setear valor del buscador si viene en la URL
+    const inputSearch = document.getElementById('searchInput');
+    if (inputSearch && state.search) inputSearch.value = state.search;
+
+    bindTableEvents();
+});
+
+// ── Botón atrás/adelante del navegador ──
+window.addEventListener('popstate', (e) => {
+    if (e.state) {
+        Object.assign(state, e.state);
+        cargarTabla(false);
+    }
+});

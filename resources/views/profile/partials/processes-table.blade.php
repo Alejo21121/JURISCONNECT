@@ -39,75 +39,91 @@
             <!-- titulos de la tabla -->
             <thead class="table-header">
                 <tr>
-                    <th>
-                        <div class="header-content-cell">
-                            <span>Radicado</span>
-                            <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                </path>
-                            </svg>
-                        </div>
-                    </th>
+                    @php
+                        $sort = request('sort', 'id');
+                        $dir = request('dir', 'asc');
+                    @endphp
+
+                    {{-- Helper para generar cada th --}}
+                    @php
+                        function thSort($col, $label, $icon_path, $sort, $dir, $extraClass = '')
+                        {
+                            $newDir = $sort === $col && $dir === 'asc' ? 'desc' : 'asc';
+                            $url = request()->fullUrlWithQuery(['sort' => $col, 'dir' => $newDir]);
+                            $active = $sort === $col;
+                            $arrow = $active ? ($dir === 'asc' ? '↑' : '↓') : '↕';
+                            $class = 'th-sort' . ($active ? ' th-active' : '') . ($extraClass ? " $extraClass" : '');
+                            return "
+                <th class=\"$class\">
+                    <a href=\"$url\" class=\"th-link\">
+                        <svg class=\"header-icon-small $extraClass\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">
+                            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"$icon_path\"/>
+                        </svg>
+                        <span>$label</span>
+                        <span class=\"sort-arrow\">$arrow</span>
+                    </a>
+                </th>";
+                        }
+                    @endphp
+
+                    {!! thSort(
+                        'numero_radicado',
+                        'Radicado',
+                        'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+                        $sort,
+                        $dir,
+                    ) !!}
+
                     @auth
                         @if (Auth::user()->role_id == 3)
-                            <th>
-                                <div class="header-content-cell">
-                                    <span>Abogado</span>
-                                    <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                </div>
-                            </th>
+                            {!! thSort(
+                                'abogado',
+                                'Abogado',
+                                'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+                                $sort,
+                                $dir,
+                            ) !!}
                         @endif
                     @endauth
-                    <th>
-                        <div class="header-content-cell">
-                            <span>Tipo</span>
-                            <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                                </path>
-                            </svg>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="header-content-cell">
-                            <span>Demandante</span>
-                            <svg class="header-icon-small header-icon-green" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="header-content-cell">
-                            <span>Demandado</span>
-                            <svg class="header-icon-small header-icon-red" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
-                    </th>
 
-                    <th>
-                        <div class="header-content-cell">
-                            <span>Estado </span>
-                            <span>📊</span>
-                        </div>
-                    </th>
+                    {!! thSort(
+                        'tipo_proceso',
+                        'Tipo',
+                        'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
+                        $sort,
+                        $dir,
+                    ) !!}
+                    {!! thSort(
+                        'demandante',
+                        'Demandante',
+                        'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+                        $sort,
+                        $dir,
+                        'header-icon-green',
+                    ) !!}
+                    {!! thSort(
+                        'demandado',
+                        'Demandado',
+                        'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+                        $sort,
+                        $dir,
+                        'header-icon-red',
+                    ) !!}
+                    {!! thSort(
+                        'estado',
+                        'Estado',
+                        'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+                        $sort,
+                        $dir,
+                    ) !!}
 
                     <th class="actions-cell">
-                        <div class="header-content-cell" style="justify-content: center;">
-                            <span>Acciones</span>
+                        <div class="th-link" style="justify-content:center; cursor:default;">
                             <svg class="header-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
-                                </path>
+                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                             </svg>
+                            <span>Acciones</span>
                         </div>
                     </th>
                 </tr>
@@ -131,27 +147,21 @@
                             <span class="estado-badge estado-{{ Str::slug($proceso->estado) }}">
                                 @switch($proceso->estado)
                                     @case('Conciliado')
-                                        
                                     @break
 
                                     @case('Pendiente')
-                            
                                     @break
 
                                     @case('Archivado')
-                                        
                                     @break
 
                                     @case('Suspendido')
-                                       
                                     @break
 
                                     @case('Finalizado')
-                                        
                                     @break
 
                                     @default
-                                       
                                 @endswitch
                                 {{ $proceso->estado }}
                             </span>
@@ -183,8 +193,8 @@
                                         </svg>
                                     </button>
                                 @else
-                                    <a href="{{ route('procesos.edit', $proceso->id) }}"
-                                        class="action-btn action-edit" title="Editar">
+                                    <a href="{{ route('procesos.edit', $proceso->id) }}" class="action-btn action-edit"
+                                        title="Editar">
                                         <svg class="action-icon" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -21,7 +21,7 @@ class VerificarProcesosVencimiento extends Command
             'Pendiente',
             'Radicado',
             'Admisión',
-            'Traslado',      
+            'Traslado',
             'Audiencia',
             'Fallo favorable',
             'Fallo desfavorable',
@@ -40,10 +40,9 @@ class VerificarProcesosVencimiento extends Command
             $fechaVencimiento = Carbon::parse($proceso->fecha_vencimiento)->startOfDay();
             $diasRestantes = $hoy->diffInDays($fechaVencimiento, false);
 
-            // Notificar en 7, 3, 1 y 0 días
-            if (in_array($diasRestantes, [7, 3, 1, 0]) && $diasRestantes >= 0) {
+            // Notificar en 7, 3, 1, 0 días y vencidos
+            if (in_array($diasRestantes, [7, 3, 1, 0, -1, -3, -7])) {
 
-                // Notificar al abogado
                 if ($proceso->lawyer && $proceso->lawyer->user) {
                     $proceso->lawyer->user->notify(
                         new ProcesoProximoVencer($proceso, $diasRestantes)
@@ -51,7 +50,6 @@ class VerificarProcesosVencimiento extends Command
                     $notificacionesEnviadas++;
                 }
 
-                // Notificar a asistentes asignados
                 if ($proceso->lawyer && $proceso->lawyer->assistants) {
                     foreach ($proceso->lawyer->assistants as $assistant) {
                         if ($assistant->user) {

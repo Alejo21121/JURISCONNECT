@@ -71,6 +71,10 @@
                             <div class="list-header fade-in-up">
                                 <h4>Conceptos del proceso:</h4>
                                 <p class="process-number">{{ $proceso->numero_radicado ?? 'ID ' . $proceso->id }}</p>
+                                <span class="label">📝 Detalle del caso</span>
+                                <p>
+                                    {{ $proceso->descripcion ?? 'Sin descripción' }}
+                                </p>
                             </div>
 
                             @foreach ($conceptos as $c)

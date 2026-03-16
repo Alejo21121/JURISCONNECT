@@ -1,5 +1,5 @@
 :root {
-    --color-success: #198754; 
+    --color-success: #198754;
     --color-danger: #dc3545;
 }
 
@@ -678,6 +678,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -688,6 +689,7 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -788,6 +790,7 @@ body {
     padding: 8px 18px !important;
     transition: background 0.3s;
 }
+
 .swal2-confirm.custom-confirm:hover {
     background-color: #007dc3 !important;
 }
@@ -801,13 +804,14 @@ body {
     padding: 8px 18px !important;
     transition: background 0.3s;
 }
+
 .swal2-cancel.custom-cancel:hover {
     background-color: #ccc !important;
 }
 
 .delete-btn {
-    background-color: #fee2e2; 
-    color: #dc2626; 
+    background-color: #fee2e2;
+    color: #dc2626;
     border: none;
     border-radius: 8px;
     padding: 0.5rem;
@@ -816,22 +820,24 @@ body {
 }
 
 .delete-btn:hover {
-    background-color: #fecaca; 
+    background-color: #fecaca;
 }
 
 .search-section {
     width: 100%;
-    padding: 10px; 
-    box-sizing: border-box; 
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 #searchInput {
-    width: 100%; /* Ocupa todo el ancho */
+    width: 100%;
+    /* Ocupa todo el ancho */
     padding: 12px 18px;
     border: 1px solid #ced4da;
     border-radius: 6px;
     font-size: 1rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Sombra */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    /* Sombra */
     transition: all 0.2s ease-in-out;
     box-sizing: border-box;
 }
@@ -897,7 +903,7 @@ body {
 }
 
 .scroll-box {
-    max-height: 120px; 
+    max-height: 120px;
     overflow-y: auto;
     padding-right: 8px;
 }
@@ -990,6 +996,7 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -1014,6 +1021,7 @@ body {
         transform: translateY(30px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -1324,18 +1332,19 @@ body {
     }
 
     .export-group {
-        margin-right: 0; 
+        margin-right: 0;
         justify-content: center;
         width: 100%;
     }
 
     .export-group a {
-        flex: 1; /* Excel y PDF mismo tamaño */
+        flex: 1;
+        /* Excel y PDF mismo tamaño */
         text-align: center;
     }
 
-    .button-group > a,
-    .button-group > button {
+    .button-group>a,
+    .button-group>button {
         width: 100%;
         justify-content: center;
     }
@@ -1357,7 +1366,7 @@ body {
 .main-actions {
     display: flex;
     gap: 10px;
-    margin-left: auto; 
+    margin-left: auto;
 }
 
 @media (max-width: 768px) {
@@ -1379,6 +1388,7 @@ body {
         text-align: center;
     }
 }
+
 .search-section {
     margin-top: 16px;
 }
@@ -1387,3 +1397,6 @@ body {
     width: 100%;
 }
 
+#procesosTableContainer {
+    transition: opacity 0.15s ease;
+}

@@ -65,10 +65,26 @@ class LegalProcessController extends Controller
             });
         }
 
+        // ── ORDENAMIENTO ──
+        $sortColumn = $request->get('sort', 'id');
+        $sortDir    = $request->get('dir', 'asc') === 'desc' ? 'desc' : 'asc';
+
+        $columnsAllowed = [
+            'numero_radicado' => 'procesos.numero_radicado',
+            'tipo_proceso'    => 'procesos.tipo_proceso',
+            'demandante'      => 'procesos.demandante',
+            'demandado'       => 'procesos.demandado',
+            'estado'          => 'procesos.estado',
+            'id'              => 'procesos.id',
+            'abogado'         => 'users.name',
+        ];
+
+        $orderBy = $columnsAllowed[$sortColumn] ?? 'procesos.id';
+
         $procesos = $query
-            ->orderBy('id', 'asc')
+            ->orderBy($orderBy, $sortDir)
             ->paginate(10)
-            ->appends(['search' => $search]);
+            ->appends(['search' => $search, 'sort' => $sortColumn, 'dir' => $sortDir]);
 
         // --- AJAX ---
         if ($request->ajax() || $request->get('ajax')) {
