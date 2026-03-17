@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Proceso Judicial - CSS Puro</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}"> 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/editPro.css') }}">
@@ -90,8 +90,7 @@
                                         ];
 
                                         $tienePagos = $proceso->pago()->exists();
-
-                                        if (Auth::user()->role_id != 2 || $tienePagos) {
+                                        if (!in_array(Auth::user()->role_id, [2, 4]) || $tienePagos) {
                                             $estados = array_filter($estados, fn($e) => $e !== 'Trasladar');
                                         }
                                     @endphp
@@ -114,7 +113,7 @@
 
                                 </div>
                                 @php
-                                    $esAbogado = Auth::user()->role_id == 2;
+                                    $esAbogado = in_array(Auth::user()->role_id, [2, 4]);
                                 @endphp
 
                                 @if ($esAbogado)
@@ -123,13 +122,13 @@
                                         <select class="form-select" name="nuevo_lawyer_id">
                                             <option value="">-- Elegir abogado --</option>
                                             @foreach (\App\Models\Lawyer::where('id', '!=', $proceso->lawyer_id)->get() as $lawyer)
-<option value="{{ $lawyer->id }}">
+                                <option value="{{ $lawyer->id }}">
                                         {{ $lawyer->nombre }} {{ $lawyer->apellido }}
                                     </option>
-@endforeach
+                            @endforeach
                             </select>
-                        </div>
-@endif
+                                    </div>
+                            @endif
       
                     </div>
 
@@ -277,7 +276,7 @@
                                 </label>
 
                                 <div class="file-input">
-                               <input type="file" id="documento" name="documentos[]" multiple>
+                                <input type="file" id="documento" name="documentos[]" multiple>
                                 <label for="documento" class="file-input-label">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <span>Seleccionar archivo</span>
@@ -327,4 +326,4 @@
                                 </body>
 
                                 </html>
-                                
+                                )

@@ -298,7 +298,7 @@ class LegalProcessController extends Controller
         // ===============================
         // TRASLADO DE PROCESO
         // ===============================
-        if ($request->filled('nuevo_lawyer_id') && Auth::user()->role_id == 2) {
+        if ($request->filled('nuevo_lawyer_id') && in_array(Auth::user()->role_id, [2,4])) {
 
             // No permitir traslado si tiene pagos
             if ($proceso->pago()->exists()) {

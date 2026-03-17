@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('css/abogado.css') }}">
     <link rel="stylesheet" href="{{ asset('css/procesos_judiciales.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pro-table.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     {{-- ✅ DESPUÉS: solo el JS, sin el CSS de Tailwind --}}
     @vite(['resources/js/dash.js'])
