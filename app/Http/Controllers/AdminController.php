@@ -54,6 +54,24 @@ class AdminController extends Controller
                 });
             }
 
+            // ── ORDENAMIENTO ABOGADOS ──
+            $sortLawyer = $request->get('sort_lawyer', 'id');
+            $dirLawyer  = $request->get('dir_lawyer', 'asc') === 'desc' ? 'desc' : 'asc';
+
+
+            $lawyerColumns = [
+                'nombre'           => 'nombre',
+                'apellido'         => 'apellido',
+                'tipo_documento'   => 'tipo_documento',
+                'numero_documento' => 'numero_documento',
+                'correo'           => 'correo',
+                'telefono'         => 'telefono',
+                'especialidad'     => 'especialidad',
+                'id'               => 'id',
+            ];
+
+            $orderByLawyer = $lawyerColumns[$sortLawyer] ?? 'id';
+
             // ============================
             // BUSCAR ASISTENTES
             // ============================
@@ -79,6 +97,22 @@ class AdminController extends Controller
                 });
             }
 
+            // ── ORDENAMIENTO ASISTENTES ──
+            $sortAssistant = $request->get('sort_assistant', 'id');
+            $dirAssistant  = $request->get('dir_assistant', 'asc') === 'desc' ? 'desc' : 'asc';
+
+            $assistantColumns = [
+                'nombre'           => 'nombre',
+                'apellido'         => 'apellido',
+                'tipo_documento'   => 'tipo_documento',
+                'numero_documento' => 'numero_documento',
+                'correo'           => 'correo',
+                'telefono'         => 'telefono',
+                'id'               => 'id',
+            ];
+
+            $orderByAssistant = $assistantColumns[$sortAssistant] ?? 'id';
+
             // ============================
             // BUSCAR PROCESOS
             // ============================
@@ -102,15 +136,18 @@ class AdminController extends Controller
             // ============================
             // PAGINACIONES
             // ============================
-            $lawyers         = $query->orderBy('id', 'asc')->paginate(10, ['*'], 'lawyersPage');
+            $lawyers = $query->orderBy($orderByLawyer, $dirLawyer)->paginate(10, ['*'], 'lawyersPage')
+                ->appends(['sort_lawyer' => $sortLawyer, 'dir_lawyer' => $dirLawyer]);
             $lawyersSimple   = Lawyer::orderBy('id', 'asc')->paginate(10, ['*'], 'lawyersSimplePage');
-            $assistants      = $assistantQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'assistantsPage');
+            $assistants = $assistantQuery
+                ->orderBy($orderByAssistant, $dirAssistant)
+                ->paginate(10, ['*'], 'assistantsPage')
+                ->appends(['sort_assistant' => $sortAssistant, 'dir_assistant' => $dirAssistant]);
             $assistantsSimple = Assistant::with('lawyers')->orderBy('id', 'asc')->paginate(10, ['*'], 'assistantsSimplePage');
             $procesosSimple  = $procesosQuery->orderBy('id', 'asc')->paginate(10, ['*'], 'procesosSimplePage');
 
             $abogados = Lawyer::all();
 
-            // Mantener búsqueda en paginación
             foreach ([$lawyers, $assistants, $lawyersSimple, $assistantsSimple, $procesosSimple] as $p) {
                 $p->appends([
                     'search'   => $searchTerm,
@@ -118,21 +155,19 @@ class AdminController extends Controller
                 ]);
             }
 
-            // ============================
-            // PETICIONES AJAX
-            // ============================
             if ($request->ajax()) {
-                if ($request->has('search') && $request->get('section') === 'lawyers') {
+                if ($request->get('section') === 'lawyers') { 
                     return response()->json([
                         'success' => true,
-                        'html'    => view('profile.partials.lawyers-table', ['lawyers' => $lawyers])->render()
+                        'html'    => view('profile.partials.lawyers-table', ['lawyers' => $lawyers])->render(),
+                        'total'   => $lawyers->total()
                     ]);
                 }
-
-                if ($request->has('search') && $request->get('section') === 'assistants') {
+                if ($request->get('section') === 'assistants') {
                     return response()->json([
                         'success' => true,
-                        'html'    => view('profile.partials.assistants-table', ['assistants' => $assistants])->render()
+                        'html'    => view('profile.partials.assistants-table', ['assistants' => $assistants])->render(),
+                        'total'   => $assistants->total()
                     ]);
                 }
 
@@ -158,9 +193,6 @@ class AdminController extends Controller
                 return response()->json(['html' => $html ?? '', 'success' => true]);
             }
 
-            // ============================
-            // CONTADORES PARA DASHBOARD
-            // ============================
             $totalLawyers    = Lawyer::count();
             $cases_count     = Proceso::count();
             $totalAsistentes = Assistant::count();

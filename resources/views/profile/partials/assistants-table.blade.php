@@ -11,13 +11,32 @@
     <div class="table-container table-wrapper">
         <table class="lawyers-table">
             <thead>
+                @php
+                    $sortA = request('sort_assistant', 'id');
+                    $dirA = request('dir_assistant', 'asc');
+
+                    function thSortAssistant($col, $label, $sort, $dir)
+                    {
+                        $newDir = $sort === $col && $dir === 'asc' ? 'desc' : 'asc';
+                        $url = request()->fullUrlWithQuery(['sort_assistant' => $col, 'dir_assistant' => $newDir]);
+                        $active = $sort === $col;
+                        $arrow = $active ? ($dir === 'asc' ? '↑' : '↓') : '↕';
+                        $class = 'th-sort' . ($active ? ' th-active' : '');
+                        return "<th class=\"$class\">
+                <a href=\"$url\" class=\"th-link\">
+                    <span>$label</span>
+                    <span class=\"sort-arrow\" style=\"font-size:15px;\">$arrow</span>
+                </a>
+            </th>";
+                    }
+                @endphp
                 <tr>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Tipo Doc.</th>
-                    <th>N° Documento</th>
-                    <th>Correo</th>
-                    <th>Teléfono</th>
+                    {!! thSortAssistant('nombre', 'Nombre', $sortA, $dirA) !!}
+                    {!! thSortAssistant('apellido', 'Apellido', $sortA, $dirA) !!}
+                    {!! thSortAssistant('tipo_documento', 'Tipo Doc.', $sortA, $dirA) !!}
+                    {!! thSortAssistant('numero_documento', 'N° Documento', $sortA, $dirA) !!}
+                    {!! thSortAssistant('correo', 'Correo', $sortA, $dirA) !!}
+                    {!! thSortAssistant('telefono', 'Teléfono', $sortA, $dirA) !!}
                     <th>Abogados Asignados</th>
                     <th>Acciones</th>
                 </tr>

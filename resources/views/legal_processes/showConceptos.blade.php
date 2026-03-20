@@ -65,7 +65,6 @@
                         </div>
                     </form>
 
-                    {{-- SELECT DE ABOGADO — solo visible para asistentes y supervisores --}}
                     @if ($abogadosList->isNotEmpty())
                         <div class="filter-wrapper" style="margin-top: 12px;">
                             <div class="search-group">

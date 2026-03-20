@@ -1,18 +1,34 @@
 <div class="table-container">
     <table>
         <thead>
+            @php
+                $sortL = request('sort_lawyer', 'id');
+                $dirL = request('dir_lawyer', 'asc');
+
+                function thSortLawyer($col, $label, $sort, $dir)
+                {
+                    $newDir = $sort === $col && $dir === 'asc' ? 'desc' : 'asc';
+                    $url = request()->fullUrlWithQuery(['sort_lawyer' => $col, 'dir_lawyer' => $newDir]);
+                    $active = $sort === $col;
+                    $arrow = $active ? ($dir === 'asc' ? '↑' : '↓') : '↕';
+                    $class = 'th-sort' . ($active ? ' th-active' : '');
+                    return "<th class=\"$class\">
+                <a href=\"$url\" class=\"th-link\">
+                    <span>$label</span>
+                    <span class=\"sort-arrow\" style=\"font-size:15px;\">$arrow</span>
+                </a>
+            </th>";
+                }
+            @endphp
             <tr>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Tipo de Documento</th>
-                <th>Número de Documento</th>
-                <th>Correo</th>
-                <th>Teléfono</th>
-                <th>Especialidad</th>
-                @if (
-                    $lawyers->contains(function ($lawyer) {
-                        return $lawyer->user && $lawyer->user->role_id == 4;
-                    }))
+                {!! thSortLawyer('nombre', 'Nombre', $sortL, $dirL) !!}
+                {!! thSortLawyer('apellido', 'Apellido', $sortL, $dirL) !!}
+                {!! thSortLawyer('tipo_documento', 'Tipo Documento', $sortL, $dirL) !!}
+                {!! thSortLawyer('numero_documento', 'Nº Documento', $sortL, $dirL) !!}
+                {!! thSortLawyer('correo', 'Correo', $sortL, $dirL) !!}
+                {!! thSortLawyer('telefono', 'Teléfono', $sortL, $dirL) !!}
+                {!! thSortLawyer('especialidad', 'Especialidad', $sortL, $dirL) !!}
+                @if ($lawyers->contains(fn($l) => $l->user && $l->user->role_id == 4))
                     <th>Supervisor</th>
                 @endif
                 <th>Acciones</th>
@@ -72,29 +88,85 @@
     // ==========================================
     // BUSCADOR REAL AJAX PARA ABOGADOS
     // ==========================================
-    const searchInputLawyers = document.getElementById("searchAbogados");
-    if (searchInputLawyers) {
-        let typingTimer;
 
-        searchInputLawyers.addEventListener("input", function() {
-            clearTimeout(typingTimer);
+    // ── Tabla abogados sin recarga ──
+    const stateLawyers = {
+        search: '',
+        sort_lawyer: new URLSearchParams(window.location.search).get('sort_lawyer') || 'id',
+        dir_lawyer: new URLSearchParams(window.location.search).get('dir_lawyer') || 'asc',
+        page: 1,
+    };
 
-            typingTimer = setTimeout(() => {
-                const search = this.value;
+    function cargarTablaAbogados() {
+        const container = document.getElementById('AbogadosTableWrapper');
+        if (!container) return;
 
-                fetch(`/dashboard?search=${encodeURIComponent(search)}&section=lawyers`, {
-                        headers: {
-                            "X-Requested-With": "XMLHttpRequest"
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success && data.html) {
-                            document.getElementById("AbogadosTableWrapper").innerHTML = data.html;
-                        }
-                    })
-                    .catch(err => console.error("Error AJAX búsqueda abogados:", err));
-            }, 250); // retraso para no saturar el servidor
+        container.style.opacity = '0.5';
+        container.style.pointerEvents = 'none';
+
+        const params = new URLSearchParams({
+            search: stateLawyers.search,
+            sort_lawyer: stateLawyers.sort_lawyer,
+            dir_lawyer: stateLawyers.dir_lawyer,
+            lawyersPage: stateLawyers.page,
+            section: 'lawyers',
+        });
+
+        fetch(`/dashboard?${params}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    container.innerHTML = data.html;
+                    container.style.opacity = '1';
+                    container.style.pointerEvents = '';
+                    bindLawyerEvents();
+                }
+            })
+            .catch(() => {
+                container.style.opacity = '1';
+                container.style.pointerEvents = '';
+            });
+    }
+
+    function bindLawyerEvents() {
+        // Ordenamiento
+        document.querySelectorAll('#AbogadosTableWrapper .th-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = new URL(this.href);
+                stateLawyers.sort_lawyer = url.searchParams.get('sort_lawyer');
+                stateLawyers.dir_lawyer = url.searchParams.get('dir_lawyer');
+                stateLawyers.page = 1;
+                cargarTablaAbogados();
+            });
+        });
+
+        // Paginación
+        document.querySelectorAll('#AbogadosTableWrapper .pagination-btn[href]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = new URL(this.href);
+                stateLawyers.page = url.searchParams.get('lawyersPage') || 1;
+                cargarTablaAbogados();
+            });
         });
     }
+
+    // Buscador abogados
+    const searchAbogados = document.getElementById('searchAbogados');
+    if (searchAbogados) {
+        let timer;
+        searchAbogados.addEventListener('input', function() {
+            clearTimeout(timer);
+            stateLawyers.search = this.value;
+            stateLawyers.page = 1;
+            timer = setTimeout(() => cargarTablaAbogados(), 350);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => bindLawyerEvents());
 </script>

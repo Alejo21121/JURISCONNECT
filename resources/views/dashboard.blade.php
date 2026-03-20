@@ -1,18 +1,10 @@
 <x-app-layout>
-    <!-- Página para el dashboard de los administradores -->
     <x-slot name="header">
-        <!-- Header vacío para evitar conflictos -->
     </x-slot>
-    <!-- Meta tag para CSRF token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <!-- Enlace a CSS corregido -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-
-    <!-- Contenido sin contenedores restrictivos -->
     <div class="dashboard-wrapper">
 
-        <!-- Overlay para móviles -->
         <div class="overlay" id="overlay"></div>
 
         <!-- MODAL PARA CREAR ABOGADO -->
@@ -299,19 +291,15 @@
             </div>
         </div>
 
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="profile">
-                <!-- Input file oculto para la foto de perfil -->
                 <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" style="display: none;">
 
-                <!-- Indicador de carga (oculto por defecto) -->
                 <div id="loadingIndicator"
                     style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
                     Subiendo...
                 </div>
 
-                <!-- Contenedor de la foto de perfil -->
                 <div class="profile-pic" onclick="document.getElementById('fileInput').click();"
                     style="cursor: pointer; position: relative;" title="Haz clic para cambiar tu foto">
                     <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('img/sena-servicio-nacional-de-aprendizaje_1747692754.jpeg') }}"
@@ -367,53 +355,110 @@
 
                 <!-- SECCIÓN DASHBOARD PRINCIPAL -->
                 <div class="section-content active" id="dashboard-section">
-                    <div class="section-header">
-                        <h2>Dashboard Principal</h2>
-                        <p>Resumen general del sistema JustConnect SENA</p>
+
+                    <section class="admin-hero">
+                        <div class="admin-hero-circles">
+                            <div class="admin-circle admin-circle--1"></div>
+                            <div class="admin-circle admin-circle--2"></div>
+                        </div>
+                        <div class="admin-hero-content">
+                            <span class="admin-hero-tag">
+                                <span class="admin-hero-dot"></span>
+                                Sistema activo
+                            </span>
+                            <h1 class="admin-hero-title">
+                                Dashboard <span class="admin-hero-accent">Principal</span>
+                            </h1>
+                            <p class="admin-hero-sub">Resumen general del sistema JustConnect SENA</p>
+                        </div>
+                    </section>
+
+                    <div class="admin-stats-grid">
+
+                        <div class="admin-stat-card" id="lawyersStatCard" style="cursor:pointer;">
+                            <div class="admin-stat-visual admin-stat-visual--lawyers">
+                                <div class="admin-stat-icon">👨‍⚖️</div>
+                            </div>
+                            <div class="admin-stat-body">
+                                <p class="admin-stat-cat">Usuarios</p>
+                                <h3 class="admin-stat-num">{{ $totalLawyers }}</h3>
+                                <p class="admin-stat-label">Abogados Registrados</p>
+                                <span class="admin-stat-link">Ver detalle →</span>
+                            </div>
+                        </div>
+
+                        <div class="admin-stat-card" id="casesStatCard" style="cursor:pointer;">
+                            <div class="admin-stat-visual admin-stat-visual--cases">
+                                <div class="admin-stat-icon">📋</div>
+                            </div>
+                            <div class="admin-stat-body">
+                                <p class="admin-stat-cat">Expedientes</p>
+                                <h3 class="admin-stat-num">{{ $cases_count }}</h3>
+                                <p class="admin-stat-label">Procesos Judiciales</p>
+                                <span class="admin-stat-link">Ver detalle →</span>
+                            </div>
+                        </div>
+
+                        <div class="admin-stat-card" id="assistantsStatCard" style="cursor:pointer;">
+                            <div class="admin-stat-visual admin-stat-visual--assistants">
+                                <div class="admin-stat-icon">👨‍💼</div>
+                            </div>
+                            <div class="admin-stat-body">
+                                <p class="admin-stat-cat">Usuarios</p>
+                                <h3 class="admin-stat-num">{{ $totalAsistentes }}</h3>
+                                <p class="admin-stat-label">Asistentes Jurídicos</p>
+                                <span class="admin-stat-link">Ver detalle →</span>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- En la sección DASHBOARD PRINCIPAL -->
-                    <div class="dashboard-stats">
-                        <div class="stat-card" id="lawyersStatCard" style="cursor: pointer;">
-                            <div class="stat-icon">👨‍⚖️</div>
-                            <div class="stat-info">
-                                <h3>{{ $totalLawyers }}</h3>
-                                <p>Abogados Registrados</p>
-                            </div>
-                        </div>
-
-                        <div class="stat-card" id="casesStatCard" style="cursor: pointer;">
-                            <div class="stat-icon">📋</div>
-                            <div class="stat-info">
-                                <h3>{{ $cases_count }}</h3>
-                                <p>Procesos Judiciales</p>
-                            </div>
-                        </div>
-
-                        <div class="stat-card" id="assistantsStatCard" style="cursor: pointer;">
-                            <div class="stat-icon">👨‍💼</div>
-                            <div class="stat-info">
-                                <h3>{{ $totalAsistentes }}</h3>
-                                <p>Asistentes Juridicos</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--  TABLA OCULTA INICIALMENTE -->
-                    <div id="lawyersTableWrapper" style="display: none; margin-top: 30px;">
+                    {{-- TABLAS OCULTAS--}}
+                    <div id="lawyersTableWrapper" style="display:none; margin-top:30px;">
                         @include('profile.partials.lawyers-table-simple', ['lawyers' => $lawyers])
                     </div>
-
-                    <!-- 🔽🔽🔽 TABLA DE ASISTENTES OCULTA INICIALMENTE 🔽🔽🔽 -->
-                    <div id="assistantsTableWrapper" style="display: none; margin-top: 30px;">
+                    <div id="assistantsTableWrapper" style="display:none; margin-top:30px;">
                         @include('profile.partials.assistants-table-simple', ['assistants' => $assistants])
                     </div>
-
-                    <!-- 🔽🔽🔽 TABLA DE PROCESOS OCULTA INICIALMENTE 🔽🔽🔽 -->
                     <div id="procesosTableWrapper" style="display:none; margin-top:30px;">
                         @include('profile.partials.procesos-table-simple', [
                             'procesosSimple' => $procesosSimple,
                         ])
                     </div>
+
+                    {{-- SECCIÓN CÓMO USAR --}}
+                    <div class="admin-section-heading">
+                        <p class="admin-section-label">Acciones rápidas</p>
+                        <h2 class="admin-section-title">¿Qué puedes gestionar?</h2>
+                    </div>
+
+                    <div class="admin-actions-grid">
+                        <div class="admin-action-card">
+                            <div class="admin-action-num">01</div>
+                            <h4 class="admin-action-title">Gestionar Abogados</h4>
+                            <p class="admin-action-desc">Crea, edita y administra los abogados y supervisores
+                                registrados en el sistema.</p>
+                        </div>
+                        <div class="admin-action-card">
+                            <div class="admin-action-num">02</div>
+                            <h4 class="admin-action-title">Gestionar Asistentes</h4>
+                            <p class="admin-action-desc">Administra los asistentes jurídicos y sus asignaciones a
+                                abogados.</p>
+                        </div>
+                        <div class="admin-action-card">
+                            <div class="admin-action-num">03</div>
+                            <h4 class="admin-action-title">Ver Procesos</h4>
+                            <p class="admin-action-desc">Consulta todos los procesos judiciales registrados en el
+                                sistema.</p>
+                        </div>
+                        <div class="admin-action-card">
+                            <div class="admin-action-num">04</div>
+                            <h4 class="admin-action-title">Exportar Reportes</h4>
+                            <p class="admin-action-desc">Descarga reportes en Excel o PDF de abogados, asistentes y
+                                procesos.</p>
+                        </div>
+                    </div>
+
                 </div>
 
                 {{-- MODAL REABRIR PROCESO --}}
