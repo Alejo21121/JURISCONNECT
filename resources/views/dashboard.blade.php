@@ -448,14 +448,13 @@
                         <div class="admin-action-card">
                             <div class="admin-action-num">03</div>
                             <h4 class="admin-action-title">Ver Procesos</h4>
-                            <p class="admin-action-desc">Consulta todos los procesos judiciales registrados en el
-                                sistema.</p>
+                            <p class="admin-action-desc">Consulta una pequeña información sobre los procesos judiciales registrados en el
+                                sistema y reabrirlos si es necesario.</p>
                         </div>
                         <div class="admin-action-card">
                             <div class="admin-action-num">04</div>
                             <h4 class="admin-action-title">Exportar Reportes</h4>
-                            <p class="admin-action-desc">Descarga reportes en Excel o PDF de abogados, asistentes y
-                                procesos.</p>
+                            <p class="admin-action-desc">Descarga reportes en Excel o PDF de abogados y asistentes.</p>
                         </div>
                     </div>
 

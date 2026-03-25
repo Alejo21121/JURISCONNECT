@@ -27,6 +27,8 @@
                 $role = Auth::user()->role_id;
                 $isAbogado = $role == 2;
                 $isAsistente = $role == 3;
+                $isAbogadoS = $role == 4;
+
             @endphp
 
             <header class="header">
@@ -37,6 +39,8 @@
                             Panel del Abogado
                         @elseif($isAsistente)
                             Panel del Asistente Jurídico
+                        @elseif($isAbogadoS)
+                            Panel del Abogado Supervisor
                         @else
                             Panel del Usuario
                         @endif
