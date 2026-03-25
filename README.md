@@ -14,6 +14,7 @@
 # 📗 Tabla de Contenido
 
 - [📖 Sobre el proyecto](#about-project)
+- [📘 Documentación](#documentation)
   - [🛠 Construir con](#built-with)
     - [Tech Stack](#tech-stack)
     - [Key Features](#key-features)
@@ -33,6 +34,12 @@
 # 📖 [Jurisconnect] <a name="about-project"></a>
 
 **[Jurisconnect]** Es un proyecto destinado a mejorar la organización, registro, consulta, seguimiento y control de los procesos jurídicos dentro de la Dirección Jurídica del SENA. Se desarrollará utilizando tecnologías modernas y un enfoque de arquitectura monolítica, implementando en PHP con el framework Laravel. Esto permitirá una separación clara entre capas de presentación, lógica de negocio y acceso a datos. La base de datos será PostgreSQL y se utilizará Laravel Sail (Docker) como entorno de desarrollo.
+
+## 📘 Documentación <a name="documentation"></a>
+
+Este proyecto cuenta con un manual de usuario donde se explican todas las funcionalidades del sistema:
+
+👉 📄 [Ver Manual de Usuario](docs/manual_usuario_jurisconnect.pdf)
 
 ### Tech Stack <a name="tech-stack"></a>
 
