@@ -88,7 +88,7 @@ Clona este repositorio a tu carpeta designada:
 ```sh
  
  git clone https://github.com/Alejo21121/JURISCONNECT.git
- cd MI_APP
+ cd JURISCONNECT
 ```
 
 ## Install
