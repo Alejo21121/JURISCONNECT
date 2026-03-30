@@ -63,7 +63,7 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
-    flex-wrap: wrap;  
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 8px;
     background: #fff;
@@ -71,7 +71,7 @@ body {
     border-radius: 12px;
     box-shadow: var(--card-shadow);
     margin-bottom: 30px;
- 
+
 }
 
 .header-content h1 {
@@ -348,11 +348,9 @@ body {
 }
 
 .action-btn:hover {
-    background: linear-gradient(
-        135deg,
-        rgb(33, 136, 56) 0%,
-        rgb(30, 126, 52) 100%
-    );
+    background: linear-gradient(135deg,
+            rgb(33, 136, 56) 0%,
+            rgb(30, 126, 52) 100%);
     transform: translateY(-1px);
     box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -440,6 +438,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -514,6 +513,7 @@ body {
 .text-center {
     text-align: center;
 }
+
 /* ===== Buscador Moderno ===== */
 .search-wrapper {
     margin-top: 10px;
@@ -530,6 +530,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
 }
+
 
 .search-input-modern {
     border: none;
@@ -873,4 +874,71 @@ body {
         opacity: 1;
         transform: translateX(0);
     }
+}
+
+.filter-wrapper {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.search-group {
+    position: relative;
+    width: 300px;
+}
+
+.search-groupAbogado {
+    position: relative;
+    width: 300px;
+}
+
+#abogadoFilter {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    font-size: 14px;
+    color: #374151;
+    outline: none;
+    transition: all 0.25s ease;
+    appearance: none;
+    cursor: pointer;
+}
+
+#abogadoFilter:hover {
+    border-color: #28a745;
+}
+
+#abogadoFilter:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+}
+
+.search-group::after {
+    content: "\f078";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    pointer-events: none;
+}
+
+#abogadoFilter {
+    transition: all 0.2s ease-in-out;
+}
+
+.select-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 14px;
+}
+
+#abogadoFilter {
+    padding-left: 35px;
 }

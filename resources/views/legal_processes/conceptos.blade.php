@@ -52,7 +52,7 @@
                         </button>
                     </div>
                 @endif
-                <div class="header">
+                <div class="header2">
                     <div class="header-content">
                         <h1>Conceptos Jurídicos</h1>
                         <p>Listado de los conceptos asociados al proceso seleccionado</p>
@@ -225,7 +225,7 @@
                         </div>
                         <h3>No hay conceptos disponibles</h3>
                         <p>No se encontraron conceptos para mostrar en este proceso.</p>
-                        <a href="{{ route('procesos.index') }}" class="btn btn-primary">
+                        <a href="{{ route('conceptos.create') }}" class="btn btn-primary">
                             <i class="fas fa-arrow-left"></i>
                             Volver al listado de procesos
                         </a>

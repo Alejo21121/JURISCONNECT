@@ -67,9 +67,10 @@
 
                     @if ($abogadosList->isNotEmpty())
                         <div class="filter-wrapper" style="margin-top: 12px;">
-                            <div class="search-group">
+                            <div class="search-groupAbogado">
+                                <i class="fas fa-user-tie select-icon"></i>
                                 <select id="abogadoFilter" class="search-input-modern" style="cursor:pointer;">
-                                    <option value="">— Todos los abogados —</option>
+                                    <option value="">Filtrar por abogado</option>
                                     @foreach ($abogadosList as $lawyer)
                                         <option value="{{ $lawyer->id }}"
                                             {{ request('abogado_id') == $lawyer->id ? 'selected' : '' }}>
